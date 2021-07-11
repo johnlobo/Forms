@@ -52,7 +52,11 @@ $(eval $(call IMG2SP, CONVERT_PALETTE , $(PALETTE0), g_palette0 ))
 $(eval $(call IMG2SP, CONVERT         , assets/balls-big.png, 8, 11, s_balls_big, ,))
 $(eval $(call IMG2SP, CONVERT         , assets/balls-small.png, 6, 11, s_balls_small, ,))
 $(eval $(call IMG2SP, CONVERT         , assets/score-numbers.png, 8, 15, s_score_numbers, ,))
-
+$(eval $(call IMG2SP, CONVERT         , assets/hi-score.png, 30, 7, s_hi_score, ,))
+$(eval $(call IMG2SP, CONVERT         , assets/score.png, 20, 7, s_score, ,))
+$(eval $(call IMG2SP, CONVERT         , assets/uno.png, 4, 16, s_uno, ,))
+$(eval $(call IMG2SP, CONVERT         , assets/dos.png, 6, 16, s_dos, ,))
+$(eval $(call IMG2SP, CONVERT         , assets/tres.png, 6, 16, s_tres, ,))
 
 ##
 ## OLD MACROS (For compatibility)

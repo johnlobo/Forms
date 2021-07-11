@@ -16,22 +16,56 @@
 ;;  along with this program.  If not, see <http://www.gnu.org/licenses/>.
 ;;-------------------------------------------------------------------------------
 
-.globl s_balls_big_0
-.globl s_balls_big_1
-.globl s_balls_big_2
-.globl s_balls_big_3
-.globl s_balls_big_4
-.globl s_balls_big_5
-.globl s_balls_big_6
-.globl s_balls_big_7
-.globl s_balls_small_0
-.globl s_balls_small_1
-.globl s_balls_small_2
-.globl s_balls_small_3
-.globl s_balls_small_4
-.globl s_balls_small_5
-.globl s_balls_small_6
-.globl g_palette0
+
+;; 
+;; Declare all function entry points as global symbols for the compiler.
+;; (The linker will know what to do with them)
+;; WARNING: Every global symbol declared will be linked, so DO NOT declare 
+;; symbols for functions you do not use.
+;;
+
+.globl _s_balls_big_0
+.globl _s_balls_big_1
+.globl _s_balls_big_2
+.globl _s_balls_big_3
+.globl _s_balls_big_4
+.globl _s_balls_big_5
+.globl _s_balls_big_6
+.globl _s_balls_big_7
+.globl _s_balls_small_0
+.globl _s_balls_small_1
+.globl _s_balls_small_2
+.globl _s_balls_small_3
+.globl _s_balls_small_4
+.globl _s_balls_small_5
+.globl _s_balls_small_6
+.globl _g_palette0
+.globl _s_hi_score
+.globl _s_score
+.globl _s_uno
+.globl _s_dos
+.globl _s_tres
+.globl _s_score_numbers_00
+.globl _s_score_numbers_01
+.globl _s_score_numbers_02
+.globl _s_score_numbers_03
+.globl _s_score_numbers_04
+.globl _s_score_numbers_05
+.globl _s_score_numbers_06
+.globl _s_score_numbers_07
+.globl _s_score_numbers_08
+.globl _s_score_numbers_09
+
+;;===============================================================================
+;; CPCTELERA FUNCTIONS
+;;===============================================================================
+.globl cpct_disableFirmware_asm
+.globl cpct_getScreenPtr_asm
+.globl cpct_drawSprite_asm
+.globl cpct_setVideoMode_asm
+.globl cpct_setPalette_asm
+.globl cpct_setPALColour_asm
+.globl cpct_memset_asm
 
 ;;===============================================================================
 ;; DEFINED CONSTANTS
@@ -40,3 +74,32 @@ S_BALLS_BIG_W = 4
 S_BALLS_BIG_H = 11
 S_BALLS_SMALL_W = 3
 S_BALLS_SMALL_H = 9
+S_HI_SCORE_W = 15
+S_HI_SCORE_H = 7
+S_SCORE_W = 10
+S_SCORE_H = 7
+S_UNO_W = 2
+S_UNO_H = 16
+S_DOS_W = 3
+S_DOS_H = 16
+S_TRES_W = 3
+S_TRES_H = 16
+S_SCORE_NUMBERS_W = 8
+S_SCORE_NUMBERS_H = 15
+
+BOARD_X_COORD = 1   ;; X 
+BOARD_Y_COORD = 54  ;; Y 
+BOARD_ROWS = 10     ;;
+BOARD_COLS = 10     ;;
+
+HIGH_SCORE_TITLE_X_COORD = 4        ;;
+HIGH_SCORE_TITLE_Y_COORD = 6        ;;    
+SCORE_TITLE_X_COORD = 57       ;;
+SCORE_TITLE_Y_COORD = 20       ;; 
+UNO_TITLE_X_COORD = 47       ;;
+UNO_TITLE_Y_COORD = 80       ;;
+DOS_TITLE_X_COORD = 60       ;;
+DOS_TITLE_Y_COORD = 80       ;; 
+TRES_TITLE_X_COORD = 71       ;;
+TRES_TITLE_Y_COORD = 80       ;;  
+
