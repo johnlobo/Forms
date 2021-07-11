@@ -1,0 +1,111 @@
+ASxxxx Linker V03.00 + NoICE + sdld,  page 1.
+Hexadecimal  [32-Bits]
+
+Area                                    Addr        Size        Decimal Bytes (Attributes)
+--------------------------------        ----        ----        ------- ----- ------------
+.  .ABS.                            00000000    00000000 =           0. bytes (ABS,CON)
+
+      Value  Global                              Global Defined In Module
+      -----  --------------------------------   ------------------------
+     00000000  .__.ABS.                           
+     00000000  l__CABS                         
+     00000000  l__DABS                         
+     00000000  l__GSFINAL                      
+     00000000  l__GSINIT                       
+     00000000  l__HOME                         
+     00000000  l__INITIALIZED                  
+     00000000  l__INITIALIZER                  
+     00000000  s__CABS                         
+     00000000  s__DABS                         
+     0000001A  l__DATA                         
+     00000340  l__CODE                         
+     00004000  s__CODE                         
+     00004340  s__DATA                         
+     0000435A  s__GSFINAL                      
+     0000435A  s__GSINIT                       
+     0000435A  s__HOME                         
+     0000435A  s__INITIALIZED                  
+     0000435A  s__INITIALIZER                  
+
+ASxxxx Linker V03.00 + NoICE + sdld,  page 2.
+Hexadecimal  [32-Bits]
+
+Area                                    Addr        Size        Decimal Bytes (Attributes)
+--------------------------------        ----        ----        ------- ----- ------------
+_CODE                               00004000    00000340 =         832. bytes (REL,CON)
+
+      Value  Global                              Global Defined In Module
+      -----  --------------------------------   ------------------------
+     00004000  _s_balls_small_0                   balls_small
+     0000401B  _s_balls_small_1                   balls_small
+     00004036  _s_balls_small_2                   balls_small
+     00004051  _s_balls_small_3                   balls_small
+     0000406C  _s_balls_small_4                   balls_small
+     00004087  _s_balls_small_5                   balls_small
+     000040A2  _s_balls_small_6                   balls_small
+     000040BD  _s_balls_big_0                     balls_big
+     000040E9  _s_balls_big_1                     balls_big
+     00004115  _s_balls_big_2                     balls_big
+     00004141  _s_balls_big_3                     balls_big
+     0000416D  _s_balls_big_4                     balls_big
+     00004199  _s_balls_big_5                     balls_big
+     000041C5  _s_balls_big_6                     balls_big
+     000041F1  _s_balls_big_7                     balls_big
+     0000421D  _g_palette0                        g_palette0
+     0000422D  _main                              cpct_keyboard
+     0000424A  cpct_drawStringM1_asm              cpct_strings
+     0000426E  cpct_drawCharM1_inner_asm          cpct_strings
+     000042AE  cpct_char2pxM1                     cpct_strings
+     000042BE  _cpct_disableFirmware              cpct_firmware
+     000042BE  _cpct_removeInterruptHandler       cpct_firmware
+     000042BE  cpct_disableFirmware_asm           cpct_firmware
+     000042BE  cpct_removeInterruptHandler_asm    cpct_firmware
+     000042CE  _cpct_mode_rom_status              cpct_firmware
+     000042CF  cpct_getScreenPtr_asm              cpct_video
+     000042EB  cpct_setDrawCharM1_asm             cpct_strings
+     0000433C  dc_mode1_ct                        
+
+ASxxxx Linker V03.00 + NoICE + sdld,  page 3.
+Hexadecimal  [32-Bits]
+
+Area                                    Addr        Size        Decimal Bytes (Attributes)
+--------------------------------        ----        ----        ------- ----- ------------
+_DATA                               00004340    0000001A =          26. bytes (REL,CON)
+
+      Value  Global                              Global Defined In Module
+      -----  --------------------------------   ------------------------
+ASxxxx Linker V03.00 + NoICE + sdld,  page 4.
+
+Files Linked                              [ module(s) ]
+
+obj/sprites/balls-small.rel               [ balls_small ]
+obj/sprites/balls-big.rel                 [ balls_big ]
+obj/sprites/g_palette0.rel                [ g_palette0 ]
+obj/main.rel                              [ cpct_keyboard ]
+
+
+Libraries Linked                          [ object file ]
+
+/Users/david/Documents/retro/proyectos/cpctelera/cpctelera/cpctelera.lib
+                                          [ cpct_drawStringM1_asmbindings.re ]
+/Users/david/Documents/retro/proyectos/cpctelera/cpctelera/cpctelera.lib
+                                          [ cpct_drawCharM1_inner.rel ]
+/Users/david/Documents/retro/proyectos/cpctelera/cpctelera/cpctelera.lib
+                                          [ cpct_removeInterruptHandler.rel ]
+/Users/david/Documents/retro/proyectos/cpctelera/cpctelera/cpctelera.lib
+                                          [ cpc_mode_rom_status.rel ]
+/Users/david/Documents/retro/proyectos/cpctelera/cpctelera/cpctelera.lib
+                                          [ cpct_getScreenPtr_asmbindings.re ]
+/Users/david/Documents/retro/proyectos/cpctelera/cpctelera/cpctelera.lib
+                                          [ cpct_setDrawCharM1_asmbindings.r ]
+/Users/david/Documents/retro/proyectos/cpctelera/cpctelera/cpctelera.lib
+                                          [ cpct_dc_mode1_ct.rel ]
+
+ASxxxx Linker V03.00 + NoICE + sdld,  page 5.
+
+User Base Address Definitions
+
+_CODE = 0x4000
+_DATA = 0x0000
+
+
