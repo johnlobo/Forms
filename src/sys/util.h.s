@@ -1,0 +1,1 @@
+.globl h_times_e

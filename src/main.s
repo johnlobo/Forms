@@ -18,6 +18,8 @@
 
 ;; Include all CPCtelera constant definitions, macros and variables
 .include "cpctelera.h.s"
+.include "sys/render.h.s"
+.include "common.h.s"
 
 ;;
 ;; Start of _DATA area 
@@ -32,15 +34,6 @@
 ;; 
 .area _CODE
 
-;; 
-;; Declare all function entry points as global symbols for the compiler.
-;; (The linker will know what to do with them)
-;; WARNING: Every global symbol declared will be linked, so DO NOT declare 
-;; symbols for functions you do not use.
-;;
-.globl cpct_disableFirmware_asm
-.globl cpct_getScreenPtr_asm
-
 ;;
 ;; MAIN function. This is the entry point of the application.
 ;;    _main:: global symbol is required for correctly compiling and linking
@@ -49,12 +42,9 @@ _main::
    ;; Disable firmware to prevent it from interfering with string drawing
    call cpct_disableFirmware_asm
 
-   ;; Calculate a video-memory location for printing a string
-   ld   de, #CPCT_VMEM_START_ASM ;; DE = Pointer to start of the screen
-   ld    b, #24                  ;; B = y coordinate (24 = 0x18)
-   ld    c, #16                  ;; C = x coordinate (16 = 0x10)
+   call sys_render_init
 
-   call cpct_getScreenPtr_asm    ;; Calculate video memory location and return it in HL
+   call sys_render_game_screen
 
    ;; Loop forever
 loop:

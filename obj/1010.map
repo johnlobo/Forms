@@ -7,9 +7,10 @@ Area                                    Addr        Size        Decimal Bytes (A
 
       Value  Global                              Global Defined In Module
       -----  --------------------------------   ------------------------
-     00000000  .__.ABS.                           
+     00000000  .__.ABS.                           cpct_video
      00000000  l__CABS                         
      00000000  l__DABS                         
+     00000000  l__DATA                         
      00000000  l__GSFINAL                      
      00000000  l__GSINIT                       
      00000000  l__HOME                         
@@ -17,91 +18,113 @@ Area                                    Addr        Size        Decimal Bytes (A
      00000000  l__INITIALIZER                  
      00000000  s__CABS                         
      00000000  s__DABS                         
-     0000001A  l__DATA                         
-     00000340  l__CODE                         
+     000007A7  l__CODE                         
      00004000  s__CODE                         
-     00004340  s__DATA                         
-     0000435A  s__GSFINAL                      
-     0000435A  s__GSINIT                       
-     0000435A  s__HOME                         
-     0000435A  s__INITIALIZED                  
-     0000435A  s__INITIALIZER                  
+     000047A7  s__DATA                         
+     000047A7  s__GSFINAL                      
+     000047A7  s__GSINIT                       
+     000047A7  s__HOME                         
+     000047A7  s__INITIALIZED                  
+     000047A7  s__INITIALIZER                  
 
 ASxxxx Linker V03.00 + NoICE + sdld,  page 2.
 Hexadecimal  [32-Bits]
 
 Area                                    Addr        Size        Decimal Bytes (Attributes)
 --------------------------------        ----        ----        ------- ----- ------------
-_CODE                               00004000    00000340 =         832. bytes (REL,CON)
+_CODE                               00004000    000007A7 =        1959. bytes (REL,CON)
 
       Value  Global                              Global Defined In Module
       -----  --------------------------------   ------------------------
-     00004000  _s_balls_small_0                   balls_small
-     0000401B  _s_balls_small_1                   balls_small
-     00004036  _s_balls_small_2                   balls_small
-     00004051  _s_balls_small_3                   balls_small
-     0000406C  _s_balls_small_4                   balls_small
-     00004087  _s_balls_small_5                   balls_small
-     000040A2  _s_balls_small_6                   balls_small
-     000040BD  _s_balls_big_0                     balls_big
-     000040E9  _s_balls_big_1                     balls_big
-     00004115  _s_balls_big_2                     balls_big
-     00004141  _s_balls_big_3                     balls_big
-     0000416D  _s_balls_big_4                     balls_big
-     00004199  _s_balls_big_5                     balls_big
-     000041C5  _s_balls_big_6                     balls_big
-     000041F1  _s_balls_big_7                     balls_big
-     0000421D  _g_palette0                        g_palette0
-     0000422D  _main                              cpct_keyboard
-     0000424A  cpct_drawStringM1_asm              cpct_strings
-     0000426E  cpct_drawCharM1_inner_asm          cpct_strings
-     000042AE  cpct_char2pxM1                     cpct_strings
-     000042BE  _cpct_disableFirmware              cpct_firmware
-     000042BE  _cpct_removeInterruptHandler       cpct_firmware
-     000042BE  cpct_disableFirmware_asm           cpct_firmware
-     000042BE  cpct_removeInterruptHandler_asm    cpct_firmware
-     000042CE  _cpct_mode_rom_status              cpct_firmware
-     000042CF  cpct_getScreenPtr_asm              cpct_video
-     000042EB  cpct_setDrawCharM1_asm             cpct_strings
-     0000433C  dc_mode1_ct                        
+     00004000  _s_tres                            tres
+     00004030  _s_dos                             dos
+     00004060  _s_uno                             uno
+     00004080  _s_score                           score
+     000040C6  _s_hi_score                        hi_score
+     0000412F  _s_score_numbers_00                score_numbers
+     0000416B  _s_score_numbers_01                score_numbers
+     000041A7  _s_score_numbers_02                score_numbers
+     000041E3  _s_score_numbers_03                score_numbers
+     0000421F  _s_score_numbers_04                score_numbers
+     0000425B  _s_score_numbers_05                score_numbers
+     00004297  _s_score_numbers_06                score_numbers
+     000042D3  _s_score_numbers_07                score_numbers
+     0000430F  _s_score_numbers_08                score_numbers
+     0000434B  _s_score_numbers_09                score_numbers
+     00004387  _s_balls_small_0                   balls_small
+     000043A2  _s_balls_small_1                   balls_small
+     000043BD  _s_balls_small_2                   balls_small
+     000043D8  _s_balls_small_3                   balls_small
+     000043F3  _s_balls_small_4                   balls_small
+     0000440E  _s_balls_small_5                   balls_small
+     00004429  _s_balls_small_6                   balls_small
+     00004444  _s_balls_big_0                     balls_big
+     00004470  _s_balls_big_1                     balls_big
+     0000449C  _s_balls_big_2                     balls_big
+     000044C8  _s_balls_big_3                     balls_big
+     000044F4  _s_balls_big_4                     balls_big
+     00004520  _s_balls_big_5                     balls_big
+     0000454C  _s_balls_big_6                     balls_big
+     00004578  _s_balls_big_7                     balls_big
+     000045A4  _g_palette0                        g_palette0
+     000045B4  _main                              cpct_keyboard
+     000045BF  sys_render_init                    cpct_keyboard
+     000045DF  sys_render_game_screen             cpct_keyboard
+     0000464C  sys_render_board                   cpct_keyboard
+     00004684  h_times_e                          
+     000046A8  cpct_setPalette_asm                cpct_video
+     000046BB  cpct_setPALColour_asm              cpct_video
+     000046C5  cpct_drawSprite_asm                cpct_sprites
+     00004765  cpct_setVideoMode_asm              cpct_video
+     00004772  cpct_memset_asm                    cpct_memutils
+     0000477A  _cpct_disableFirmware              cpct_firmware
+     0000477A  _cpct_removeInterruptHandler       cpct_firmware
+     0000477A  cpct_disableFirmware_asm           cpct_firmware
+     0000477A  cpct_removeInterruptHandler_asm    cpct_firmware
+     0000478A  _cpct_mode_rom_status              cpct_firmware
+     0000478B  cpct_getScreenPtr_asm              cpct_video
 
 ASxxxx Linker V03.00 + NoICE + sdld,  page 3.
-Hexadecimal  [32-Bits]
-
-Area                                    Addr        Size        Decimal Bytes (Attributes)
---------------------------------        ----        ----        ------- ----- ------------
-_DATA                               00004340    0000001A =          26. bytes (REL,CON)
-
-      Value  Global                              Global Defined In Module
-      -----  --------------------------------   ------------------------
-ASxxxx Linker V03.00 + NoICE + sdld,  page 4.
 
 Files Linked                              [ module(s) ]
 
+obj/sprites/tres.rel                      [ tres ]
+obj/sprites/dos.rel                       [ dos ]
+obj/sprites/uno.rel                       [ uno ]
+obj/sprites/score.rel                     [ score ]
+obj/sprites/hi-score.rel                  [ hi_score ]
+obj/sprites/score-numbers.rel             [ score_numbers ]
 obj/sprites/balls-small.rel               [ balls_small ]
 obj/sprites/balls-big.rel                 [ balls_big ]
 obj/sprites/g_palette0.rel                [ g_palette0 ]
+obj/common.h.rel                          [  ]
 obj/main.rel                              [ cpct_keyboard ]
+obj/sys/render.h.rel                      [  ]
+obj/sys/render.rel                        [ cpct_keyboard ]
+obj/sys/util.h.rel                        [  ]
+obj/sys/util.rel                          [  ]
 
 
 Libraries Linked                          [ object file ]
 
 /Users/david/Documents/retro/proyectos/cpctelera/cpctelera/cpctelera.lib
-                                          [ cpct_drawStringM1_asmbindings.re ]
+                                          [ cpct_setPalette_asmbindings.rel ]
 /Users/david/Documents/retro/proyectos/cpctelera/cpctelera/cpctelera.lib
-                                          [ cpct_drawCharM1_inner.rel ]
+                                          [ cpct_setPALColour_asmbindings.re ]
+/Users/david/Documents/retro/proyectos/cpctelera/cpctelera/cpctelera.lib
+                                          [ cpct_drawSprite_asmbindings.rel ]
+/Users/david/Documents/retro/proyectos/cpctelera/cpctelera/cpctelera.lib
+                                          [ cpct_setVideoMode_asmbindings.re ]
+/Users/david/Documents/retro/proyectos/cpctelera/cpctelera/cpctelera.lib
+                                          [ cpct_memset_asmbinding.rel ]
 /Users/david/Documents/retro/proyectos/cpctelera/cpctelera/cpctelera.lib
                                           [ cpct_removeInterruptHandler.rel ]
 /Users/david/Documents/retro/proyectos/cpctelera/cpctelera/cpctelera.lib
                                           [ cpc_mode_rom_status.rel ]
 /Users/david/Documents/retro/proyectos/cpctelera/cpctelera/cpctelera.lib
                                           [ cpct_getScreenPtr_asmbindings.re ]
-/Users/david/Documents/retro/proyectos/cpctelera/cpctelera/cpctelera.lib
-                                          [ cpct_setDrawCharM1_asmbindings.r ]
-/Users/david/Documents/retro/proyectos/cpctelera/cpctelera/cpctelera.lib
-                                          [ cpct_dc_mode1_ct.rel ]
 
-ASxxxx Linker V03.00 + NoICE + sdld,  page 5.
+ASxxxx Linker V03.00 + NoICE + sdld,  page 4.
 
 User Base Address Definitions
 

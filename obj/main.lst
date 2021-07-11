@@ -2715,71 +2715,158 @@ Hexadecimal [16-Bits]
 
 
 
-                             21 
-                             22 ;;
-                             23 ;; Start of _DATA area 
-                             24 ;;  SDCC requires at least _DATA and _CODE areas to be declared, but you may use
-                             25 ;;  any one of them for any purpose. Usually, compiler puts _DATA area contents
-                             26 ;;  right after _CODE area contents.
-                             27 ;;
-                             28 .area _DATA
-                             29 
-                             30 ;; Define one Zero-terminated string to be used later on
-   0000 43 50 43 74 65 6C    31 string: .asciz "CPCtelera up and running!";
-        65 72 61 20 75 70
-        20 61 6E 64 20 72
-        75 6E 6E 69 6E 67
-        21 00
-                             32 
-                             33 ;;
-                             34 ;; Start of _CODE area
-                             35 ;; 
-                             36 .area _CODE
-                             37 
-                             38 ;; 
-                             39 ;; Declare all function entry points as global symbols for the compiler.
-                             40 ;; (The linker will know what to do with them)
-                             41 ;; WARNING: Every global symbol declared will be linked, so DO NOT declare 
-                             42 ;; symbols for functions you do not use.
-                             43 ;;
-                             44 .globl cpct_disableFirmware_asm
-                             45 .globl cpct_getScreenPtr_asm
-                             46 .globl cpct_setDrawCharM1_asm
-                             47 .globl cpct_drawStringM1_asm
-                             48 
-                             49 ;;
-                             50 ;; MAIN function. This is the entry point of the application.
-                             51 ;;    _main:: global symbol is required for correctly compiling and linking
-                             52 ;;
-   0000                      53 _main::
-                             54    ;; Disable firmware to prevent it from interfering with string drawing
-   0000 CD 00 00      [17]   55    call cpct_disableFirmware_asm
-                             56 
-                             57    ;; Set up draw char colours before calling draw string
-   0003 16 00         [ 7]   58    ld    d, #0         ;; D = Background PEN (0)
-   0005 1E 03         [ 7]   59    ld    e, #3         ;; E = Foreground PEN (3)
-                             60 
-   0007 CD 00 00      [17]   61    call cpct_setDrawCharM1_asm   ;; Set draw char colours
-                             62 
-                             63    ;; Calculate a video-memory location for printing a string
-   000A 11 00 C0      [10]   64    ld   de, #CPCT_VMEM_START_ASM ;; DE = Pointer to start of the screen
-   000D 06 18         [ 7]   65    ld    b, #24                  ;; B = y coordinate (24 = 0x18)
-   000F 0E 10         [ 7]   66    ld    c, #16                  ;; C = x coordinate (16 = 0x10)
-                             67 
-   0011 CD 00 00      [17]   68    call cpct_getScreenPtr_asm    ;; Calculate video memory location and return it in HL
-                             69 
-                             70    ;; Print the string in video memory
-                             71    ;; HL already points to video memory, as it is the return
+                             21 .include "sys/render.h.s"
+                              1 .globl sys_render_init
+                              2 .globl sys_render_board
+                              3 .globl sys_render_game_screen
+                              4 ;;.globl sys_render_update
 ASxxxx Assembler V02.00 + NoICE + SDCC mods  (Zilog Z80 / Hitachi HD64180), page 54.
 Hexadecimal [16-Bits]
 
 
 
-                             72    ;; value from cpct_getScreenPtr_asm
-   0014 FD 21 00 00   [14]   73    ld   iy, #string    ;; IY = Pointer to the string 
-                             74 
-   0018 CD 00 00      [17]   75    call cpct_drawStringM1_asm  ;; Draw the string
-                             76 
-                             77    ;; Loop forever
-   001B                      78 loop:
-   001B 18 FE         [12]   79    jr    loop
+                             22 .include "common.h.s"
+                              1 ;;-----------------------------LICENSE NOTICE------------------------------------
+                              2 ;;  This file is part of CPCtelera: An Amstrad CPC Game Engine 
+                              3 ;;  Copyright (C) 2018 ronaldo / Fremos / Cheesetea / ByteRealms (@FranGallegoBR)
+                              4 ;;
+                              5 ;;  This program is free software: you can redistribute it and/or modify
+                              6 ;;  it under the terms of the GNU Lesser General Public License as published by
+                              7 ;;  the Free Software Foundation, either version 3 of the License, or
+                              8 ;;  (at your option) any later version.
+                              9 ;;
+                             10 ;;  This program is distributed in the hope that it will be useful,
+                             11 ;;  but WITHOUT ANY WARRANTY; without even the implied warranty of
+                             12 ;;  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+                             13 ;;  GNU Lesser General Public License for more details.
+                             14 ;;
+                             15 ;;  You should have received a copy of the GNU Lesser General Public License
+                             16 ;;  along with this program.  If not, see <http://www.gnu.org/licenses/>.
+                             17 ;;-------------------------------------------------------------------------------
+                             18 
+                             19 
+                             20 ;; 
+                             21 ;; Declare all function entry points as global symbols for the compiler.
+                             22 ;; (The linker will know what to do with them)
+                             23 ;; WARNING: Every global symbol declared will be linked, so DO NOT declare 
+                             24 ;; symbols for functions you do not use.
+                             25 ;;
+                             26 
+                             27 .globl _s_balls_big_0
+                             28 .globl _s_balls_big_1
+                             29 .globl _s_balls_big_2
+                             30 .globl _s_balls_big_3
+                             31 .globl _s_balls_big_4
+                             32 .globl _s_balls_big_5
+                             33 .globl _s_balls_big_6
+                             34 .globl _s_balls_big_7
+                             35 .globl _s_balls_small_0
+                             36 .globl _s_balls_small_1
+                             37 .globl _s_balls_small_2
+                             38 .globl _s_balls_small_3
+                             39 .globl _s_balls_small_4
+                             40 .globl _s_balls_small_5
+                             41 .globl _s_balls_small_6
+                             42 .globl _g_palette0
+                             43 .globl _s_hi_score
+                             44 .globl _s_score
+                             45 .globl _s_uno
+                             46 .globl _s_dos
+                             47 .globl _s_tres
+                             48 .globl _s_score_numbers_00
+                             49 .globl _s_score_numbers_01
+                             50 .globl _s_score_numbers_02
+                             51 .globl _s_score_numbers_03
+                             52 .globl _s_score_numbers_04
+                             53 .globl _s_score_numbers_05
+                             54 .globl _s_score_numbers_06
+ASxxxx Assembler V02.00 + NoICE + SDCC mods  (Zilog Z80 / Hitachi HD64180), page 55.
+Hexadecimal [16-Bits]
+
+
+
+                             55 .globl _s_score_numbers_07
+                             56 .globl _s_score_numbers_08
+                             57 .globl _s_score_numbers_09
+                             58 
+                             59 ;;===============================================================================
+                             60 ;; CPCTELERA FUNCTIONS
+                             61 ;;===============================================================================
+                             62 .globl cpct_disableFirmware_asm
+                             63 .globl cpct_getScreenPtr_asm
+                             64 .globl cpct_drawSprite_asm
+                             65 .globl cpct_setVideoMode_asm
+                             66 .globl cpct_setPalette_asm
+                             67 .globl cpct_setPALColour_asm
+                             68 .globl cpct_memset_asm
+                             69 
+                             70 ;;===============================================================================
+                             71 ;; DEFINED CONSTANTS
+                             72 ;;===============================================================================
+                     0004    73 S_BALLS_BIG_W = 4
+                     000B    74 S_BALLS_BIG_H = 11
+                     0003    75 S_BALLS_SMALL_W = 3
+                     0009    76 S_BALLS_SMALL_H = 9
+                     000F    77 S_HI_SCORE_W = 15
+                     0007    78 S_HI_SCORE_H = 7
+                     000A    79 S_SCORE_W = 10
+                     0007    80 S_SCORE_H = 7
+                     0002    81 S_UNO_W = 2
+                     0010    82 S_UNO_H = 16
+                     0003    83 S_DOS_W = 3
+                     0010    84 S_DOS_H = 16
+                     0003    85 S_TRES_W = 3
+                     0010    86 S_TRES_H = 16
+                     0008    87 S_SCORE_NUMBERS_W = 8
+                     000F    88 S_SCORE_NUMBERS_H = 15
+                             89 
+                     0001    90 BOARD_X_COORD = 1   ;; X 
+                     0036    91 BOARD_Y_COORD = 54  ;; Y 
+                     000A    92 BOARD_ROWS = 10     ;;
+                     000A    93 BOARD_COLS = 10     ;;
+                             94 
+                     0004    95 HIGH_SCORE_TITLE_X_COORD = 4        ;;
+                     0006    96 HIGH_SCORE_TITLE_Y_COORD = 6        ;;    
+                     0039    97 SCORE_TITLE_X_COORD = 57       ;;
+                     0014    98 SCORE_TITLE_Y_COORD = 20       ;; 
+                     002F    99 UNO_TITLE_X_COORD = 47       ;;
+                     0050   100 UNO_TITLE_Y_COORD = 80       ;;
+                     003C   101 DOS_TITLE_X_COORD = 60       ;;
+                     0050   102 DOS_TITLE_Y_COORD = 80       ;; 
+                     0047   103 TRES_TITLE_X_COORD = 71       ;;
+                     0050   104 TRES_TITLE_Y_COORD = 80       ;;  
+                            105 
+ASxxxx Assembler V02.00 + NoICE + SDCC mods  (Zilog Z80 / Hitachi HD64180), page 56.
+Hexadecimal [16-Bits]
+
+
+
+                             23 
+                             24 ;;
+                             25 ;; Start of _DATA area 
+                             26 ;;  SDCC requires at least _DATA and _CODE areas to be declared, but you may use
+                             27 ;;  any one of them for any purpose. Usually, compiler puts _DATA area contents
+                             28 ;;  right after _CODE area contents.
+                             29 ;;
+                             30 .area _DATA
+                             31 
+                             32 ;;
+                             33 ;; Start of _CODE area
+                             34 ;; 
+                             35 .area _CODE
+                             36 
+                             37 ;;
+                             38 ;; MAIN function. This is the entry point of the application.
+                             39 ;;    _main:: global symbol is required for correctly compiling and linking
+                             40 ;;
+   0000                      41 _main::
+                             42    ;; Disable firmware to prevent it from interfering with string drawing
+   0000 CD 00 00      [17]   43    call cpct_disableFirmware_asm
+                             44 
+   0003 CD 00 00      [17]   45    call sys_render_init
+                             46 
+   0006 CD 00 00      [17]   47    call sys_render_game_screen
+                             48 
+                             49    ;; Loop forever
+   0009                      50 loop:
+   0009 18 FE         [12]   51    jr    loop
