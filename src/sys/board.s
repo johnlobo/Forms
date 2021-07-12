@@ -16,6 +16,8 @@
 ;;  along with this program.  If not, see <http://www.gnu.org/licenses/>.
 ;;-------------------------------------------------------------------------------
 
+.include "cpctelera.h.s"
+.include "../common.h.s"
 
 .module board_system
 
@@ -30,3 +32,12 @@ board::
     .db #0x00, #0x00, #0x00, #0x00, #0x00, #0x00, #0x00, #0x00, #0x00, #0x00
     .db #0x00, #0x00, #0x00, #0x00, #0x00, #0x00, #0x00, #0x00, #0x00, #0x00
     .db #0x00, #0x00, #0x00, #0x00, #0x00, #0x00, #0x00, #0x00, #0x00, #0x00
+
+sys_board_init::
+    
+    ld de, #board       ;; Set the board address
+    ld a, #0x00         ;; Set the initilization value, 0
+    ld bc, # (BOARD_ROWS * BOARD_COLS)         ;; Set the size to set 10x10
+    call cpct_memset_asm
+
+    ret

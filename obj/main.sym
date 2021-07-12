@@ -83,15 +83,16 @@ Symbol Table
     cpct_dra   **** GX  |     cpct_get   **** GX  |     cpct_mem   **** GX
     cpct_pag=  0000     |     cpct_pag=  0010     |     cpct_pag=  0020 
     cpct_pag=  0030     |     cpct_set   **** GX  |     cpct_set   **** GX
-    cpct_set   **** GX  |   0 loop       0009 R   |     opc_DI  =  00F3 
+    cpct_set   **** GX  |   0 loop       000C R   |     opc_DI  =  00F3 
     opc_EI  =  00FB     |     opc_JR  =  0018     |     opc_LD_D=  0016 
-    sys_rend   **** GX  |     sys_rend   **** GX  |     sys_rend   **** GX
+    sys_boar   **** GX  |     sys_rend   **** GX  |     sys_rend   **** GX
+    sys_rend   **** GX
 
 ASxxxx Assembler V02.00 + NoICE + SDCC mods  (Zilog Z80 / Hitachi HD64180), page 3.
 Hexadecimal [16-Bits]
 
 Area Table
 
-   0 _CODE      size    B   flags    0
+   0 _CODE      size    E   flags    0
    1 _DATA      size    0   flags    0
 
