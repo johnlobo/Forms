@@ -19,6 +19,7 @@
 ;; Include all CPCtelera constant definitions, macros and variables
 .include "cpctelera.h.s"
 .include "sys/render.h.s"
+.include "sys/board.h.s"
 .include "common.h.s"
 
 ;;
@@ -41,6 +42,8 @@
 _main::
    ;; Disable firmware to prevent it from interfering with string drawing
    call cpct_disableFirmware_asm
+
+   call sys_board_init
 
    call sys_render_init
 

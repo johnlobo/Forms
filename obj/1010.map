@@ -18,21 +18,21 @@ Area                                    Addr        Size        Decimal Bytes (A
      00000000  l__INITIALIZER                  
      00000000  s__CABS                         
      00000000  s__DABS                         
-     00000A2E  l__CODE                         
+     00000A3D  l__CODE                         
      00004000  s__CODE                         
-     00004A2E  s__DATA                         
-     00004A2E  s__GSFINAL                      
-     00004A2E  s__GSINIT                       
-     00004A2E  s__HOME                         
-     00004A2E  s__INITIALIZED                  
-     00004A2E  s__INITIALIZER                  
+     00004A3D  s__DATA                         
+     00004A3D  s__GSFINAL                      
+     00004A3D  s__GSINIT                       
+     00004A3D  s__HOME                         
+     00004A3D  s__INITIALIZED                  
+     00004A3D  s__INITIALIZER                  
 
 ASxxxx Linker V03.00 + NoICE + sdld,  page 2.
 Hexadecimal  [32-Bits]
 
 Area                                    Addr        Size        Decimal Bytes (Attributes)
 --------------------------------        ----        ----        ------- ----- ------------
-_CODE                               00004000    00000A2E =        2606. bytes (REL,CON)
+_CODE                               00004000    00000A3D =        2621. bytes (REL,CON)
 
       Value  Global                              Global Defined In Module
       -----  --------------------------------   ------------------------
@@ -68,43 +68,45 @@ _CODE                               00004000    00000A2E =        2606. bytes (R
      00004578  _s_balls_big_7                     balls_big
      000045A4  _g_palette0                        g_palette0
      000045B4  _main                              cpct_keyboard
-     000045BF  _entity_num                        entity_manager
-     000045C0  _entity_pend                       entity_manager
-     000045C2  _entity_array                      entity_manager
-     000046A8  piece_type                         entity_manager
-     0000470C  man_entity_getArrayHL              entity_manager
-     00004710  man_entity_init                    entity_manager
-     00004726  man_entity_new                     entity_manager
-     00004737  man_entity_create                  entity_manager
-     000047AF  man_components_getComponentPtrHL   component_entity_ptr_manager
-     000047BD  man_components_getArrayHL          component_entity_ptr_manager
-     000047C3  man_components_init                component_entity_ptr_manager
-     000047E1  man_components_add                 component_entity_ptr_manager
-     000047E2  sys_render_init                    cpct_keyboard
-     00004802  sys_render_game_screen             cpct_keyboard
-     0000486F  sys_render_board                   cpct_keyboard
-     000048A7  h_times_e                          
-     000048CB  board                              board_system
-     0000492F  cpct_setPalette_asm                cpct_video
+     000045C2  _entity_num                        entity_manager
+     000045C3  _entity_pend                       entity_manager
+     000045C5  _entity_array                      entity_manager
+     000046AB  piece_type                         entity_manager
+     0000470F  man_entity_getArrayHL              entity_manager
+     00004713  man_entity_init                    entity_manager
+     00004729  man_entity_new                     entity_manager
+     0000473A  man_entity_create                  entity_manager
+     000047B2  man_components_getComponentPtrHL   component_entity_ptr_manager
+     000047C0  man_components_getArrayHL          component_entity_ptr_manager
+     000047C6  man_components_init                component_entity_ptr_manager
+     000047E4  man_components_add                 component_entity_ptr_manager
+     000047E5  sys_render_init                    cpct_keyboard
+     00004805  sys_render_game_screen             cpct_keyboard
+     00004872  sys_render_board                   cpct_keyboard
+     000048AA  h_times_e                          
+     000048CE  board                              cpct_keyboard
+     00004932  sys_board_init                     cpct_keyboard
 ASxxxx Linker V03.00 + NoICE + sdld,  page 3.
 Hexadecimal  [32-Bits]
 
 Area                                    Addr        Size        Decimal Bytes (Attributes)
 --------------------------------        ----        ----        ------- ----- ------------
-_CODE                               00004000    00000A2E =        2606. bytes (REL,CON)
+_CODE                               00004000    00000A3D =        2621. bytes (REL,CON)
 
       Value  Global                              Global Defined In Module
       -----  --------------------------------   ------------------------
-     00004942  cpct_setPALColour_asm              cpct_video
-     0000494C  cpct_drawSprite_asm                cpct_sprites
-     000049EC  cpct_setVideoMode_asm              cpct_video
-     000049F9  cpct_memset_asm                    cpct_memutils
-     00004A01  _cpct_disableFirmware              cpct_firmware
-     00004A01  _cpct_removeInterruptHandler       cpct_firmware
-     00004A01  cpct_disableFirmware_asm           cpct_firmware
-     00004A01  cpct_removeInterruptHandler_asm    cpct_firmware
-     00004A11  _cpct_mode_rom_status              cpct_firmware
-     00004A12  cpct_getScreenPtr_asm              cpct_video
+     0000493E  cpct_setPalette_asm                cpct_video
+     00004951  cpct_setPALColour_asm              cpct_video
+     0000495B  cpct_drawSprite_asm                cpct_sprites
+     000049FB  cpct_setVideoMode_asm              cpct_video
+     00004A08  cpct_memset_asm                    cpct_memutils
+     00004A10  _cpct_disableFirmware              cpct_firmware
+     00004A10  _cpct_removeInterruptHandler       cpct_firmware
+     00004A10  cpct_disableFirmware_asm           cpct_firmware
+     00004A10  cpct_removeInterruptHandler_asm    cpct_firmware
+     00004A20  _cpct_mode_rom_status              cpct_firmware
+     00004A21  cpct_getScreenPtr_asm              cpct_video
+
 ASxxxx Linker V03.00 + NoICE + sdld,  page 4.
 
 Files Linked                              [ module(s) ]
@@ -129,7 +131,7 @@ obj/man/components.h.rel                  [  ]
 obj/sys/render.rel                        [ cpct_keyboard ]
 obj/sys/board.h.rel                       [ board_system ]
 obj/sys/util.rel                          [  ]
-obj/sys/board.rel                         [ board_system ]
+obj/sys/board.rel                         [ cpct_keyboard ]
 obj/sys/util.h.rel                        [  ]
 obj/sys/render.h.rel                      [  ]
 
