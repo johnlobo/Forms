@@ -5,7 +5,7 @@
 .module component_entity_ptr_manager
 
 .include "cpctelera.h.s"
-.include "cpct_functions.h.s"
+.include "../common.h.s"
 .include "cmp/entity.h.s"
 .include "cmp/array_structure.h.s"
 .include "man/entity.h.s"
