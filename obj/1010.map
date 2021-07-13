@@ -18,21 +18,21 @@ Area                                    Addr        Size        Decimal Bytes (A
      00000000  l__INITIALIZER                  
      00000000  s__CABS                         
      00000000  s__DABS                         
-     00000A3D  l__CODE                         
+     00000884  l__CODE                         
      00004000  s__CODE                         
-     00004A3D  s__DATA                         
-     00004A3D  s__GSFINAL                      
-     00004A3D  s__GSINIT                       
-     00004A3D  s__HOME                         
-     00004A3D  s__INITIALIZED                  
-     00004A3D  s__INITIALIZER                  
+     00004884  s__DATA                         
+     00004884  s__GSFINAL                      
+     00004884  s__GSINIT                       
+     00004884  s__HOME                         
+     00004884  s__INITIALIZED                  
+     00004884  s__INITIALIZER                  
 
 ASxxxx Linker V03.00 + NoICE + sdld,  page 2.
 Hexadecimal  [32-Bits]
 
 Area                                    Addr        Size        Decimal Bytes (Attributes)
 --------------------------------        ----        ----        ------- ----- ------------
-_CODE                               00004000    00000A3D =        2621. bytes (REL,CON)
+_CODE                               00004000    00000884 =        2180. bytes (REL,CON)
 
       Value  Global                              Global Defined In Module
       -----  --------------------------------   ------------------------
@@ -68,46 +68,26 @@ _CODE                               00004000    00000A3D =        2621. bytes (R
      00004578  _s_balls_big_7                     balls_big
      000045A4  _g_palette0                        g_palette0
      000045B4  _main                              cpct_keyboard
-     000045C2  _entity_num                        entity_manager
-     000045C3  _entity_pend                       entity_manager
-     000045C5  _entity_array                      entity_manager
-     000046AB  piece_type                         entity_manager
-     0000470F  man_entity_getArrayHL              entity_manager
-     00004713  man_entity_init                    entity_manager
-     00004729  man_entity_new                     entity_manager
-     0000473A  man_entity_create                  entity_manager
-     000047B2  man_components_getComponentPtrHL   component_entity_ptr_manager
-     000047C0  man_components_getArrayHL          component_entity_ptr_manager
-     000047C6  man_components_init                component_entity_ptr_manager
-     000047E4  man_components_add                 component_entity_ptr_manager
-     000047E5  sys_render_init                    cpct_keyboard
-     00004805  sys_render_game_screen             cpct_keyboard
-     00004872  sys_render_board                   cpct_keyboard
-     000048AA  h_times_e                          
-     000048CE  board                              cpct_keyboard
-     00004932  sys_board_init                     cpct_keyboard
+     000045C8  piece_type                         entity_manager
+     0000462C  board                              cpct_keyboard
+     00004690  sys_board_init                     cpct_keyboard
+     0000469C  sys_render_init                    cpct_keyboard
+     000046BC  sys_render_game_screen             cpct_keyboard
+     00004729  sys_render_board                   cpct_keyboard
+     00004761  h_times_e                          
+     00004785  cpct_setPalette_asm                cpct_video
+     00004798  cpct_setPALColour_asm              cpct_video
+     000047A2  cpct_drawSprite_asm                cpct_sprites
+     00004842  cpct_setVideoMode_asm              cpct_video
+     0000484F  cpct_memset_asm                    cpct_memutils
+     00004857  _cpct_disableFirmware              cpct_firmware
+     00004857  _cpct_removeInterruptHandler       cpct_firmware
+     00004857  cpct_disableFirmware_asm           cpct_firmware
+     00004857  cpct_removeInterruptHandler_asm    cpct_firmware
+     00004867  _cpct_mode_rom_status              cpct_firmware
+     00004868  cpct_getScreenPtr_asm              cpct_video
+
 ASxxxx Linker V03.00 + NoICE + sdld,  page 3.
-Hexadecimal  [32-Bits]
-
-Area                                    Addr        Size        Decimal Bytes (Attributes)
---------------------------------        ----        ----        ------- ----- ------------
-_CODE                               00004000    00000A3D =        2621. bytes (REL,CON)
-
-      Value  Global                              Global Defined In Module
-      -----  --------------------------------   ------------------------
-     0000493E  cpct_setPalette_asm                cpct_video
-     00004951  cpct_setPALColour_asm              cpct_video
-     0000495B  cpct_drawSprite_asm                cpct_sprites
-     000049FB  cpct_setVideoMode_asm              cpct_video
-     00004A08  cpct_memset_asm                    cpct_memutils
-     00004A10  _cpct_disableFirmware              cpct_firmware
-     00004A10  _cpct_removeInterruptHandler       cpct_firmware
-     00004A10  cpct_disableFirmware_asm           cpct_firmware
-     00004A10  cpct_removeInterruptHandler_asm    cpct_firmware
-     00004A20  _cpct_mode_rom_status              cpct_firmware
-     00004A21  cpct_getScreenPtr_asm              cpct_video
-
-ASxxxx Linker V03.00 + NoICE + sdld,  page 4.
 
 Files Linked                              [ module(s) ]
 
@@ -122,40 +102,36 @@ obj/sprites/balls-big.rel                 [ balls_big ]
 obj/sprites/g_palette0.rel                [ g_palette0 ]
 obj/common.h.rel                          [  ]
 obj/main.rel                              [ cpct_keyboard ]
-obj/cmp/entity.h.rel                      [  ]
-obj/cmp/array_structure.h.rel             [  ]
-obj/man/entity.rel                        [ entity_manager ]
 obj/man/entity.h.rel                      [  ]
-obj/man/components.rel                    [ component_entity_ptr_manager ]
-obj/man/components.h.rel                  [  ]
-obj/sys/render.rel                        [ cpct_keyboard ]
+obj/man/entity.rel                        [ entity_manager ]
 obj/sys/board.h.rel                       [ board_system ]
-obj/sys/util.rel                          [  ]
 obj/sys/board.rel                         [ cpct_keyboard ]
-obj/sys/util.h.rel                        [  ]
 obj/sys/render.h.rel                      [  ]
+obj/sys/render.rel                        [ cpct_keyboard ]
+obj/sys/util.h.rel                        [  ]
+obj/sys/util.rel                          [  ]
 
 
 Libraries Linked                          [ object file ]
 
-/mnt/c/sources/retro/cpctelera/cpctelera/cpctelera.lib
+/Users/david/Documents/retro/proyectos/cpctelera/cpctelera/cpctelera.lib
                                           [ cpct_setPalette_asmbindings.rel ]
-/mnt/c/sources/retro/cpctelera/cpctelera/cpctelera.lib
+/Users/david/Documents/retro/proyectos/cpctelera/cpctelera/cpctelera.lib
                                           [ cpct_setPALColour_asmbindings.re ]
-/mnt/c/sources/retro/cpctelera/cpctelera/cpctelera.lib
+/Users/david/Documents/retro/proyectos/cpctelera/cpctelera/cpctelera.lib
                                           [ cpct_drawSprite_asmbindings.rel ]
-/mnt/c/sources/retro/cpctelera/cpctelera/cpctelera.lib
+/Users/david/Documents/retro/proyectos/cpctelera/cpctelera/cpctelera.lib
                                           [ cpct_setVideoMode_asmbindings.re ]
-/mnt/c/sources/retro/cpctelera/cpctelera/cpctelera.lib
+/Users/david/Documents/retro/proyectos/cpctelera/cpctelera/cpctelera.lib
                                           [ cpct_memset_asmbinding.rel ]
-/mnt/c/sources/retro/cpctelera/cpctelera/cpctelera.lib
+/Users/david/Documents/retro/proyectos/cpctelera/cpctelera/cpctelera.lib
                                           [ cpct_removeInterruptHandler.rel ]
-/mnt/c/sources/retro/cpctelera/cpctelera/cpctelera.lib
+/Users/david/Documents/retro/proyectos/cpctelera/cpctelera/cpctelera.lib
                                           [ cpc_mode_rom_status.rel ]
-/mnt/c/sources/retro/cpctelera/cpctelera/cpctelera.lib
+/Users/david/Documents/retro/proyectos/cpctelera/cpctelera/cpctelera.lib
                                           [ cpct_getScreenPtr_asmbindings.re ]
 
-ASxxxx Linker V03.00 + NoICE + sdld,  page 5.
+ASxxxx Linker V03.00 + NoICE + sdld,  page 4.
 
 User Base Address Definitions
 

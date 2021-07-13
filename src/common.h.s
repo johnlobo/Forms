@@ -101,5 +101,8 @@ UNO_TITLE_Y_COORD = 80       ;;
 DOS_TITLE_X_COORD = 60       ;;
 DOS_TITLE_Y_COORD = 80       ;; 
 TRES_TITLE_X_COORD = 71       ;;
-TRES_TITLE_Y_COORD = 80       ;;  
+TRES_TITLE_Y_COORD = 80       ;; 
+
+PIECE_HOR_SIZE = 5
+PIECE_VER_SIZE = 5
 
