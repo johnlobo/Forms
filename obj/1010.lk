@@ -3,9 +3,9 @@
 -b _CODE = 0x4000
 -b _DATA = 0x0000
 -u
--k /mnt/c/sources/retro/cpctelera/cpctelera/tools/sdcc-3.6.8-r9946/bin/../share/sdcc/lib/z80
--k /mnt/c/sources/retro/cpctelera/cpctelera/tools/sdcc-3.6.8-r9946/share/sdcc/lib/z80
--l /mnt/c/sources/retro/cpctelera/cpctelera/cpctelera.lib
+-k /Users/david/Documents/retro/proyectos/cpctelera/cpctelera/tools/sdcc-3.6.8-r9946/bin/../share/sdcc/lib/z80
+-k /Users/david/Documents/retro/proyectos/cpctelera/cpctelera/tools/sdcc-3.6.8-r9946/share/sdcc/lib/z80
+-l /Users/david/Documents/retro/proyectos/cpctelera/cpctelera/cpctelera.lib
 -l z80
 obj/sprites/tres.rel
 obj/sprites/dos.rel
@@ -18,17 +18,13 @@ obj/sprites/balls-big.rel
 obj/sprites/g_palette0.rel
 obj/common.h.rel
 obj/main.rel
-obj/cmp/entity.h.rel
-obj/cmp/array_structure.h.rel
-obj/man/entity.rel
 obj/man/entity.h.rel
-obj/man/components.rel
-obj/man/components.h.rel
-obj/sys/render.rel
+obj/man/entity.rel
 obj/sys/board.h.rel
-obj/sys/util.rel
 obj/sys/board.rel
-obj/sys/util.h.rel
 obj/sys/render.h.rel
+obj/sys/render.rel
+obj/sys/util.h.rel
+obj/sys/util.rel
 
 -e
