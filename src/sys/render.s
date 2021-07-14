@@ -171,6 +171,33 @@ _render_board_loop01:
 
 ;-----------------------------------------------------------------
 ;;
+;; sys_render_capture_background
+;;
+;;   Draw player1
+;;  Input:  ix : player address
+;;          hl : screen address
+;;          c : width to capture
+;;          b : height to capture
+;;  Output: 
+;;  Destroyed: af, bc,de, hl
+;;
+sys_render_capture_background::
+    push hl
+    push de
+    push bc
+    ld de, #player_buffer
+    ld a, b                         ;; store buffer height in player
+    ld e_buffer_height(ix), a
+    ld a, c                         ;; store buffer width in player
+    ld e_buffer_width(ix), a    
+    call cpct_getScreenToSprite_asm
+    pop bc
+    pop de
+    pop hl
+    ret
+
+;-----------------------------------------------------------------
+;;
 ;; sys_render_increment_hl
 ;;
 ;;   Increments hl with the width of a ball
@@ -219,7 +246,7 @@ sys_render_draw_player_tile::
 ;;  Destroyed: af, bc,de, hl
 ;;
 sys_render_draw_player1::
-    call man_entity_get_hl          ;; get the adrees of p1 in hl
+    ld hl, #player1
     push hl
     pop ix                          ;; move the address of p1 to ix
 
@@ -229,15 +256,22 @@ sys_render_draw_player1::
     call h_times_e                  ;; Calculate offset for piece type in HL
     ld de, #piece_types
     add hl,de                       ;; hl points to start of the model of piece of the player
+    ld a, (hl)
+    ld (_piece_width), a            ;; store piece width 
 
-    ld b, #PIECE_SIZE               ;; Number of rows to loop
+    inc hl
+    ld a, (hl)
+    ld (_piece_height), a           ;; store piece height
+    inc hl                          ;; advance to the first byte of the piece
+
+    ld b, a                         ;; Number of rows to loop (piece_height)
 
 _dp_loop_0:
     push bc                         ;; save number of rows in the stack
     push hl                         ;; store the start of the model of the piece in the stack
 
-    ld a, #PIECE_SIZE               ;; Calculate the y coord and store in in a
-    sub a, b        
+    ld a, (_piece_height)               ;; Calculate the y coord and store in in a
+    sub b        
     ld e, a                         ;; player1.y + PIECE_SIZE - ROWS drawn
     ld h, #S_BALLS_BIG_H + 1 
     call h_times_e                  ;; hl has PIECE_SIZE x ROWS drawn
@@ -253,6 +287,15 @@ _dp_loop_0:
     ld  b, a                        ;; B  = Player Y Position
     call cpct_getScreenPtr_asm      ;; Get Screen Pointer
     ;; Return value: HL = Screen Pointer to (X, Y) byte
+
+    ld a, (_piece_width)            ;; retrive width to capture
+    ld c, a
+    ld a, (_piece_height)            ;; retrieve height to capture
+    ld b, a
+    call sys_render_capture_background  ;; capture background
+
+
+
     ex de, hl                       ;; store screen address in de
 
     pop hl                          ;; retrieve piece address
@@ -312,8 +355,20 @@ _dp_continue_0:
     djnz _dp_loop_0
     ret
 
-    _piece_byte: .db #00
+    _piece_byte::    .db #00
+    _piece_width::   .db #00
+    _piece_height::  .db #00
 
+
+;-----------------------------------------------------------------
+;;
+;; sys_render_screen_test
+;;
+;;   Draw test screen
+;;  Input: 
+;;  Output: 
+;;  Destroyed: af, bc,de, hl
+;;
 sys_render_screen_test::
 
 ;; Big balls

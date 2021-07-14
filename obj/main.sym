@@ -81,13 +81,13 @@ Symbol Table
     _s_score   **** GX  |     _s_score   **** GX  |     _s_score   **** GX
     _s_score   **** GX  |     _s_score   **** GX  |     _s_tres    **** GX
     _s_uno     **** GX  |     cpct_dis   **** GX  |     cpct_dra   **** GX
-    cpct_get   **** GX  |     cpct_mem   **** GX  |     cpct_pag=  0000 
-    cpct_pag=  0010     |     cpct_pag=  0020     |     cpct_pag=  0030 
-    cpct_set   **** GX  |     cpct_set   **** GX  |     cpct_set   **** GX
-  0 loop       0012 R   |     opc_DI  =  00F3     |     opc_EI  =  00FB 
-    opc_JR  =  0018     |     opc_LD_D=  0016     |     sys_boar   **** GX
+    cpct_get   **** GX  |     cpct_get   **** GX  |     cpct_mem   **** GX
+    cpct_pag=  0000     |     cpct_pag=  0010     |     cpct_pag=  0020 
+    cpct_pag=  0030     |     cpct_set   **** GX  |     cpct_set   **** GX
+    cpct_set   **** GX  |   0 loop       0012 R   |     opc_DI  =  00F3 
+    opc_EI  =  00FB     |     opc_JR  =  0018     |     opc_LD_D=  0016 
+    sys_boar   **** GX  |     sys_rend   **** GX  |     sys_rend   **** GX
     sys_rend   **** GX  |     sys_rend   **** GX  |     sys_rend   **** GX
-    sys_rend   **** GX  |     sys_rend   **** GX
 
 ASxxxx Assembler V02.00 + NoICE + SDCC mods  (Zilog Z80 / Hitachi HD64180), page 3.
 Hexadecimal [16-Bits]
