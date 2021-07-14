@@ -1,6 +1,7 @@
 XL2
-H 2 areas 2E global symbols
+H 2 areas 2F global symbols
 M cpct_keyboard
+S cpct_getScreenToSprite_asm Ref0000
 S _s_uno Ref0000
 S cpct_setPalette_asm Ref0000
 S _g_palette0 Ref0000
@@ -52,9 +53,9 @@ A _DATA size 0 flags 0 addr 0
 T 00 00
 R 00 00 00 00
 T 00 00 CD 00 00 CD 00 00 CD 00 00 CD
-R 00 00 00 00 02 03 29 00 02 06 0F 00 02 09 0D 00
+R 00 00 00 00 02 03 2A 00 02 06 10 00 02 09 0E 00
 T 0A 00 00 00 CD 00 00 CD 00 00
-R 00 00 00 00 02 02 0E 00 02 05 1C 00 02 08 2A 00
+R 00 00 00 00 02 02 0F 00 02 05 1D 00 02 08 2B 00
 T 12 00
 R 00 00 00 00
 T 12 00 18 FE

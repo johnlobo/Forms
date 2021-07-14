@@ -21,19 +21,22 @@
 ;; ENTITY MANAGER CONSTANTS
 ;;
 
-PIECE_SIZE = 5
+PIECE_SIZE = 7
 
 e_status = 0 
 e_x = 1
 e_y = 2
 e_p_screen_p = 4
-e_type = 5
+e_buffer_width = 5
+e_buffer_height = 6
+e_type = 7
 
-sizeof_e = 6
+sizeof_e = 8
 
 
 ;;=============================================================================
 ;; ENTITY MANAGER GLOBAL ROUTINES
 ;;
-.globl man_entity_get_hl
+.globl player1
 .globl piece_types
+.globl player_buffer

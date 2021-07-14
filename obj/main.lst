@@ -2635,7 +2635,7 @@ Hexadecimal [16-Bits]
                               5 ;;  This program is free software: you can redistribute it and/or modify
                               6 ;;  it under the terms of the GNU Lesser General Public License as published by
                               7 ;;  the Free Software Foundation, either version 3 of the License, or
-                              8 ;;  (at your option) any later version
+                              8 ;;  (at your option) any later version.
                               9 ;;
                              10 ;;  This program is distributed in the hope that it will be useful,
                              11 ;;  but WITHOUT ANY WARRANTY; without even the implied warranty of
@@ -2658,7 +2658,7 @@ Hexadecimal [16-Bits]
                              28 ;; Macro: cpctm_ld_spbloff
                              29 ;;
                              30 ;;    Macro that calculates the offset to add to a sprite pointer to point 
-                             31 ;; to it sbottom left pixel.
+                             31 ;; to its bottom left pixel.
                              32 ;;
                              33 ;; ASM Definition:
                              34 ;;    .macro <cpctm_ld_spbloff> *REG*, *W*, *H*
@@ -2695,7 +2695,7 @@ Hexadecimal [16-Bits]
                              60 ;; of a given sprite (i.e. its bottom-left byte), with respect to its first
                              61 ;; byte (top-left corner). This value can easily be added to any sprite 
                              62 ;; pointer to get a pointer to the bottom-left byte. This pointer is required
-                             63 ;; byte many flipping functions (like <cpct_vflipSpriteM0>). Values for width
+                             63 ;; byte many flipping functions (like <cpct_vflipSprite>). Values for width
                              64 ;; and height of the sprite must be constant immediate values. Otherwise, this
                              65 ;; macro will generate incorrect code that will fail to compile. 
                              66 ;;    The macro calculates *W* * (*H*-1) at compile-time and loads it into
@@ -2846,46 +2846,47 @@ Hexadecimal [16-Bits]
                              66 .globl cpct_setPalette_asm
                              67 .globl cpct_setPALColour_asm
                              68 .globl cpct_memset_asm
-                             69 
-                             70 ;;===============================================================================
-                             71 ;; DEFINED CONSTANTS
-                             72 ;;===============================================================================
-                     0004    73 S_BALLS_BIG_W = 4
-                     000B    74 S_BALLS_BIG_H = 11
-                     0002    75 S_BALLS_SMALL_W = 2
-                     0007    76 S_BALLS_SMALL_H = 7
-                     000F    77 S_HI_SCORE_W = 15
-                     0007    78 S_HI_SCORE_H = 7
-                     000A    79 S_SCORE_W = 10
-                     0007    80 S_SCORE_H = 7
-                     0002    81 S_UNO_W = 2
-                     0010    82 S_UNO_H = 16
-                     0003    83 S_DOS_W = 3
-                     0010    84 S_DOS_H = 16
-                     0003    85 S_TRES_W = 3
-                     0010    86 S_TRES_H = 16
-                     0008    87 S_SCORE_NUMBERS_W = 8
-                     000F    88 S_SCORE_NUMBERS_H = 15
-                             89 
-                     0001    90 BOARD_X_COORD = 1   ;; X 
-                     0036    91 BOARD_Y_COORD = 54  ;; Y 
-                     000A    92 BOARD_ROWS = 10     ;;
-                     000A    93 BOARD_COLS = 10     ;;
-                             94 
-                     0004    95 HIGH_SCORE_TITLE_X_COORD = 4        ;;
-                     0006    96 HIGH_SCORE_TITLE_Y_COORD = 6        ;;    
-                     0039    97 SCORE_TITLE_X_COORD = 57       ;;
-                     0014    98 SCORE_TITLE_Y_COORD = 20       ;; 
-                     002F    99 UNO_TITLE_X_COORD = 47       ;;
-                     0050   100 UNO_TITLE_Y_COORD = 80       ;;
-                     003C   101 DOS_TITLE_X_COORD = 60       ;;
-                     0050   102 DOS_TITLE_Y_COORD = 80       ;; 
-                     0047   103 TRES_TITLE_X_COORD = 71       ;;
-                     0050   104 TRES_TITLE_Y_COORD = 80       ;; 
-                            105 
-                     0005   106 PIECE_HOR_SIZE = 5
-                     0005   107 PIECE_VER_SIZE = 5
-                            108 
+                             69 .globl cpct_getScreenToSprite_asm
+                             70 
+                             71 ;;===============================================================================
+                             72 ;; DEFINED CONSTANTS
+                             73 ;;===============================================================================
+                     0004    74 S_BALLS_BIG_W = 4
+                     000B    75 S_BALLS_BIG_H = 11
+                     0002    76 S_BALLS_SMALL_W = 2
+                     0007    77 S_BALLS_SMALL_H = 7
+                     000F    78 S_HI_SCORE_W = 15
+                     0007    79 S_HI_SCORE_H = 7
+                     000A    80 S_SCORE_W = 10
+                     0007    81 S_SCORE_H = 7
+                     0002    82 S_UNO_W = 2
+                     0010    83 S_UNO_H = 16
+                     0003    84 S_DOS_W = 3
+                     0010    85 S_DOS_H = 16
+                     0003    86 S_TRES_W = 3
+                     0010    87 S_TRES_H = 16
+                     0008    88 S_SCORE_NUMBERS_W = 8
+                     000F    89 S_SCORE_NUMBERS_H = 15
+                             90 
+                     0001    91 BOARD_X_COORD = 1   ;; X 
+                     0036    92 BOARD_Y_COORD = 54  ;; Y 
+                     000A    93 BOARD_ROWS = 10     ;;
+                     000A    94 BOARD_COLS = 10     ;;
+                             95 
+                     0004    96 HIGH_SCORE_TITLE_X_COORD = 4        ;;
+                     0006    97 HIGH_SCORE_TITLE_Y_COORD = 6        ;;    
+                     0039    98 SCORE_TITLE_X_COORD = 57       ;;
+                     0014    99 SCORE_TITLE_Y_COORD = 20       ;; 
+                     002F   100 UNO_TITLE_X_COORD = 47       ;;
+                     0050   101 UNO_TITLE_Y_COORD = 80       ;;
+                     003C   102 DOS_TITLE_X_COORD = 60       ;;
+                     0050   103 DOS_TITLE_Y_COORD = 80       ;; 
+                     0047   104 TRES_TITLE_X_COORD = 71       ;;
+                     0050   105 TRES_TITLE_Y_COORD = 80       ;; 
+                            106 
+                     0005   107 PIECE_HOR_SIZE = 5
+                     0005   108 PIECE_VER_SIZE = 5
+                            109 
 ASxxxx Assembler V02.00 + NoICE + SDCC mods  (Zilog Z80 / Hitachi HD64180), page 57.
 Hexadecimal [16-Bits]
 
