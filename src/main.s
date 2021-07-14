@@ -49,6 +49,10 @@ _main::
 
    call sys_render_game_screen
 
+   call sys_render_draw_player1
+
+   call sys_render_screen_test
+
    ;; Loop forever
 loop:
    jr    loop

@@ -2635,7 +2635,7 @@ Hexadecimal [16-Bits]
                               5 ;;  This program is free software: you can redistribute it and/or modify
                               6 ;;  it under the terms of the GNU Lesser General Public License as published by
                               7 ;;  the Free Software Foundation, either version 3 of the License, or
-                              8 ;;  (at your option) any later version.
+                              8 ;;  (at your option) any later version
                               9 ;;
                              10 ;;  This program is distributed in the hope that it will be useful,
                              11 ;;  but WITHOUT ANY WARRANTY; without even the implied warranty of
@@ -2658,7 +2658,7 @@ Hexadecimal [16-Bits]
                              28 ;; Macro: cpctm_ld_spbloff
                              29 ;;
                              30 ;;    Macro that calculates the offset to add to a sprite pointer to point 
-                             31 ;; to its bottom left pixel.
+                             31 ;; to it sbottom left pixel.
                              32 ;;
                              33 ;; ASM Definition:
                              34 ;;    .macro <cpctm_ld_spbloff> *REG*, *W*, *H*
@@ -2695,7 +2695,7 @@ Hexadecimal [16-Bits]
                              60 ;; of a given sprite (i.e. its bottom-left byte), with respect to its first
                              61 ;; byte (top-left corner). This value can easily be added to any sprite 
                              62 ;; pointer to get a pointer to the bottom-left byte. This pointer is required
-                             63 ;; byte many flipping functions (like <cpct_vflipSprite>). Values for width
+                             63 ;; byte many flipping functions (like <cpct_vflipSpriteM0>). Values for width
                              64 ;; and height of the sprite must be constant immediate values. Otherwise, this
                              65 ;; macro will generate incorrect code that will fail to compile. 
                              66 ;;    The macro calculates *W* * (*H*-1) at compile-time and loads it into
@@ -2716,10 +2716,30 @@ Hexadecimal [16-Bits]
 
 
                              21 .include "sys/render.h.s"
-                              1 .globl sys_render_init
-                              2 .globl sys_render_board
-                              3 .globl sys_render_game_screen
-                              4 ;;.globl sys_render_update
+                              1 ;;-----------------------------LICENSE NOTICE------------------------------------
+                              2 ;;  This file is part of CPCtelera: An Amstrad CPC Game Engine 
+                              3 ;;  Copyright (C) 2018 ronaldo / Fremos / Cheesetea / ByteRealms (@FranGallegoBR)
+                              4 ;;
+                              5 ;;  This program is free software: you can redistribute it and/or modify
+                              6 ;;  it under the terms of the GNU Lesser General Public License as published by
+                              7 ;;  the Free Software Foundation, either version 3 of the License, or
+                              8 ;;  (at your option) any later version.
+                              9 ;;
+                             10 ;;  This program is distributed in the hope that it will be useful,
+                             11 ;;  but WITHOUT ANY WARRANTY; without even the implied warranty of
+                             12 ;;  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+                             13 ;;  GNU Lesser General Public License for more details.
+                             14 ;;
+                             15 ;;  You should have received a copy of the GNU Lesser General Public License
+                             16 ;;  along with this program.  If not, see <http://www.gnu.org/licenses/>.
+                             17 ;;-------------------------------------------------------------------------------6
+                             18 
+                             19 .globl sys_render_init
+                             20 .globl sys_render_board
+                             21 .globl sys_render_game_screen
+                             22 .globl sys_render_draw_player1
+                             23 .globl sys_render_screen_test
+                             24 ;;.globl sys_render_update
 ASxxxx Assembler V02.00 + NoICE + SDCC mods  (Zilog Z80 / Hitachi HD64180), page 54.
 Hexadecimal [16-Bits]
 
@@ -2832,8 +2852,8 @@ Hexadecimal [16-Bits]
                              72 ;;===============================================================================
                      0004    73 S_BALLS_BIG_W = 4
                      000B    74 S_BALLS_BIG_H = 11
-                     0003    75 S_BALLS_SMALL_W = 3
-                     0009    76 S_BALLS_SMALL_H = 9
+                     0002    75 S_BALLS_SMALL_W = 2
+                     0007    76 S_BALLS_SMALL_H = 7
                      000F    77 S_HI_SCORE_W = 15
                      0007    78 S_HI_SCORE_H = 7
                      000A    79 S_SCORE_W = 10
@@ -2861,8 +2881,11 @@ Hexadecimal [16-Bits]
                      003C   101 DOS_TITLE_X_COORD = 60       ;;
                      0050   102 DOS_TITLE_Y_COORD = 80       ;; 
                      0047   103 TRES_TITLE_X_COORD = 71       ;;
-                     0050   104 TRES_TITLE_Y_COORD = 80       ;;  
+                     0050   104 TRES_TITLE_Y_COORD = 80       ;; 
                             105 
+                     0005   106 PIECE_HOR_SIZE = 5
+                     0005   107 PIECE_VER_SIZE = 5
+                            108 
 ASxxxx Assembler V02.00 + NoICE + SDCC mods  (Zilog Z80 / Hitachi HD64180), page 57.
 Hexadecimal [16-Bits]
 
@@ -2886,16 +2909,20 @@ Hexadecimal [16-Bits]
                              39 ;; MAIN function. This is the entry point of the application.
                              40 ;;    _main:: global symbol is required for correctly compiling and linking
                              41 ;;
-   45B4                      42 _main::
+   4559                      42 _main::
                              43    ;; Disable firmware to prevent it from interfering with string drawing
-   45B4 CD 57 48      [17]   44    call cpct_disableFirmware_asm
+   4559 CD FD 48      [17]   44    call cpct_disableFirmware_asm
                              45 
-   45B7 CD 90 46      [17]   46    call sys_board_init
+   455C CD 1F 48      [17]   46    call sys_board_init
                              47 
-   45BA CD 9C 46      [17]   48    call sys_render_init
+   455F CD D6 45      [17]   48    call sys_render_init
                              49 
-   45BD CD BC 46      [17]   50    call sys_render_game_screen
+   4562 CD F6 45      [17]   50    call sys_render_game_screen
                              51 
-                             52    ;; Loop forever
-   45C0                      53 loop:
-   45C0 18 FE         [12]   54    jr    loop
+   4565 CD B7 46      [17]   52    call sys_render_draw_player1
+                             53 
+   4568 CD 4A 47      [17]   54    call sys_render_screen_test
+                             55 
+                             56    ;; Loop forever
+   456B                      57 loop:
+   456B 18 FE         [12]   58    jr    loop
