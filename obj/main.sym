@@ -56,43 +56,44 @@ Symbol Table
     Key_T   =  0806     |     Key_Tab =  1008     |     Key_U   =  0405 
     Key_V   =  8006     |     Key_W   =  0807     |     Key_X   =  8007 
     Key_Y   =  0805     |     Key_Z   =  8008     |     PAL_INKR=  0040 
-    PAL_PENR=  0000     |     PPI_PORT=  00F5     |     SCORE_TI=  0039 
-    SCORE_TI=  0014     |     S_BALLS_=  000B     |     S_BALLS_=  0004 
+    PAL_PENR=  0000     |     PIECE_HO=  0005     |     PIECE_VE=  0005 
+    PPI_PORT=  00F5     |     SCORE_TI=  0039     |     SCORE_TI=  0014 
 ASxxxx Assembler V02.00 + NoICE + SDCC mods  (Zilog Z80 / Hitachi HD64180), page 2.
 Hexadecimal [16-Bits]
 
 Symbol Table
 
-    S_BALLS_=  0009     |     S_BALLS_=  0003     |     S_DOS_H =  0010 
-    S_DOS_W =  0003     |     S_HI_SCO=  0007     |     S_HI_SCO=  000F 
-    S_SCORE_=  0007     |     S_SCORE_=  000F     |     S_SCORE_=  0008 
-    S_SCORE_=  000A     |     S_TRES_H=  0010     |     S_TRES_W=  0003 
-    S_UNO_H =  0010     |     S_UNO_W =  0002     |     TRES_TIT=  0047 
-    TRES_TIT=  0050     |     UNO_TITL=  002F     |     UNO_TITL=  0050 
-    _g_palet   **** GX  |   0 _main      0000 GR  |     _s_balls   **** GX
+    S_BALLS_=  000B     |     S_BALLS_=  0004     |     S_BALLS_=  0007 
+    S_BALLS_=  0002     |     S_DOS_H =  0010     |     S_DOS_W =  0003 
+    S_HI_SCO=  0007     |     S_HI_SCO=  000F     |     S_SCORE_=  0007 
+    S_SCORE_=  000F     |     S_SCORE_=  0008     |     S_SCORE_=  000A 
+    S_TRES_H=  0010     |     S_TRES_W=  0003     |     S_UNO_H =  0010 
+    S_UNO_W =  0002     |     TRES_TIT=  0047     |     TRES_TIT=  0050 
+    UNO_TITL=  002F     |     UNO_TITL=  0050     |     _g_palet   **** GX
+  0 _main      0000 GR  |     _s_balls   **** GX  |     _s_balls   **** GX
     _s_balls   **** GX  |     _s_balls   **** GX  |     _s_balls   **** GX
     _s_balls   **** GX  |     _s_balls   **** GX  |     _s_balls   **** GX
     _s_balls   **** GX  |     _s_balls   **** GX  |     _s_balls   **** GX
     _s_balls   **** GX  |     _s_balls   **** GX  |     _s_balls   **** GX
-    _s_balls   **** GX  |     _s_balls   **** GX  |     _s_dos     **** GX
-    _s_hi_sc   **** GX  |     _s_score   **** GX  |     _s_score   **** GX
+    _s_balls   **** GX  |     _s_dos     **** GX  |     _s_hi_sc   **** GX
     _s_score   **** GX  |     _s_score   **** GX  |     _s_score   **** GX
     _s_score   **** GX  |     _s_score   **** GX  |     _s_score   **** GX
     _s_score   **** GX  |     _s_score   **** GX  |     _s_score   **** GX
-    _s_tres    **** GX  |     _s_uno     **** GX  |     cpct_dis   **** GX
-    cpct_dra   **** GX  |     cpct_get   **** GX  |     cpct_mem   **** GX
-    cpct_pag=  0000     |     cpct_pag=  0010     |     cpct_pag=  0020 
-    cpct_pag=  0030     |     cpct_set   **** GX  |     cpct_set   **** GX
-    cpct_set   **** GX  |   0 loop       000C R   |     opc_DI  =  00F3 
-    opc_EI  =  00FB     |     opc_JR  =  0018     |     opc_LD_D=  0016 
-    sys_boar   **** GX  |     sys_rend   **** GX  |     sys_rend   **** GX
-    sys_rend   **** GX
+    _s_score   **** GX  |     _s_score   **** GX  |     _s_tres    **** GX
+    _s_uno     **** GX  |     cpct_dis   **** GX  |     cpct_dra   **** GX
+    cpct_get   **** GX  |     cpct_mem   **** GX  |     cpct_pag=  0000 
+    cpct_pag=  0010     |     cpct_pag=  0020     |     cpct_pag=  0030 
+    cpct_set   **** GX  |     cpct_set   **** GX  |     cpct_set   **** GX
+  0 loop       0012 R   |     opc_DI  =  00F3     |     opc_EI  =  00FB 
+    opc_JR  =  0018     |     opc_LD_D=  0016     |     sys_boar   **** GX
+    sys_rend   **** GX  |     sys_rend   **** GX  |     sys_rend   **** GX
+    sys_rend   **** GX  |     sys_rend   **** GX
 
 ASxxxx Assembler V02.00 + NoICE + SDCC mods  (Zilog Z80 / Hitachi HD64180), page 3.
 Hexadecimal [16-Bits]
 
 Area Table
 
-   0 _CODE      size    E   flags    0
+   0 _CODE      size   14   flags    0
    1 _DATA      size    0   flags    0
 

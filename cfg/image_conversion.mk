@@ -41,7 +41,7 @@
 #$(eval $(call IMG2SP, CONVERT_PALETTE , $(PALETTE), g_palette ))
 #$(eval $(call IMG2SP, CONVERT         , img.png , w, h, array, palette, tileset))
 
-PALETTE0=0 8 13 3 6 15 24 16 9 12 20 14 2 4 1 26
+PALETTE0=0 2 3 6 9 11 12 5 15 13 18 24 4 20 10 26
 
 $(eval $(call IMG2SP, SET_MODE        , 0                  ))
 $(eval $(call IMG2SP, SET_FOLDER      , src/sprites               ))
@@ -50,7 +50,7 @@ $(eval $(call IMG2SP, SET_OUTPUT      , c                  ))
 $(eval $(call IMG2SP, SET_PALETTE_FW  , $(PALETTE0)         ))
 $(eval $(call IMG2SP, CONVERT_PALETTE , $(PALETTE0), g_palette0 ))
 $(eval $(call IMG2SP, CONVERT         , assets/balls-big.png, 8, 11, s_balls_big, ,))
-$(eval $(call IMG2SP, CONVERT         , assets/balls-small.png, 6, 11, s_balls_small, ,))
+$(eval $(call IMG2SP, CONVERT         , assets/balls-small.png, 4, 7, s_balls_small, ,))
 $(eval $(call IMG2SP, CONVERT         , assets/score-numbers.png, 8, 15, s_score_numbers, ,))
 $(eval $(call IMG2SP, CONVERT         , assets/hi-score.png, 30, 7, s_hi_score, ,))
 $(eval $(call IMG2SP, CONVERT         , assets/score.png, 20, 7, s_score, ,))

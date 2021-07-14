@@ -18,21 +18,21 @@ Area                                    Addr        Size        Decimal Bytes (A
      00000000  l__INITIALIZER                  
      00000000  s__CABS                         
      00000000  s__DABS                         
-     00000884  l__CODE                         
+     0000092A  l__CODE                         
      00004000  s__CODE                         
-     00004884  s__DATA                         
-     00004884  s__GSFINAL                      
-     00004884  s__GSINIT                       
-     00004884  s__HOME                         
-     00004884  s__INITIALIZED                  
-     00004884  s__INITIALIZER                  
+     0000492A  s__DATA                         
+     0000492A  s__GSFINAL                      
+     0000492A  s__GSINIT                       
+     0000492A  s__HOME                         
+     0000492A  s__INITIALIZED                  
+     0000492A  s__INITIALIZER                  
 
 ASxxxx Linker V03.00 + NoICE + sdld,  page 2.
 Hexadecimal  [32-Bits]
 
 Area                                    Addr        Size        Decimal Bytes (Attributes)
 --------------------------------        ----        ----        ------- ----- ------------
-_CODE                               00004000    00000884 =        2180. bytes (REL,CON)
+_CODE                               00004000    0000092A =        2346. bytes (REL,CON)
 
       Value  Global                              Global Defined In Module
       -----  --------------------------------   ------------------------
@@ -52,42 +52,57 @@ _CODE                               00004000    00000884 =        2180. bytes (R
      0000430F  _s_score_numbers_08                score_numbers
      0000434B  _s_score_numbers_09                score_numbers
      00004387  _s_balls_small_0                   balls_small
-     000043A2  _s_balls_small_1                   balls_small
-     000043BD  _s_balls_small_2                   balls_small
-     000043D8  _s_balls_small_3                   balls_small
-     000043F3  _s_balls_small_4                   balls_small
-     0000440E  _s_balls_small_5                   balls_small
-     00004429  _s_balls_small_6                   balls_small
-     00004444  _s_balls_big_0                     balls_big
-     00004470  _s_balls_big_1                     balls_big
-     0000449C  _s_balls_big_2                     balls_big
-     000044C8  _s_balls_big_3                     balls_big
-     000044F4  _s_balls_big_4                     balls_big
-     00004520  _s_balls_big_5                     balls_big
-     0000454C  _s_balls_big_6                     balls_big
-     00004578  _s_balls_big_7                     balls_big
-     000045A4  _g_palette0                        g_palette0
-     000045B4  _main                              cpct_keyboard
-     000045C8  piece_type                         entity_manager
-     0000462C  board                              cpct_keyboard
-     00004690  sys_board_init                     cpct_keyboard
-     0000469C  sys_render_init                    cpct_keyboard
-     000046BC  sys_render_game_screen             cpct_keyboard
-     00004729  sys_render_board                   cpct_keyboard
-     00004761  h_times_e                          
-     00004785  cpct_setPalette_asm                cpct_video
-     00004798  cpct_setPALColour_asm              cpct_video
-     000047A2  cpct_drawSprite_asm                cpct_sprites
-     00004842  cpct_setVideoMode_asm              cpct_video
-     0000484F  cpct_memset_asm                    cpct_memutils
-     00004857  _cpct_disableFirmware              cpct_firmware
-     00004857  _cpct_removeInterruptHandler       cpct_firmware
-     00004857  cpct_disableFirmware_asm           cpct_firmware
-     00004857  cpct_removeInterruptHandler_asm    cpct_firmware
-     00004867  _cpct_mode_rom_status              cpct_firmware
-     00004868  cpct_getScreenPtr_asm              cpct_video
-
+     00004395  _s_balls_small_1                   balls_small
+     000043A3  _s_balls_small_2                   balls_small
+     000043B1  _s_balls_small_3                   balls_small
+     000043BF  _s_balls_small_4                   balls_small
+     000043CD  _s_balls_small_5                   balls_small
+     000043DB  _s_balls_small_6                   balls_small
+     000043E9  _s_balls_big_0                     balls_big
+     00004415  _s_balls_big_1                     balls_big
+     00004441  _s_balls_big_2                     balls_big
+     0000446D  _s_balls_big_3                     balls_big
+     00004499  _s_balls_big_4                     balls_big
+     000044C5  _s_balls_big_5                     balls_big
+     000044F1  _s_balls_big_6                     balls_big
+     0000451D  _s_balls_big_7                     balls_big
+     00004549  _g_palette0                        g_palette0
+     00004559  _main                              cpct_keyboard
+     0000456D  player1                            entity_manager
+     00004573  piece_types                        entity_manager
+     000045D2  man_entity_get_hl                  entity_manager
+     000045D6  sys_render_init                    cpct_keyboard
+     000045F6  sys_render_game_screen             cpct_keyboard
+     00004663  sys_render_board                   cpct_keyboard
+     0000469B  sys_render_increment_hl            cpct_keyboard
+     000046A5  sys_render_draw_player_tile        cpct_keyboard
+     000046B7  sys_render_draw_player1            cpct_keyboard
+     0000474A  sys_render_screen_test             cpct_keyboard
+     00004797  h_times_e                          
+     000047BB  board                              cpct_keyboard
+     0000481F  sys_board_init                     cpct_keyboard
+     0000482B  cpct_setPalette_asm                cpct_video
+     0000483E  cpct_setPALColour_asm              cpct_video
+     00004848  cpct_drawSprite_asm                cpct_sprites
+     000048E8  cpct_setVideoMode_asm              cpct_video
+     000048F5  cpct_memset_asm                    cpct_memutils
 ASxxxx Linker V03.00 + NoICE + sdld,  page 3.
+Hexadecimal  [32-Bits]
+
+Area                                    Addr        Size        Decimal Bytes (Attributes)
+--------------------------------        ----        ----        ------- ----- ------------
+_CODE                               00004000    0000092A =        2346. bytes (REL,CON)
+
+      Value  Global                              Global Defined In Module
+      -----  --------------------------------   ------------------------
+     000048FD  _cpct_disableFirmware              cpct_firmware
+     000048FD  _cpct_removeInterruptHandler       cpct_firmware
+     000048FD  cpct_disableFirmware_asm           cpct_firmware
+     000048FD  cpct_removeInterruptHandler_asm    cpct_firmware
+     0000490D  _cpct_mode_rom_status              cpct_firmware
+     0000490E  cpct_getScreenPtr_asm              cpct_video
+
+ASxxxx Linker V03.00 + NoICE + sdld,  page 4.
 
 Files Linked                              [ module(s) ]
 
@@ -102,36 +117,36 @@ obj/sprites/balls-big.rel                 [ balls_big ]
 obj/sprites/g_palette0.rel                [ g_palette0 ]
 obj/common.h.rel                          [  ]
 obj/main.rel                              [ cpct_keyboard ]
-obj/man/entity.h.rel                      [  ]
 obj/man/entity.rel                        [ entity_manager ]
-obj/sys/board.h.rel                       [ board_system ]
-obj/sys/board.rel                         [ cpct_keyboard ]
-obj/sys/render.h.rel                      [  ]
+obj/man/entity.h.rel                      [  ]
 obj/sys/render.rel                        [ cpct_keyboard ]
-obj/sys/util.h.rel                        [  ]
+obj/sys/board.h.rel                       [ board_system ]
 obj/sys/util.rel                          [  ]
+obj/sys/board.rel                         [ cpct_keyboard ]
+obj/sys/util.h.rel                        [  ]
+obj/sys/render.h.rel                      [  ]
 
 
 Libraries Linked                          [ object file ]
 
-/Users/david/Documents/retro/proyectos/cpctelera/cpctelera/cpctelera.lib
+/mnt/c/sources/retro/cpctelera/cpctelera/cpctelera.lib
                                           [ cpct_setPalette_asmbindings.rel ]
-/Users/david/Documents/retro/proyectos/cpctelera/cpctelera/cpctelera.lib
+/mnt/c/sources/retro/cpctelera/cpctelera/cpctelera.lib
                                           [ cpct_setPALColour_asmbindings.re ]
-/Users/david/Documents/retro/proyectos/cpctelera/cpctelera/cpctelera.lib
+/mnt/c/sources/retro/cpctelera/cpctelera/cpctelera.lib
                                           [ cpct_drawSprite_asmbindings.rel ]
-/Users/david/Documents/retro/proyectos/cpctelera/cpctelera/cpctelera.lib
+/mnt/c/sources/retro/cpctelera/cpctelera/cpctelera.lib
                                           [ cpct_setVideoMode_asmbindings.re ]
-/Users/david/Documents/retro/proyectos/cpctelera/cpctelera/cpctelera.lib
+/mnt/c/sources/retro/cpctelera/cpctelera/cpctelera.lib
                                           [ cpct_memset_asmbinding.rel ]
-/Users/david/Documents/retro/proyectos/cpctelera/cpctelera/cpctelera.lib
+/mnt/c/sources/retro/cpctelera/cpctelera/cpctelera.lib
                                           [ cpct_removeInterruptHandler.rel ]
-/Users/david/Documents/retro/proyectos/cpctelera/cpctelera/cpctelera.lib
+/mnt/c/sources/retro/cpctelera/cpctelera/cpctelera.lib
                                           [ cpc_mode_rom_status.rel ]
-/Users/david/Documents/retro/proyectos/cpctelera/cpctelera/cpctelera.lib
+/mnt/c/sources/retro/cpctelera/cpctelera/cpctelera.lib
                                           [ cpct_getScreenPtr_asmbindings.re ]
 
-ASxxxx Linker V03.00 + NoICE + sdld,  page 4.
+ASxxxx Linker V03.00 + NoICE + sdld,  page 5.
 
 User Base Address Definitions
 

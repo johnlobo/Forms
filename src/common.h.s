@@ -72,8 +72,8 @@
 ;;===============================================================================
 S_BALLS_BIG_W = 4
 S_BALLS_BIG_H = 11
-S_BALLS_SMALL_W = 3
-S_BALLS_SMALL_H = 9
+S_BALLS_SMALL_W = 2
+S_BALLS_SMALL_H = 7
 S_HI_SCORE_W = 15
 S_HI_SCORE_H = 7
 S_SCORE_W = 10

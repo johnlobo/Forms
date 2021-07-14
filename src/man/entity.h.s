@@ -1,59 +1,39 @@
-;;=============================================================================
-;; ENTITY MANAGER
+;;-----------------------------LICENSE NOTICE------------------------------------
+;;  This file is part of CPCtelera: An Amstrad CPC Game Engine 
+;;  Copyright (C) 2018 ronaldo / Fremos / Cheesetea / ByteRealms (@FranGallegoBR)
 ;;
+;;  This program is free software: you can redistribute it and/or modify
+;;  it under the terms of the GNU Lesser General Public License as published by
+;;  the Free Software Foundation, either version 3 of the License, or
+;;  (at your option) any later version.
+;;
+;;  This program is distributed in the hope that it will be useful,
+;;  but WITHOUT ANY WARRANTY; without even the implied warranty of
+;;  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+;;  GNU Lesser General Public License for more details.
+;;
+;;  You should have received a copy of the GNU Lesser General Public License
+;;  along with this program.  If not, see <http://www.gnu.org/licenses/>.
+;;-------------------------------------------------------------------------------
 
-
-
-;;=============================================================================
-;; ENTITY MANAGER VARIABLES
-;;
-
-;;
-;; Macro: struct Player
-;;    Macro that creates a new initialized instance of Player Struct
-;; 
-;; Parameters:
-;;    instanceName: name of the variable that will be created as an instance of Player struct
-;;    st:           status of the player
-;;    px:           X location of the Player (bytes)
-;;    py:           Y location of the Player (pixels)
-;;    wi:           Width of the Player Sprite (bytes)
-;;    he:           Height of the Player Sprite (bytes)
-;;    sprite:       Pointer to the player sprite
-;;
-.macro definePlayer instanceName, st, x, y, p_sc, type
-   ;; Struct data
-   instanceName:
-      instanceName'_status:     .db st                      ;; Status of the Player
-      instanceName'_x_pos:      .db x                       ;; X location of the Player (bytes)
-      instanceName'_y_pos:      .db y                       ;; Y location of the Player (pixels)
-      instanceName'_p_screen_p: .dw p_sc                    ;; Previous screen address
-      instanceName'_type:       .db type                    ;; Pointer to the player sprite
-.endm
-
-;;
-;; Macro: struct Player offsets
-;;
-;;    Macro that generates offsets for accessing different elements of 
-;; the Player struct (distances from the start of the struct to each
-;; struct member). Requires a already defined instance as an example for
-;; calculating offsets.
-;;
-;; Parameters:
-;;    stname:        Name of the structure
-;;    instanceName:  Name of the instance that will be used to calculate offsets
-;;
-.macro definePlayerOffsets stname, instanceName
-   ;; Offset constants
-   stname'_status_off       = instanceName'_status - instanceName ;; status offset
-   stname'_x_off            = instanceName'_x_pos  - instanceName ;; X offset
-   stname'_y_off            = instanceName'_y_pos  - instanceName ;; Y offset
-   stname'_p_screen_p_off   = instanceName'_p_screen_p  - instanceName ;; Width offset
-   stname'_type_off         = instanceName'_type - instanceName ;; Height offset
-.endm
 
 ;;=============================================================================
 ;; ENTITY MANAGER CONSTANTS
 ;;
 
 PIECE_SIZE = 5
+
+e_status = 0 
+e_x = 1
+e_y = 2
+e_p_screen_p = 4
+e_type = 5
+
+sizeof_e = 6
+
+
+;;=============================================================================
+;; ENTITY MANAGER GLOBAL ROUTINES
+;;
+.globl man_entity_get_hl
+.globl piece_types
