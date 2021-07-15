@@ -37,6 +37,7 @@ player1::
     .db #0                      ;; width of background buffer
     .db #0                      ;; height of background buffer
     .db #11                     ;; Pointer to the player piece type
+    .db #0
 
 
 ;;-----------------------------------------------------------------

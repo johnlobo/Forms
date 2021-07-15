@@ -26,12 +26,13 @@ PIECE_SIZE = 7
 e_status = 0 
 e_x = 1
 e_y = 2
-e_p_screen_p = 4
+e_p_screen_p = 3
 e_buffer_width = 5
 e_buffer_height = 6
 e_type = 7
+e_moved = 8
 
-sizeof_e = 8
+sizeof_e = 9
 
 
 ;;=============================================================================

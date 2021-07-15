@@ -20,6 +20,7 @@
 .include "cpctelera.h.s"
 .include "sys/render.h.s"
 .include "sys/board.h.s"
+.include "man/entity.h.s"
 .include "common.h.s"
 
 ;;
@@ -48,6 +49,15 @@ _main::
    call sys_render_init
 
    call sys_render_game_screen
+
+   call sys_render_draw_player1
+   ld hl, #player1
+   push hl
+   pop ix
+   ld a, e_x(ix)
+   inc a
+   ld e_x(ix), a
+   call sys_render_erase_player
 
    call sys_render_draw_player1
 
