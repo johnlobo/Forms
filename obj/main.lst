@@ -2635,7 +2635,7 @@ Hexadecimal [16-Bits]
                               5 ;;  This program is free software: you can redistribute it and/or modify
                               6 ;;  it under the terms of the GNU Lesser General Public License as published by
                               7 ;;  the Free Software Foundation, either version 3 of the License, or
-                              8 ;;  (at your option) any later version.
+                              8 ;;  (at your option) any later version
                               9 ;;
                              10 ;;  This program is distributed in the hope that it will be useful,
                              11 ;;  but WITHOUT ANY WARRANTY; without even the implied warranty of
@@ -2658,7 +2658,7 @@ Hexadecimal [16-Bits]
                              28 ;; Macro: cpctm_ld_spbloff
                              29 ;;
                              30 ;;    Macro that calculates the offset to add to a sprite pointer to point 
-                             31 ;; to its bottom left pixel.
+                             31 ;; to it sbottom left pixel.
                              32 ;;
                              33 ;; ASM Definition:
                              34 ;;    .macro <cpctm_ld_spbloff> *REG*, *W*, *H*
@@ -2695,7 +2695,7 @@ Hexadecimal [16-Bits]
                              60 ;; of a given sprite (i.e. its bottom-left byte), with respect to its first
                              61 ;; byte (top-left corner). This value can easily be added to any sprite 
                              62 ;; pointer to get a pointer to the bottom-left byte. This pointer is required
-                             63 ;; byte many flipping functions (like <cpct_vflipSprite>). Values for width
+                             63 ;; byte many flipping functions (like <cpct_vflipSpriteM0>). Values for width
                              64 ;; and height of the sprite must be constant immediate values. Otherwise, this
                              65 ;; macro will generate incorrect code that will fail to compile. 
                              66 ;;    The macro calculates *W* * (*H*-1) at compile-time and loads it into
@@ -2739,7 +2739,7 @@ Hexadecimal [16-Bits]
                              21 .globl sys_render_game_screen
                              22 .globl sys_render_draw_player1
                              23 .globl sys_render_screen_test
-                             24 ;;.globl sys_render_update
+                             24 .globl sys_render_erase_player
 ASxxxx Assembler V02.00 + NoICE + SDCC mods  (Zilog Z80 / Hitachi HD64180), page 54.
 Hexadecimal [16-Bits]
 
@@ -2772,7 +2772,56 @@ Hexadecimal [16-Bits]
 
 
 
-                             23 .include "common.h.s"
+                             23 .include "man/entity.h.s"
+                              1 ;;-----------------------------LICENSE NOTICE------------------------------------
+                              2 ;;  This file is part of CPCtelera: An Amstrad CPC Game Engine 
+                              3 ;;  Copyright (C) 2018 ronaldo / Fremos / Cheesetea / ByteRealms (@FranGallegoBR)
+                              4 ;;
+                              5 ;;  This program is free software: you can redistribute it and/or modify
+                              6 ;;  it under the terms of the GNU Lesser General Public License as published by
+                              7 ;;  the Free Software Foundation, either version 3 of the License, or
+                              8 ;;  (at your option) any later version.
+                              9 ;;
+                             10 ;;  This program is distributed in the hope that it will be useful,
+                             11 ;;  but WITHOUT ANY WARRANTY; without even the implied warranty of
+                             12 ;;  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+                             13 ;;  GNU Lesser General Public License for more details.
+                             14 ;;
+                             15 ;;  You should have received a copy of the GNU Lesser General Public License
+                             16 ;;  along with this program.  If not, see <http://www.gnu.org/licenses/>.
+                             17 ;;-------------------------------------------------------------------------------
+                             18 
+                             19 
+                             20 ;;=============================================================================
+                             21 ;; ENTITY MANAGER CONSTANTS
+                             22 ;;
+                             23 
+                     0007    24 PIECE_SIZE = 7
+                             25 
+                     0000    26 e_status = 0 
+                     0001    27 e_x = 1
+                     0002    28 e_y = 2
+                     0003    29 e_p_screen_p = 3
+                     0005    30 e_buffer_width = 5
+                     0006    31 e_buffer_height = 6
+                     0007    32 e_type = 7
+                     0008    33 e_moved = 8
+                             34 
+                     0009    35 sizeof_e = 9
+                             36 
+                             37 
+                             38 ;;=============================================================================
+                             39 ;; ENTITY MANAGER GLOBAL ROUTINES
+                             40 ;;
+                             41 .globl player1
+                             42 .globl piece_types
+                             43 .globl player_buffer
+ASxxxx Assembler V02.00 + NoICE + SDCC mods  (Zilog Z80 / Hitachi HD64180), page 56.
+Hexadecimal [16-Bits]
+
+
+
+                             24 .include "common.h.s"
                               1 ;;-----------------------------LICENSE NOTICE------------------------------------
                               2 ;;  This file is part of CPCtelera: An Amstrad CPC Game Engine 
                               3 ;;  Copyright (C) 2018 ronaldo / Fremos / Cheesetea / ByteRealms (@FranGallegoBR)
@@ -2827,7 +2876,7 @@ Hexadecimal [16-Bits]
                              52 .globl _s_score_numbers_04
                              53 .globl _s_score_numbers_05
                              54 .globl _s_score_numbers_06
-ASxxxx Assembler V02.00 + NoICE + SDCC mods  (Zilog Z80 / Hitachi HD64180), page 56.
+ASxxxx Assembler V02.00 + NoICE + SDCC mods  (Zilog Z80 / Hitachi HD64180), page 57.
 Hexadecimal [16-Bits]
 
 
@@ -2887,43 +2936,52 @@ Hexadecimal [16-Bits]
                      0005   107 PIECE_HOR_SIZE = 5
                      0005   108 PIECE_VER_SIZE = 5
                             109 
-ASxxxx Assembler V02.00 + NoICE + SDCC mods  (Zilog Z80 / Hitachi HD64180), page 57.
+ASxxxx Assembler V02.00 + NoICE + SDCC mods  (Zilog Z80 / Hitachi HD64180), page 58.
 Hexadecimal [16-Bits]
 
 
 
-                             24 
-                             25 ;;
-                             26 ;; Start of _DATA area 
-                             27 ;;  SDCC requires at least _DATA and _CODE areas to be declared, but you may use
-                             28 ;;  any one of them for any purpose. Usually, compiler puts _DATA area contents
-                             29 ;;  right after _CODE area contents.
-                             30 ;;
-                             31 .area _DATA
-                             32 
-                             33 ;;
-                             34 ;; Start of _CODE area
-                             35 ;; 
-                             36 .area _CODE
-                             37 
-                             38 ;;
-                             39 ;; MAIN function. This is the entry point of the application.
-                             40 ;;    _main:: global symbol is required for correctly compiling and linking
-                             41 ;;
-   0000                      42 _main::
-                             43    ;; Disable firmware to prevent it from interfering with string drawing
-   0000 CD 00 00      [17]   44    call cpct_disableFirmware_asm
-                             45 
-   0003 CD 00 00      [17]   46    call sys_board_init
-                             47 
-   0006 CD 00 00      [17]   48    call sys_render_init
-                             49 
-   0009 CD 00 00      [17]   50    call sys_render_game_screen
-                             51 
-   000C CD 00 00      [17]   52    call sys_render_draw_player1
-                             53 
-   000F CD 00 00      [17]   54    call sys_render_screen_test
-                             55 
-                             56    ;; Loop forever
-   0012                      57 loop:
-   0012 18 FE         [12]   58    jr    loop
+                             25 
+                             26 ;;
+                             27 ;; Start of _DATA area 
+                             28 ;;  SDCC requires at least _DATA and _CODE areas to be declared, but you may use
+                             29 ;;  any one of them for any purpose. Usually, compiler puts _DATA area contents
+                             30 ;;  right after _CODE area contents.
+                             31 ;;
+                             32 .area _DATA
+                             33 
+                             34 ;;
+                             35 ;; Start of _CODE area
+                             36 ;; 
+                             37 .area _CODE
+                             38 
+                             39 ;;
+                             40 ;; MAIN function. This is the entry point of the application.
+                             41 ;;    _main:: global symbol is required for correctly compiling and linking
+                             42 ;;
+   0000                      43 _main::
+                             44    ;; Disable firmware to prevent it from interfering with string drawing
+   0000 CD 00 00      [17]   45    call cpct_disableFirmware_asm
+                             46 
+   0003 CD 00 00      [17]   47    call sys_board_init
+                             48 
+   0006 CD 00 00      [17]   49    call sys_render_init
+                             50 
+   0009 CD 00 00      [17]   51    call sys_render_game_screen
+                             52 
+   000C CD 00 00      [17]   53    call sys_render_draw_player1
+   000F 21 00 00      [10]   54    ld hl, #player1
+   0012 E5            [11]   55    push hl
+   0013 DD E1         [14]   56    pop ix
+   0015 DD 7E 01      [19]   57    ld a, e_x(ix)
+   0018 3C            [ 4]   58    inc a
+   0019 DD 77 01      [19]   59    ld e_x(ix), a
+   001C CD 00 00      [17]   60    call sys_render_erase_player
+                             61 
+   001F CD 00 00      [17]   62    call sys_render_draw_player1
+                             63 
+   0022 CD 00 00      [17]   64    call sys_render_screen_test
+                             65 
+                             66    ;; Loop forever
+   0025                      67 loop:
+   0025 18 FE         [12]   68    jr    loop

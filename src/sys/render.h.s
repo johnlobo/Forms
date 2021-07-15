@@ -21,4 +21,4 @@
 .globl sys_render_game_screen
 .globl sys_render_draw_player1
 .globl sys_render_screen_test
-;;.globl sys_render_update
+.globl sys_render_erase_player

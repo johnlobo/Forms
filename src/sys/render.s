@@ -185,12 +185,28 @@ sys_render_capture_background::
     push hl
     push de
     push bc
-    ld de, #player_buffer
-    ld a, b                         ;; store buffer height in player
-    ld e_buffer_height(ix), a
-    ld a, c                         ;; store buffer width in player
-    ld e_buffer_width(ix), a    
+
+    ld e_p_screen_p(ix), l
+    ld e_p_screen_p+1(ix), h        ;; Screen address to restore
+
+    ld h, b                         ;; Height of the piece
+    ld e, #PIECE_SIZE               ;; Piece size in bytes
+    call h_times_e                  ;; Calculate offset for piece type in HL
+    ld a, l                         ;; store buffer height in player
+    ld e_buffer_height(ix), a       ;; store height in player1
+    
+    ld h, c                         ;; Width of the piece
+    ld e, #PIECE_SIZE               ;; Piece size in bytes
+    call h_times_e                  ;; Calculate offset for piece type in HL
+    ld a, l                         ;; store buffer width in player
+    ld e_buffer_width(ix), a        ;; store width in player1
+
+    ld de, #player_buffer           ;; Buffer address
+    ld l, e_p_screen_p(ix)
+    ld h, e_p_screen_p+1(ix)        ;; Screen address to restore
+
     call cpct_getScreenToSprite_asm
+
     pop bc
     pop de
     pop hl
@@ -266,7 +282,7 @@ sys_render_draw_player1::
 
     ld b, a                         ;; Number of rows to loop (piece_height)
 
-_dp_loop_0:
+_render_dp_loop_0:
     push bc                         ;; save number of rows in the stack
     push hl                         ;; store the start of the model of the piece in the stack
 
@@ -277,9 +293,6 @@ _dp_loop_0:
     call h_times_e                  ;; hl has PIECE_SIZE x ROWS drawn
     ld a, e_y(ix)                   ;; load the initial y coord of player
     add l                           ;; and add PIECE_SIZE x ROWS
-
- ;;   pop hl                        ;; retrieve HL
- ;;   push hl                       ;; and restore de stack
 
     ;; Get Screen Pointer
     ld  de, #CPCT_VMEM_START_ASM    ;; DE = Pointer to video memory start
@@ -294,14 +307,11 @@ _dp_loop_0:
     ld b, a
     call sys_render_capture_background  ;; capture background
 
-
-
     ex de, hl                       ;; store screen address in de
 
     pop hl                          ;; retrieve piece address
 
     ld a, (hl)                      ;; load first row (byte) in a
-    
     or a                            ;; check if piece byte is 00
     jr z, _dp_continue_0            ;; jump to next byte if so
 
@@ -352,12 +362,39 @@ _dp_loop_0:
 _dp_continue_0:
     inc hl                          ;; and go to th6e next byte of the piece
     pop bc                          ;; retrive number of rows
-    djnz _dp_loop_0
+
+    dec b
+    ld a,b
+    or a
+    jp z, _render_dp_loop_0         ;; can't use djnz because the jump is more than 128 bytes of distance
+    
     ret
 
-    _piece_byte::    .db #00
-    _piece_width::   .db #00
-    _piece_height::  .db #00
+    _piece_byte::    .db #0
+    _piece_width::   .db #0
+    _piece_height::  .db #0
+
+;-----------------------------------------------------------------
+;;
+;; sys_render_erase_player
+;;
+;;   Erase player 
+;;  Input:  
+;;  Output: 
+;;  Destroyed: AF, BC, DE, HL
+;;
+sys_render_erase_player::
+    ;; Draw tile
+    ld hl, #player1
+    push hl
+    pop ix
+    ld e, e_p_screen_p(ix)
+    ld d, e_p_screen_p+1(ix)
+    ld hl, #player_buffer
+    ld c, e_buffer_width(ix)            ;; load in c the sprite width 
+    ld b, e_buffer_width(ix)            ;; load in b sprite height
+    call cpct_drawSprite_asm            ;; draw sprite
+    ret
 
 
 ;-----------------------------------------------------------------
