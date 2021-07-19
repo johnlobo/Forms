@@ -67,6 +67,10 @@
 .globl cpct_setPALColour_asm
 .globl cpct_memset_asm
 .globl cpct_getScreenToSprite_asm
+.globl cpct_scanKeyboard_asm
+.globl cpct_isKeyPressed_asm
+.globl cpct_waitHalts_asm
+.globl cpct_drawSolidBox_asm
 
 ;;===============================================================================
 ;; DEFINED CONSTANTS
@@ -106,4 +110,6 @@ TRES_TITLE_Y_COORD = 80       ;;
 
 PIECE_HOR_SIZE = 5
 PIECE_VER_SIZE = 5
+
+MAX_PIECE = 18
 

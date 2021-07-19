@@ -1,8 +1,10 @@
 XL2
-H 2 areas 33 global symbols
+H 2 areas 3A global symbols
 M cpct_keyboard
+S sys_input_init Ref0000
 S cpct_getScreenToSprite_asm Ref0000
 S _s_uno Ref0000
+S cpct_isKeyPressed_asm Ref0000
 S cpct_setPalette_asm Ref0000
 S _g_palette0 Ref0000
 S cpct_setPALColour_asm Ref0000
@@ -15,14 +17,17 @@ S _s_balls_small_5 Ref0000
 S _s_balls_small_6 Ref0000
 S _s_score Ref0000
 S cpct_drawSprite_asm Ref0000
+S sys_input_update Ref0000
 S sys_render_init Ref0000
 S sys_render_game_screen Ref0000
 S sys_board_init Ref0000
 S sys_render_erase_player Ref0000
+S cpct_waitHalts_asm Ref0000
 S piece_types Ref0000
 S .__.ABS. Def0000
 S _s_balls_big_0 Ref0000
 S _s_balls_big_1 Ref0000
+S sys_render_update Ref0000
 S _s_balls_big_2 Ref0000
 S _s_balls_big_3 Ref0000
 S _s_balls_big_4 Ref0000
@@ -33,6 +38,7 @@ S _s_balls_big_7 Ref0000
 S player_buffer Ref0000
 S _s_score_numbers_00 Ref0000
 S _s_score_numbers_01 Ref0000
+S sys_render_draw_piece_small Ref0000
 S sys_render_draw_player1 Ref0000
 S _s_score_numbers_02 Ref0000
 S _s_score_numbers_03 Ref0000
@@ -47,22 +53,23 @@ S cpct_setVideoMode_asm Ref0000
 S cpct_memset_asm Ref0000
 S _s_dos Ref0000
 S cpct_disableFirmware_asm Ref0000
-S sys_render_screen_test Ref0000
+S cpct_drawSolidBox_asm Ref0000
 S _s_hi_score Ref0000
 S player1 Ref0000
+S cpct_scanKeyboard_asm Ref0000
 S cpct_getScreenPtr_asm Ref0000
-A _CODE size 27 flags 0 addr 0
+A _CODE size 28 flags 0 addr 0
 S _main Def0000
 A _DATA size 0 flags 0 addr 0
 T 00 00
 R 00 00 00 00
 T 00 00 CD 00 00 CD 00 00 CD 00 00 CD
-R 00 00 00 00 02 03 2D 00 02 06 10 00 02 09 0E 00
-T 0A 00 00 00 CD 00 00 21 00 00 E5 DD E1 DD 7E 01
-R 00 00 00 00 02 02 0F 00 02 05 20 00 02 08 30 00
-T 18 00 3C DD 77 01 CD 00 00 CD 00 00 CD 00 00
-R 00 00 00 00 02 07 11 00 02 0A 20 00 02 0D 2E 00
-T 25 00
+R 00 00 00 00 02 03 33 00 02 06 13 00 02 09 11 00
+T 0A 00 00 00 CD 00 00 CD 00 00 3E 0C 06 3C 0E 6E
+R 00 00 00 00 02 02 12 00 02 05 00 00 02 08 26 00
+T 18 00 CD 00 00
+R 00 00 00 00 02 03 25 00
+T 1B 00
 R 00 00 00 00
-T 25 00 18 FE
-R 00 00 00 00
+T 1B 00 06 0C CD 00 00 CD 00 00 CD 00 00 18 F3
+R 00 00 00 00 02 05 15 00 02 08 10 00 02 0B 1A 00

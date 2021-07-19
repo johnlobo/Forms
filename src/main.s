@@ -20,8 +20,11 @@
 .include "cpctelera.h.s"
 .include "sys/render.h.s"
 .include "sys/board.h.s"
+.include "sys/input.h.s"
 .include "man/entity.h.s"
 .include "common.h.s"
+
+.module main
 
 ;;
 ;; Start of _DATA area 
@@ -45,24 +48,22 @@ _main::
    call cpct_disableFirmware_asm
 
    call sys_board_init
-
    call sys_render_init
-
    call sys_render_game_screen
-
-   call sys_render_draw_player1
-   ld hl, #player1
-   push hl
-   pop ix
-   ld a, e_x(ix)
-   inc a
-   ld e_x(ix), a
-   call sys_render_erase_player
+   call sys_input_init
 
    call sys_render_draw_player1
 
-   call sys_render_screen_test
+   ld a, #12
+   ld b, #60
+   ld c, #110
+   call sys_render_draw_piece_small
 
    ;; Loop forever
 loop:
+   ld b,#12
+   call cpct_waitHalts_asm
+
+   call sys_input_update
+   call sys_render_update
    jr    loop

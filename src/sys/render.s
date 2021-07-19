@@ -23,7 +23,6 @@
 
 .module render_system
 
-
 ;;-----------------------------------------------------------------
 ;;
 ;; sys_render_init
@@ -190,13 +189,13 @@ sys_render_capture_background::
     ld e_p_screen_p+1(ix), h        ;; Screen address to restore
 
     ld h, b                         ;; Height of the piece
-    ld e, #PIECE_SIZE               ;; Piece size in bytes
+    ld e, #S_BALLS_BIG_H + 1        ;; Piece size in bytes + 1 for the separation between blocks
     call h_times_e                  ;; Calculate offset for piece type in HL
     ld a, l                         ;; store buffer height in player
     ld e_buffer_height(ix), a       ;; store height in player1
     
     ld h, c                         ;; Width of the piece
-    ld e, #PIECE_SIZE               ;; Piece size in bytes
+    ld e, #S_BALLS_BIG_W            ;; Piece size in bytes
     call h_times_e                  ;; Calculate offset for piece type in HL
     ld a, l                         ;; store buffer width in player
     ld e_buffer_width(ix), a        ;; store width in player1
@@ -204,6 +203,8 @@ sys_render_capture_background::
     ld de, #player_buffer           ;; Buffer address
     ld l, e_p_screen_p(ix)
     ld h, e_p_screen_p+1(ix)        ;; Screen address to restore
+    ld c, e_buffer_width(ix)
+    ld b, e_buffer_height(ix)
 
     call cpct_getScreenToSprite_asm
 
@@ -262,50 +263,74 @@ sys_render_draw_player_tile::
 ;;  Destroyed: af, bc,de, hl
 ;;
 sys_render_draw_player1::
-    ld hl, #player1
-    push hl
-    pop ix                          ;; move the address of p1 to ix
+    ld ix, #player1                 ;; move the address of p1 to ix
 
+    ld e, e_x(ix)                   ;; Calculate x screen position
+    ld h, #S_BALLS_BIG_W            ;;
+    call h_times_e                  ;; e_x(ix) x S_BALLS_BIG_W
+    ld a,#BOARD_X_COORD             ;; add board x pos to x position
+    add l                           ;;
+    ld (_piece_x), a                ;;
+
+    ld e, e_y(ix)                   ;; Calculate y screen position
+    ld h, #S_BALLS_BIG_H + 1        ;;
+    call h_times_e                  ;; e_y(ix) x S_BALLS_BIG_H
+    ld a,#BOARD_Y_COORD             ;; add board y pos to x position
+    add l                           ;;
+    ld (_piece_y), a                ;;
+
+    ld c, e_p_screen_p(ix)          ;; if previous address is not null, then erase 
+    ld a, e_p_screen_p+1 (ix)       ;;
+    add c                           ;;
+    or a                            ;;
+    jr z, _render_draw_start        ;; 
+    call sys_render_erase_player    ;;
+
+_render_draw_start:
+    ;; Get Screen Pointer
+    ld a, (_piece_x)
+    ld c, a
+    ld a, (_piece_y)
+    ld b, a 
+    ld  de, #CPCT_VMEM_START_ASM    ;; DE = Pointer to video memory start
+    call cpct_getScreenPtr_asm      ;; Get Screen Pointer
+    ;; Return value: HL = Screen Pointer to (X, Y) byte
+    ld a, e_w(ix)            ;; retrive width to capture
+    ld c, a
+    ld a, e_h(ix)            ;; retrieve height to capture
+    ld b, a
+    call sys_render_capture_background  ;; capture background
 
     ld h, e_type(ix)                ;; Type of piece
     ld e, #PIECE_SIZE               ;; Piece size in bytes
     call h_times_e                  ;; Calculate offset for piece type in HL
     ld de, #piece_types
     add hl,de                       ;; hl points to start of the model of piece of the player
-    ld a, (hl)
-    ld (_piece_width), a            ;; store piece width 
+    inc hl                          ;; skip piece width
+    inc hl                          ;; skip piece height
 
-    inc hl
-    ld a, (hl)
-    ld (_piece_height), a           ;; store piece height
-    inc hl                          ;; advance to the first byte of the piece
-
-    ld b, a                         ;; Number of rows to loop (piece_height)
+    ld b, e_h(ix)                   ;; Number of rows to loop (piece_height)
 
 _render_dp_loop_0:
     push bc                         ;; save number of rows in the stack
     push hl                         ;; store the start of the model of the piece in the stack
 
-    ld a, (_piece_height)               ;; Calculate the y coord and store in in a
+    ld a, e_h(ix)                   ;; Calculate y coord and store in in a
     sub b        
-    ld e, a                         ;; player1.y + PIECE_SIZE - ROWS drawn
+    ld e, a                         ;; player1.y + tile height - ROWS drawn
     ld h, #S_BALLS_BIG_H + 1 
     call h_times_e                  ;; hl has PIECE_SIZE x ROWS drawn
-    ld a, e_y(ix)                   ;; load the initial y coord of player
+    ld a, (_piece_y)                ;; load the initial y coord of player
     add l                           ;; and add PIECE_SIZE x ROWS
+    ld b, a
+
+    ld a, (_piece_x)                ;;
+    ld c, a                         ;; Store x position in c
 
     ;; Get Screen Pointer
     ld  de, #CPCT_VMEM_START_ASM    ;; DE = Pointer to video memory start
-    ld  c, e_x(ix)                  ;; C  = Player X Position
-    ld  b, a                        ;; B  = Player Y Position
     call cpct_getScreenPtr_asm      ;; Get Screen Pointer
     ;; Return value: HL = Screen Pointer to (X, Y) byte
-
-    ld a, (_piece_width)            ;; retrive width to capture
-    ld c, a
-    ld a, (_piece_height)            ;; retrieve height to capture
-    ld b, a
-    call sys_render_capture_background  ;; capture background
 
     ex de, hl                       ;; store screen address in de
 
@@ -318,12 +343,12 @@ _render_dp_loop_0:
     ld (_piece_byte),a
     ex de, hl                       ;; load in hl the screen to draw
  
-    bit 0,a                         ;; first bit
+    bit 4,a                         ;; first bit
     call nz, sys_render_draw_player_tile
     call sys_render_increment_hl    ;; increment hl to next sprite position
     
     ld a, (_piece_byte)
-    bit 1,a                         ;; second bit
+    bit 3,a                         ;; second bit
     call nz, sys_render_draw_player_tile
     call sys_render_increment_hl    ;; increment hl to next sprite position    
 
@@ -333,29 +358,14 @@ _render_dp_loop_0:
     call sys_render_increment_hl    ;; increment hl to next sprite position    
 
     ld a, (_piece_byte)
-    bit 3,a                         ;; forth bit
+    bit 1,a                         ;; forth bit
     call nz, sys_render_draw_player_tile
     call sys_render_increment_hl    ;; increment hl to next sprite position 
 
     ld a, (_piece_byte)
-    bit 4,a                         ;; forth bit
+    bit 0,a                         ;; forth bit
     call nz, sys_render_draw_player_tile
     call sys_render_increment_hl    ;; increment hl to next sprite position 
-
-    ld a, (_piece_byte)
-    bit 5,a                         ;; forth bit
-    call nz, sys_render_draw_player_tile
-    call sys_render_increment_hl    ;; increment hl to next sprite position 
-
-    ld a, (_piece_byte)
-    bit 6,a                         ;; forth bit
-    call nz, sys_render_draw_player_tile
-    call sys_render_increment_hl    ;; increment hl to next sprite position  
-
-    ld a, (_piece_byte)
-    bit 7,a                         ;; forth bit
-    call nz, sys_render_draw_player_tile
-    call sys_render_increment_hl    ;; increment hl to next sprite position  
 
     ex de, hl                       ;; move piece address to hl and screen address to de
 
@@ -366,13 +376,9 @@ _dp_continue_0:
     dec b
     ld a,b
     or a
-    jp z, _render_dp_loop_0         ;; can't use djnz because the jump is more than 128 bytes of distance
+    jp nz, _render_dp_loop_0         ;; can't use djnz because the jump is more than 128 bytes of distance
     
     ret
-
-    _piece_byte::    .db #0
-    _piece_width::   .db #0
-    _piece_height::  .db #0
 
 ;-----------------------------------------------------------------
 ;;
@@ -385,77 +391,179 @@ _dp_continue_0:
 ;;
 sys_render_erase_player::
     ;; Draw tile
-    ld hl, #player1
-    push hl
-    pop ix
+    ld ix, #player1
     ld e, e_p_screen_p(ix)
     ld d, e_p_screen_p+1(ix)
     ld hl, #player_buffer
     ld c, e_buffer_width(ix)            ;; load in c the sprite width 
-    ld b, e_buffer_width(ix)            ;; load in b sprite height
+    ld b, e_buffer_height(ix)            ;; load in b sprite height
     call cpct_drawSprite_asm            ;; draw sprite
+    ret
+
+    ;-----------------------------------------------------------------
+    ;;
+    ;; sys_reder_update
+    ;;
+    ;;   Draw test screen
+    ;;  Input: 
+    ;;  Output: 
+    ;;  Destroyed: af, bc,de, hl
+    ;;
+sys_render_update::
+    ld ix, #player1                     ;; moved??
+    ld a, e_moved(ix)                   ;;  
+    or a                                ;;
+    ret z                               ;; return if not moved
+    call sys_render_draw_player1        ;; moved -> render player1
+    xor a                               ;; moved = 0
+    ld e_moved(ix), a                   ;;
+    ret
+
+;-----------------------------------------------------------------
+;;
+;; sys_render_increment_hl
+;;
+;;   Increments hl with the width of a ball
+;;  Input: 
+;;  Output: hl
+;;  Modified: 
+;;
+sys_render_increment_hl_small::
+    ld c, a                     ;; save piece row in c   
+    ld a, #S_BALLS_SMALL_W
+    add_hl_a                    ;; increment hl with sprite width
+    ld a, c                     ;; retrive piece row
+    ret
+
+;-----------------------------------------------------------------
+;;
+;; sys_render_draw_player_tile
+;;
+;;   Draw player tile
+;;  Input:  de screen address to draw the tile 
+;;  Output: 
+;;  Destroyed: AF, BC, DE, HL
+;;
+sys_render_draw_small_tile::
+    ;; Draw tile
+    push hl
+    push de
+    push bc
+    ex de, hl
+    ld   hl, #_s_balls_small_5
+    ld c, #S_BALLS_SMALL_W            ;; load in c the sprite width 
+    ld b, #S_BALLS_SMALL_H            ;; load in b sprite height
+    call cpct_drawSprite_asm        ;; draw sprite
+    pop bc
+    pop de
+    pop hl
     ret
 
 
 ;-----------------------------------------------------------------
 ;;
-;; sys_render_screen_test
+;; sys_render_draw_piece_small
 ;;
-;;   Draw test screen
-;;  Input: 
+;;   Draw player1
+;;  Input:  b : x position
+;;          c : y position
+;;          a ; piece
 ;;  Output: 
 ;;  Destroyed: af, bc,de, hl
 ;;
-sys_render_screen_test::
+sys_render_draw_piece_small::
+    ld (_piece), a
+    ld a, b
+    ld (_piece_x), a                ;; save x coord
+    ld a, c
+    ld (_piece_y), a                ;; save y coord
 
-;; Big balls
-    ld b, #8
-    ld de, #0xcee1
-    ld hl, #_s_balls_big_0
-_sr_loop0:
-    push bc
-    push hl
-    push de
+    ld a, (_piece)
+    ld h, a                         ;; Type of piece
+    ld e, #PIECE_SIZE               ;; Piece size in bytes
+    call h_times_e                  ;; Calculate offset for piece type in HL
+    ld de, #piece_types
+    add hl,de                       ;; hl points to start of the model of piece of the player
+    ld a, (hl)                      ;; read piece width
+    ld (_piece_width), a
+    inc hl                          ;; skip piece height
+    ld a, (hl)                      ;; read piece height
+    ld (_piece_height), a
 
-    ld c, #S_BALLS_BIG_W                    ;; load in c the sprite width 
-    ld b, #S_BALLS_BIG_H                    ;; load in b sprite height
-    call cpct_drawSprite_asm                ;; draw sprite 
+    ld b, a                   ;; Number of rows to loop (piece_height)
 
-    pop hl                                  ;; increment screen position
-    ld a, #S_BALLS_BIG_W
-    add_hl_a
-    ex de, hl
+_render_dp2_loop_0:
+    push bc                         ;; save number of rows in the stack
+    push hl                         ;; store the start of the model of the piece in the stack
 
-    pop hl
-    ld a, #S_BALLS_BIG_W * S_BALLS_BIG_H     ;; increment sprite pointer
-    add_hl_a
+    ld a, (_piece_height)            ;; Calculate y coord and store in in a
+    sub b        
+    ld e, a                         ;; player1.y + tile height - ROWS drawn
+    ld h, #S_BALLS_SMALL_H + 1 
+    call h_times_e                  ;; hl has PIECE_SIZE x ROWS drawn
+    ld a, (_piece_y)                ;; load the initial y coord of player
+    add l                           ;; and add PIECE_SIZE x ROWS
+    ld b, a
 
-    pop bc
-    djnz _sr_loop0
+    ld a, (_piece_x)                ;;
+    ld c, a                         ;; Store x position in c
 
-;; Small balls
-    ld b, #7
-    ld de, #0xd3f0
-    ld hl, #_s_balls_small_0
-_sr_loop1:
-    push bc
-    push hl
-    push de
+    ;; Get Screen Pointer
+    ld  de, #CPCT_VMEM_START_ASM    ;; DE = Pointer to video memory start
+    call cpct_getScreenPtr_asm      ;; Get Screen Pointer
+    ;; Return value: HL = Screen Pointer to (X, Y) byte
 
-    ld c, #S_BALLS_SMALL_W                    ;; load in c the sprite width 
-    ld b, #S_BALLS_SMALL_H                    ;; load in b sprite height
-    call cpct_drawSprite_asm                ;; draw sprite 
+    ex de, hl                       ;; store screen address in de
 
-    pop hl                                  ;; increment screen position
-    ld a, #S_BALLS_SMALL_W
-    add_hl_a
-    ex de, hl
+    pop hl                          ;; retrieve piece address
 
-    pop hl
-    ld a, #S_BALLS_SMALL_W * S_BALLS_SMALL_H     ;; increment sprite pointer
-    add_hl_a
+    ld a, (hl)                      ;; load first row (byte) in a
+    or a                            ;; check if piece byte is 00
+    jr z, _dp2_continue_0            ;; jump to next byte if so
 
-    pop bc
-    djnz _sr_loop1
+    ld (_piece_byte),a
+    ex de, hl                       ;; load in hl the screen to draw
+ 
+    bit 4,a                         ;; first bit
+    call nz, sys_render_draw_small_tile
+    call sys_render_increment_hl_small    ;; increment hl to next sprite position
+    
+    ld a, (_piece_byte)
+    bit 3,a                         ;; second bit
+    call nz, sys_render_draw_small_tile
+    call sys_render_increment_hl_small    ;; increment hl to next sprite position    
+
+    ld a, (_piece_byte)
+    bit 2,a                         ;; third bit
+    call nz, sys_render_draw_small_tile
+    call sys_render_increment_hl_small    ;; increment hl to next sprite position    
+
+    ld a, (_piece_byte)
+    bit 1,a                         ;; forth bit
+    call nz, sys_render_draw_small_tile
+    call sys_render_increment_hl_small    ;; increment hl to next sprite position 
+
+    ld a, (_piece_byte)
+    bit 0,a                         ;; forth bit
+    call nz, sys_render_draw_small_tile
+    call sys_render_increment_hl_small    ;; increment hl to next sprite position 
+
+    ex de, hl                       ;; move piece address to hl and screen address to de
+
+_dp2_continue_0:
+    inc hl                          ;; and go to th6e next byte of the piece
+    pop bc                          ;; retrive number of rows
+
+    dec b
+    ld a,b
+    or a
+    jp nz, _render_dp2_loop_0         ;; can't use djnz because the jump is more than 128 bytes of distance
     
     ret
+
+_piece_byte::    .db #0
+_piece_x::  .db #0
+_piece_y::  .db #0
+_piece_width: .db #0
+_piece_height: .db #0
+_piece: .db #00
