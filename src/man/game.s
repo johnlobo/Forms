@@ -36,6 +36,8 @@
 next_pieces:: .db #00, #00, #00
 next_pieces_count:: .db #00
 selected_piece:: .db #00
+score:: .db #00, #00, #00, #00
+hi_score:: .db #00, #00, #00, #00
 
 
 ;;
@@ -97,6 +99,8 @@ man_game_init::
     inc hl
     ld a,(hl)
     ld e_h(ix), a
+
+    call sys_render_score
 
     call sys_render_next_pieces     ;; Render next pieces on screen
 

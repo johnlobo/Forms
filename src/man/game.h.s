@@ -24,3 +24,5 @@
 .globl next_pieces
 .globl selected_piece
 .globl next_pieces_count
+.globl score
+.globl hi_score
