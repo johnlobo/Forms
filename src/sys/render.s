@@ -323,11 +323,8 @@ _render_draw_start:
     ld b, a
     call sys_render_capture_background  ;; capture background
 
-    ld h, e_type(ix)                ;; Type of piece
-    ld e, #PIECE_SIZE               ;; Piece size in bytes
-    call h_times_e                  ;; Calculate offset for piece type in HL
-    ld de, #piece_types
-    add hl,de                       ;; hl points to start of the model of piece of the player
+    ld a, e_type(ix)                    ;; Type of piece
+    call man_entity_get_hl_from_piece   ;; get address for a type o piece in hl
     inc hl                          ;; skip piece width
     inc hl                          ;; skip piece height
 

@@ -2849,6 +2849,8 @@ Hexadecimal [16-Bits]
                              43 .globl player1
                              44 .globl piece_types
                              45 .globl player_buffer
+                             46 
+                             47 .globl man_entity_get_hl_from_piece
 ASxxxx Assembler V02.00 + NoICE + SDCC mods  (Zilog Z80 / Hitachi HD64180), page 57.
 Hexadecimal [16-Bits]
 
@@ -2966,60 +2968,61 @@ Hexadecimal [16-Bits]
                              72 .globl cpct_waitHalts_asm
                              73 .globl cpct_drawSolidBox_asm
                              74 .globl cpct_getRandom_mxor_u8_asm
-                             75 
-                             76 ;;===============================================================================
-                             77 ;; DEFINED CONSTANTS
-                             78 ;;===============================================================================
-                     0004    79 S_BALLS_BIG_W = 4
-                     000B    80 S_BALLS_BIG_H = 11
-                     0002    81 S_BALLS_SMALL_W = 2
-                     0007    82 S_BALLS_SMALL_H = 7
-                     000F    83 S_HI_SCORE_W = 15
-                     0007    84 S_HI_SCORE_H = 7
-                     000A    85 S_SCORE_W = 10
-                     0007    86 S_SCORE_H = 7
-                     0002    87 S_UNO_W = 2
-                     0010    88 S_UNO_H = 16
-                     0003    89 S_DOS_W = 3
-                     0010    90 S_DOS_H = 16
-                     0003    91 S_TRES_W = 3
-                     0010    92 S_TRES_H = 16
-                     0008    93 S_SCORE_NUMBERS_W = 8
-                     000F    94 S_SCORE_NUMBERS_H = 15
-                             95 
-                     0001    96 BOARD_X_COORD = 1   ;; X 
-                     0036    97 BOARD_Y_COORD = 54  ;; Y 
-                     000A    98 BOARD_ROWS = 10     ;;
-                     000A    99 BOARD_COLS = 10     ;;
-                            100 
-                     0004   101 HIGH_SCORE_TITLE_X_COORD = 4        ;;
-                     0006   102 HIGH_SCORE_TITLE_Y_COORD = 6        ;;    
-                     0039   103 SCORE_TITLE_X_COORD = 57       ;;
-                     0014   104 SCORE_TITLE_Y_COORD = 20       ;; 
-                     002F   105 UNO_TITLE_X_COORD = 47       ;;
-                     0050   106 UNO_TITLE_Y_COORD = 80       ;;
-                     003C   107 DOS_TITLE_X_COORD = 60       ;;
-                     0050   108 DOS_TITLE_Y_COORD = 80       ;; 
-                     0047   109 TRES_TITLE_X_COORD = 71       ;;
+                             75 .globl cpct_setSeed_mxor_asm
+                             76 
+                             77 ;;===============================================================================
+                             78 ;; DEFINED CONSTANTS
+                             79 ;;===============================================================================
+                     0004    80 S_BALLS_BIG_W = 4
+                     000B    81 S_BALLS_BIG_H = 11
+                     0002    82 S_BALLS_SMALL_W = 2
+                     0007    83 S_BALLS_SMALL_H = 7
+                     000F    84 S_HI_SCORE_W = 15
+                     0007    85 S_HI_SCORE_H = 7
+                     000A    86 S_SCORE_W = 10
+                     0007    87 S_SCORE_H = 7
+                     0002    88 S_UNO_W = 2
+                     0010    89 S_UNO_H = 16
+                     0003    90 S_DOS_W = 3
+                     0010    91 S_DOS_H = 16
+                     0003    92 S_TRES_W = 3
+                     0010    93 S_TRES_H = 16
+                     0008    94 S_SCORE_NUMBERS_W = 8
+                     000F    95 S_SCORE_NUMBERS_H = 15
+                             96 
+                     0001    97 BOARD_X_COORD = 1   ;; X 
+                     0036    98 BOARD_Y_COORD = 54  ;; Y 
+                     000A    99 BOARD_ROWS = 10     ;;
+                     000A   100 BOARD_COLS = 10     ;;
+                            101 
+                     0004   102 HIGH_SCORE_TITLE_X_COORD = 4        ;;
+                     0006   103 HIGH_SCORE_TITLE_Y_COORD = 6        ;;    
+                     0039   104 SCORE_TITLE_X_COORD = 57       ;;
+                     0014   105 SCORE_TITLE_Y_COORD = 20       ;; 
+                     002F   106 UNO_TITLE_X_COORD = 47       ;;
+                     0050   107 UNO_TITLE_Y_COORD = 80       ;;
+                     003C   108 DOS_TITLE_X_COORD = 60       ;;
+                     0050   109 DOS_TITLE_Y_COORD = 80       ;; 
 ASxxxx Assembler V02.00 + NoICE + SDCC mods  (Zilog Z80 / Hitachi HD64180), page 60.
 Hexadecimal [16-Bits]
 
 
 
-                     0050   110 TRES_TITLE_Y_COORD = 80       ;; 
-                            111 
-                     0005   112 PIECE_HOR_SIZE = 5
-                     0005   113 PIECE_VER_SIZE = 5
-                            114 
-                     0012   115 MAX_PIECE = 18
-                            116 
-                     002E   117 NEXT_PIECE_1_X = 46
-                     006E   118 NEXT_PIECE_1_Y = 110
-                     003B   119 NEXT_PIECE_2_X = 59
-                     006E   120 NEXT_PIECE_2_Y = 110
-                     0046   121 NEXT_PIECE_3_X = 70
-                     006E   122 NEXT_PIECE_3_Y = 110
-                            123 
+                     0047   110 TRES_TITLE_X_COORD = 71       ;;
+                     0050   111 TRES_TITLE_Y_COORD = 80       ;; 
+                            112 
+                     0005   113 PIECE_HOR_SIZE = 5
+                     0005   114 PIECE_VER_SIZE = 5
+                            115 
+                     0012   116 MAX_PIECE = 18
+                            117 
+                     002E   118 NEXT_PIECE_1_X = 46
+                     006E   119 NEXT_PIECE_1_Y = 110
+                     003B   120 NEXT_PIECE_2_X = 59
+                     006E   121 NEXT_PIECE_2_Y = 110
+                     0046   122 NEXT_PIECE_3_X = 70
+                     006E   123 NEXT_PIECE_3_Y = 110
+                            124 
 ASxxxx Assembler V02.00 + NoICE + SDCC mods  (Zilog Z80 / Hitachi HD64180), page 61.
 Hexadecimal [16-Bits]
 

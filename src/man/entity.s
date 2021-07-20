@@ -17,9 +17,6 @@
 ;;-------------------------------------------------------------------------------
 
 
-
-;; Include all CPCtelera constant definitions, macros and variables
-;;.include "cpctelera.h.s"
 .include "man/entity.h.s"
 .include "../common.h.s"
 .include "sys/util.h.s"
@@ -35,9 +32,9 @@ player1::
     .db #0                      ;; Status of the Player
     .db #0                      ;; X location of the Player (grid)
     .db #0                      ;; Y location of the Player (grid)
-    .db #4                      ;; player piece type
-    .db #1                      ;; Width of the player
-    .db #5                      ;; Height of the player
+    .db #0                      ;; player piece type
+    .db #0                      ;; Width of the player
+    .db #0                      ;; Height of the player
     .dw #0x0000                 ;; Previous screen address
     .db #0                      ;; width of background buffer
     .db #0                      ;; height of background buffer
