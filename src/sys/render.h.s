@@ -23,3 +23,4 @@
 .globl sys_render_erase_player
 .globl sys_render_update
 .globl sys_render_draw_piece_small
+.globl sys_render_next_pieces

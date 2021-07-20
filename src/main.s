@@ -22,6 +22,7 @@
 .include "sys/board.h.s"
 .include "sys/input.h.s"
 .include "man/entity.h.s"
+.include "man/game.h.s"
 .include "common.h.s"
 
 .module main
@@ -52,16 +53,11 @@ _main::
    call sys_render_game_screen
    call sys_input_init
 
-   call sys_render_draw_player1
-
-   ld a, #12
-   ld b, #60
-   ld c, #110
-   call sys_render_draw_piece_small
+   call man_game_init
 
    ;; Loop forever
 loop:
-   ld b,#12
+   ld b,#18
    call cpct_waitHalts_asm
 
    call sys_input_update

@@ -71,6 +71,8 @@
 .globl cpct_isKeyPressed_asm
 .globl cpct_waitHalts_asm
 .globl cpct_drawSolidBox_asm
+.globl cpct_getRandom_mxor_u8_asm
+.globl cpct_setSeed_mxor_asm
 
 ;;===============================================================================
 ;; DEFINED CONSTANTS
@@ -112,4 +114,11 @@ PIECE_HOR_SIZE = 5
 PIECE_VER_SIZE = 5
 
 MAX_PIECE = 18
+
+NEXT_PIECE_1_X = 46
+NEXT_PIECE_1_Y = 110
+NEXT_PIECE_2_X = 59
+NEXT_PIECE_2_Y = 110
+NEXT_PIECE_3_X = 70
+NEXT_PIECE_3_Y = 110
 

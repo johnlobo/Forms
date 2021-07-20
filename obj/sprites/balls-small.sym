@@ -8,12 +8,12 @@ Symbol Table
     .__.CPU.                                                    =  0000 L
     .__.H$L.                                                    =  0000 L
   0 _s_balls_small_0                                               0000 GR
-  0 _s_balls_small_1                                               000E GR
-  0 _s_balls_small_2                                               001C GR
-  0 _s_balls_small_3                                               002A GR
-  0 _s_balls_small_4                                               0038 GR
-  0 _s_balls_small_5                                               0046 GR
-  0 _s_balls_small_6                                               0054 GR
+  0 _s_balls_small_1                                               000A GR
+  0 _s_balls_small_2                                               0014 GR
+  0 _s_balls_small_3                                               001E GR
+  0 _s_balls_small_4                                               0028 GR
+  0 _s_balls_small_5                                               0032 GR
+  0 _s_balls_small_6                                               003C GR
 
 
 ASxxxx Assembler V02.00 + NoICE + SDCC mods  (Zilog Z80 / Hitachi HD64180), page 2.
@@ -21,7 +21,7 @@ Hexadecimal [16-Bits]
 
 Area Table
 
-   0 _CODE                                      size   62   flags    0
+   0 _CODE                                      size   46   flags    0
    1 _DATA                                      size    0   flags    0
    2 _INITIALIZED                               size    0   flags    0
    3 _DABS                                      size    0   flags    8
