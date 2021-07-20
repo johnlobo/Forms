@@ -19,9 +19,31 @@
 .include "cpctelera.h.s"
 .include "../common.h.s"
 .include "man/entity.h.s"
+.include "man/game.h.s"
 .include "util.h.s"
 
 .module render_system
+
+
+;;
+;; Start of _DATA area 
+;;  SDCC requires at least _DATA and _CODE areas to be declared, but you may use
+;;  any one of them for any purpose. Usually, compiler puts _DATA area contents
+;;  right after _CODE area contents.
+;;
+.area _DATA
+
+_piece_byte::    .db #0
+_piece_x::  .db #0
+_piece_y::  .db #0
+_piece_width:: .db #0
+_piece_height:: .db #0
+_piece:: .db #00
+
+;;
+;; Start of _CODE area
+;; 
+.area _CODE
 
 ;;-----------------------------------------------------------------
 ;;
@@ -450,7 +472,7 @@ sys_render_draw_small_tile::
     push de
     push bc
     ex de, hl
-    ld   hl, #_s_balls_small_5
+    ld   hl, #_s_balls_small_6
     ld c, #S_BALLS_SMALL_W            ;; load in c the sprite width 
     ld b, #S_BALLS_SMALL_H            ;; load in b sprite height
     call cpct_drawSprite_asm        ;; draw sprite
@@ -474,21 +496,18 @@ sys_render_draw_small_tile::
 sys_render_draw_piece_small::
     ld (_piece), a
     ld a, b
-    ld (_piece_x), a                ;; save x coord
+    ld (_piece_x), a                    ;; save x coord
     ld a, c
-    ld (_piece_y), a                ;; save y coord
+    ld (_piece_y), a                    ;; save y coord
 
     ld a, (_piece)
-    ld h, a                         ;; Type of piece
-    ld e, #PIECE_SIZE               ;; Piece size in bytes
-    call h_times_e                  ;; Calculate offset for piece type in HL
-    ld de, #piece_types
-    add hl,de                       ;; hl points to start of the model of piece of the player
-    ld a, (hl)                      ;; read piece width
+    call man_entity_get_hl_from_piece   ;; Get hl form the piece in a
+    ld a, (hl)                          ;; read piece width
     ld (_piece_width), a
-    inc hl                          ;; skip piece height
-    ld a, (hl)                      ;; read piece height
+    inc hl                              ;; skip piece height
+    ld a, (hl)                          ;; read piece height
     ld (_piece_height), a
+    inc hl
 
     ld b, a                   ;; Number of rows to loop (piece_height)
 
@@ -561,9 +580,36 @@ _dp2_continue_0:
     
     ret
 
-_piece_byte::    .db #0
-_piece_x::  .db #0
-_piece_y::  .db #0
-_piece_width: .db #0
-_piece_height: .db #0
-_piece: .db #00
+;-----------------------------------------------------------------
+;;
+;; sys_render_next_pieces
+;;
+;;   Draw player1
+;;  Input:  b : x position
+;;          c : y position
+;;          a ; piece
+;;  Output: 
+;;  Destroyed: af, bc,de, hl
+;;
+sys_render_next_pieces::
+    ld a, #NEXT_PIECE_1_X
+    ld b, a
+    ld a, #NEXT_PIECE_1_Y
+    ld c, a
+    ld a, (next_pieces)
+    call sys_render_draw_piece_small
+
+    ld a, #NEXT_PIECE_2_X
+    ld b, a
+    ld a, #NEXT_PIECE_2_Y
+    ld c, a
+    ld a, (next_pieces + 1)
+    call sys_render_draw_piece_small
+    
+    ld a, #NEXT_PIECE_3_X
+    ld b, a
+    ld a, #NEXT_PIECE_3_Y
+    ld c, a
+    ld a, (next_pieces + 2)
+    call sys_render_draw_piece_small
+    ret

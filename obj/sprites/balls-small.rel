@@ -3,14 +3,14 @@ H 9 areas 8 global symbols
 M balls_small
 O -mz80
 S .__.ABS. Def0000
-A _CODE size 62 flags 0 addr 0
+A _CODE size 46 flags 0 addr 0
 S _s_balls_small_0 Def0000
-S _s_balls_small_1 Def000E
-S _s_balls_small_2 Def001C
-S _s_balls_small_3 Def002A
-S _s_balls_small_4 Def0038
-S _s_balls_small_5 Def0046
-S _s_balls_small_6 Def0054
+S _s_balls_small_1 Def000A
+S _s_balls_small_2 Def0014
+S _s_balls_small_3 Def001E
+S _s_balls_small_4 Def0028
+S _s_balls_small_5 Def0032
+S _s_balls_small_6 Def003C
 A _DATA size 0 flags 0 addr 0
 A _INITIALIZED size 0 flags 0 addr 0
 A _DABS size 0 flags 8 addr 0
@@ -21,29 +21,29 @@ A _INITIALIZER size 0 flags 0 addr 0
 A _CABS size 0 flags 8 addr 0
 T 00 00
 R 00 00 00 00
-T 00 00 05 00 1A 20 1A 20 30 20 30 20 30 20 10 00
+T 00 00 0F 20 1A 20 30 20 30 20 30 20
 R 00 00 00 00
-T 0E 00
+T 0A 00
 R 00 00 00 00
-T 0E 00 51 00 E3 82 E3 82 C3 82 C3 82 C3 82 41 00
+T 0A 00 F3 82 E3 82 C3 82 C3 82 C3 82
 R 00 00 00 00
-T 1C 00
+T 14 00
 R 00 00 00 00
-T 1C 00 44 00 8C 08 8C 08 0C 08 0C 08 0C 08 04 00
+T 14 00 CC 08 8C 08 0C 08 0C 08 0C 08
 R 00 00 00 00
-T 2A 00
+T 1E 00
 R 00 00 00 00
-T 2A 00 45 00 8B 02 8B 02 03 02 03 02 03 02 01 00
+T 1E 00 CF 02 8B 02 03 02 03 02 03 02
 R 00 00 00 00
-T 38 00
+T 28 00
 R 00 00 00 00
-T 38 00 50 00 E0 80 E0 80 C0 80 C0 80 C0 80 40 00
+T 28 00 F0 80 E0 80 C0 80 C0 80 C0 80
 R 00 00 00 00
-T 46 00
+T 32 00
 R 00 00 00 00
-T 46 00 45 00 8F 0A 8F 0A 0F 0A 0F 0A 0F 0A 05 00
+T 32 00 CF 0A 8F 0A 0F 0A 0F 0A 0F 0A
 R 00 00 00 00
-T 54 00
+T 3C 00
 R 00 00 00 00
-T 54 00 45 00 CE 88 CE 88 CC 88 CC 88 CC 88 44 00
+T 3C 00 CF 88 CE 88 CC 88 CC 88 CC 88
 R 00 00 00 00

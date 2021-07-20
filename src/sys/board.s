@@ -39,5 +39,5 @@ sys_board_init::
     ld a, #0x00         ;; Set the initilization value, 0
     ld bc, # (BOARD_ROWS * BOARD_COLS)         ;; Set the size to set 10x10
     call cpct_memset_asm
-
     ret
+

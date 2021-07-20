@@ -43,3 +43,5 @@ sizeof_e = 11
 .globl player1
 .globl piece_types
 .globl player_buffer
+
+.globl man_entity_get_hl_from_piece

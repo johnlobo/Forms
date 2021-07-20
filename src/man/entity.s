@@ -20,8 +20,10 @@
 
 ;; Include all CPCtelera constant definitions, macros and variables
 ;;.include "cpctelera.h.s"
-;;.include "man/entity.h.s"
+.include "man/entity.h.s"
 .include "../common.h.s"
+.include "sys/util.h.s"
+
 
 .module entity_manager
 
@@ -67,6 +69,23 @@ piece_types::
     piece_18: .db #0x1, #0x1, #0x10, #0x0,  #0x0,  #0x0, #0x0
 
 player_buffer:: .ds 5 * S_BALLS_BIG_W * 5 * S_BALLS_BIG_H ;; Bufer to store background
+
+;;-----------------------------------------------------------------
+;;
+;; man_entity_get_hl_from_piece
+;;
+;;   Draw player1
+;;  Input: a: piece
+;;  Output: 
+;;  Destroyed: af, hl, de
+;;
+man_entity_get_hl_from_piece::
+    ld h, a                         ;; Type of piece
+    ld e, #PIECE_SIZE               ;; Piece size in bytes
+    call h_times_e                  ;; Calculate offset for piece type in HL
+    ld de, #piece_types
+    add hl,de                       ;; hl points to start of the model of piece of the player
+    ret
 
 
 

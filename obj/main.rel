@@ -1,5 +1,5 @@
 XL2
-H 2 areas 3A global symbols
+H 2 areas 40 global symbols
 M cpct_keyboard
 S sys_input_init Ref0000
 S cpct_getScreenToSprite_asm Ref0000
@@ -11,6 +11,7 @@ S cpct_setPALColour_asm Ref0000
 S _s_balls_small_0 Ref0000
 S _s_balls_small_1 Ref0000
 S _s_balls_small_2 Ref0000
+S man_game_init Ref0000
 S _s_balls_small_3 Ref0000
 S _s_balls_small_4 Ref0000
 S _s_balls_small_5 Ref0000
@@ -20,12 +21,14 @@ S cpct_drawSprite_asm Ref0000
 S sys_input_update Ref0000
 S sys_render_init Ref0000
 S sys_render_game_screen Ref0000
+S next_pieces Ref0000
 S sys_board_init Ref0000
 S sys_render_erase_player Ref0000
 S cpct_waitHalts_asm Ref0000
 S piece_types Ref0000
 S .__.ABS. Def0000
 S _s_balls_big_0 Ref0000
+S next_pieces_count Ref0000
 S _s_balls_big_1 Ref0000
 S sys_render_update Ref0000
 S _s_balls_big_2 Ref0000
@@ -46,30 +49,31 @@ S _s_score_numbers_04 Ref0000
 S _s_score_numbers_05 Ref0000
 S _s_score_numbers_06 Ref0000
 S _s_score_numbers_07 Ref0000
+S selected_piece Ref0000
 S _s_score_numbers_08 Ref0000
 S _s_tres Ref0000
 S _s_score_numbers_09 Ref0000
 S cpct_setVideoMode_asm Ref0000
 S cpct_memset_asm Ref0000
+S sys_render_next_pieces Ref0000
 S _s_dos Ref0000
 S cpct_disableFirmware_asm Ref0000
+S cpct_getRandom_mxor_u8_asm Ref0000
 S cpct_drawSolidBox_asm Ref0000
 S _s_hi_score Ref0000
 S player1 Ref0000
 S cpct_scanKeyboard_asm Ref0000
 S cpct_getScreenPtr_asm Ref0000
-A _CODE size 28 flags 0 addr 0
+A _CODE size 1F flags 0 addr 0
 S _main Def0000
 A _DATA size 0 flags 0 addr 0
 T 00 00
 R 00 00 00 00
 T 00 00 CD 00 00 CD 00 00 CD 00 00 CD
-R 00 00 00 00 02 03 33 00 02 06 13 00 02 09 11 00
-T 0A 00 00 00 CD 00 00 CD 00 00 3E 0C 06 3C 0E 6E
-R 00 00 00 00 02 02 12 00 02 05 00 00 02 08 26 00
-T 18 00 CD 00 00
-R 00 00 00 00 02 03 25 00
-T 1B 00
+R 00 00 00 00 02 03 38 00 02 06 15 00 02 09 12 00
+T 0A 00 00 00 CD 00 00 CD 00 00
+R 00 00 00 00 02 02 13 00 02 05 00 00 02 08 0A 00
+T 12 00
 R 00 00 00 00
-T 1B 00 06 0C CD 00 00 CD 00 00 CD 00 00 18 F3
-R 00 00 00 00 02 05 15 00 02 08 10 00 02 0B 1A 00
+T 12 00 06 12 CD 00 00 CD 00 00 CD 00 00 18 F3
+R 00 00 00 00 02 05 17 00 02 08 11 00 02 0B 1D 00

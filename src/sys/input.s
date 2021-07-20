@@ -19,6 +19,7 @@
 .include "cpctelera.h.s"
 .include "../common.h.s"
 .include "man/entity.h.s"
+.include "man/game.h.s"
 .include "sys/util.h.s"
 
 
@@ -72,7 +73,7 @@ _move_right:
     ld b, a                     ;; store that calculus in b
     ld a, e_x(ix)               ;; load a with the x position
     cp b                        ;; compare with b
-    jr z, #_end_input_update    ;; if zero return
+    jp z, #_end_input_update    ;; if zero return
     inc a                       ;; inc x position stored in a
     ld e_x(ix), a               ;; store it in player1 struct
     jr #_input_update_moved     ;; jump to return moved
@@ -102,13 +103,17 @@ _move_down:
     ld e_y(ix), a               ;; store it in player1 struct
     jr #_input_update_moved     ;; jump to return moved
 _change_piece:
-    ld a, e_type(ix)            ;; read current piece
+    ld a, (selected_piece)      ;; read selected piece
     inc a                       ;; increment piece type
-    cp #MAX_PIECE + 1           ;; check if piece number is in the range of the valid pieces
+    cp #3
     jr nz, _valid_piece
-    xor a                       ;; reset piece number 
+    xor a
 _valid_piece:
-    ld e_type(ix), a
+    ld (selected_piece), a      ;; Update selected piece 
+    ld hl, #next_pieces
+    add_hl_a
+    ld a, (hl)
+    ld e_type(ix), a            ;; Update piece in Player1 struct
     ld h, a                     ;; Type of piece
     ld e, #PIECE_SIZE           ;; Piece size in bytes
     call h_times_e              ;; Calculate offset for piece type in HL
