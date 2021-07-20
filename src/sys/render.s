@@ -39,6 +39,7 @@ _piece_y::  .db #0
 _piece_width:: .db #0
 _piece_height:: .db #0
 _piece:: .db #00
+_score_digit: .db #00
 
 ;;
 ;; Start of _CODE area
@@ -610,3 +611,128 @@ sys_render_next_pieces::
     ld a, (next_pieces + 2)
     call sys_render_draw_piece_small
     ret
+
+;-----------------------------------------------------------------
+;;
+;; sys_render_score
+;;
+;;   Draw socre
+;;  Input: 
+;;  Output: 
+;;  Destroyed: af, bc,de, hl
+;;
+sys_render_score::
+    ld de,#score
+    ld b, #SCORE_NUM_BYTES
+    call sys_render_BCD_show
+    ret
+
+;-----------------------------------------------------------------
+;;
+;; sys_render_BCD_show
+;;
+;;   Draw score
+;;  Input:  de: source of BCD
+;;          b: number of bytes of the BCD number
+;;  Output: 
+;;  Destroyed: af, bc,de, hl
+;;
+;;  Chibi Akumas BCD code (https://www.chibiakumas.com/z80/advanced.php#LessonA1)
+;;
+sys_render_BCD_show::
+    call BCD_GetEnd		;Need to process from the end of the array
+_BCD_show_direct:
+	ld a,(de)
+	and #0b11110000		;Use the high nibble
+	rrca
+	rrca
+	rrca
+	rrca
+	call sys_render_print_score_char
+	ld a,(de)	
+	dec de
+	and #0b00001111		;Now the Low nibble
+	call sys_render_print_score_char	
+	djnz _BCD_show_direct	;Next byte
+    ret
+
+;;-----------------------------------------------------------------
+;;
+;; BCD_GetEnd
+;;
+;;   Draw socre
+;;  Input:  b: number of bytes of the bcd number
+;;          de: source for the first bcd bnumber
+;;          hl: source for the second bcd number
+;;  Output: 
+;;  Destroyed: af, bc,de, hl
+;;
+;;  Chibi Akumas BCD code (https://www.chibiakumas.com/z80/advanced.php#LessonA1)
+;;
+BCD_GetEnd:
+;Some of our commands need to start from the most significant byte
+;This will shift HL and DE along b bytes
+	push bc
+	ld c,b	;We want to add BC, but we need to add one less than the number of bytes
+	dec c
+	ld b,#0
+	add hl,bc
+	ex de, hl	;We've done HL, but we also want to do DE
+	add hl,bc
+	ex de, hl
+	pop bc
+	ret
+
+;;-----------------------------------------------------------------
+;;
+;; sys_render_print_score_char
+;;
+;;   Draw socre
+;;  Input:  a: number to print
+;;          b: position for number
+;;  Output: 
+;;  Destroyed: af, bc,de, hl
+;;
+;;  Chibi Akumas BCD code (https://www.chibiakumas.com/z80/advanced.php#LessonA1)
+;;
+sys_render_print_score_char:
+;Some of our commands need to start from the most significant byte
+;This will shift HL and DE along b bytes
+    push bc
+    push de
+    ld (_score_digit), a
+    ld a,#SCORE_NUM_BYTES
+    sub b
+    ld e,a              ;; store in e the number of digit to print
+    ld h,#S_SCORE_W
+    call h_times_e
+    ld a, #SCORE_X_COORD
+    add l               ;; store in a the X coord for the digit
+    ld c,a              ;; c SCORE_X
+    ld b, #SCORE_Y_COORD
+    ;; Get Screen Pointer
+    ld  de, #CPCT_VMEM_START_ASM    ;; DE = Pointer to video memory start
+    call cpct_getScreenPtr_asm      ;; Get Screen Pointer
+    ;; Return value: HL = Screen Pointer to (X, Y) byte
+    ex de, hl
+    push de
+    ;; put the first byte of the sprite number in hl
+    ld hl, #_s_score_numbers_00
+    ld de, #(S_SCORE_W*S_SCORE_H)
+    ld a, (_score_digit)
+    or a
+    jr z, _draw_number              ;; if number is 0 we just have to print
+    ld b, a
+_loop01:
+    add hl, de
+    djnz _loop01
+_draw_number:                       ;; draw sprite
+    pop de
+    ld c, #S_SCORE_NUMBERS_W
+    ld b, #S_SCORE_NUMBERS_H
+    call cpct_drawSprite_asm
+
+    pop de
+    pop bc
+	ret
+
