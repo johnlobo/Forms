@@ -36,8 +36,8 @@
 next_pieces:: .db #00, #00, #00
 next_pieces_count:: .db #00
 selected_piece:: .db #00
-score:: .db #00, #00, #00, #00
-hi_score:: .db #00, #00, #00, #00
+score:: .db #01, #23, #45, #67
+hi_score:: .db #01, #23, #45, #67
 
 
 ;;

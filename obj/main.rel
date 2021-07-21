@@ -1,5 +1,5 @@
 XL2
-H 2 areas 42 global symbols
+H 2 areas 45 global symbols
 M cpct_keyboard
 S sys_input_init Ref0000
 S man_entity_get_hl_from_piece Ref0000
@@ -17,6 +17,7 @@ S _s_balls_small_3 Ref0000
 S _s_balls_small_4 Ref0000
 S _s_balls_small_5 Ref0000
 S _s_balls_small_6 Ref0000
+S hi_score Ref0000
 S _s_score Ref0000
 S cpct_drawSprite_asm Ref0000
 S sys_input_update Ref0000
@@ -28,6 +29,7 @@ S sys_render_erase_player Ref0000
 S cpct_waitHalts_asm Ref0000
 S piece_types Ref0000
 S cpct_setSeed_mxor_asm Ref0000
+S score Ref0000
 S .__.ABS. Def0000
 S _s_balls_big_0 Ref0000
 S next_pieces_count Ref0000
@@ -59,6 +61,7 @@ S cpct_setVideoMode_asm Ref0000
 S cpct_memset_asm Ref0000
 S sys_render_next_pieces Ref0000
 S _s_dos Ref0000
+S sys_render_score Ref0000
 S cpct_disableFirmware_asm Ref0000
 S cpct_getRandom_mxor_u8_asm Ref0000
 S cpct_drawSolidBox_asm Ref0000
@@ -72,10 +75,10 @@ A _DATA size 0 flags 0 addr 0
 T 00 00
 R 00 00 00 00
 T 00 00 CD 00 00 CD 00 00 CD 00 00 CD
-R 00 00 00 00 02 03 3A 00 02 06 16 00 02 09 13 00
+R 00 00 00 00 02 03 3D 00 02 06 17 00 02 09 14 00
 T 0A 00 00 00 CD 00 00 CD 00 00
-R 00 00 00 00 02 02 14 00 02 05 00 00 02 08 0B 00
+R 00 00 00 00 02 02 15 00 02 05 00 00 02 08 0B 00
 T 12 00
 R 00 00 00 00
 T 12 00 06 12 CD 00 00 CD 00 00 CD 00 00 18 F3
-R 00 00 00 00 02 05 18 00 02 08 12 00 02 0B 1F 00
+R 00 00 00 00 02 05 19 00 02 08 13 00 02 0B 21 00
