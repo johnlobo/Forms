@@ -79,19 +79,24 @@
 ;;===============================================================================
 S_BALLS_BIG_W = 4
 S_BALLS_BIG_H = 11
+
 S_BALLS_SMALL_W = 2
-S_BALLS_SMALL_H = 7
+S_BALLS_SMALL_H = 5
+
 S_HI_SCORE_W = 15
 S_HI_SCORE_H = 7
+
 S_SCORE_W = 10
 S_SCORE_H = 7
+
 S_UNO_W = 2
 S_UNO_H = 16
 S_DOS_W = 3
 S_DOS_H = 16
 S_TRES_W = 3
 S_TRES_H = 16
-S_SCORE_NUMBERS_W = 8
+
+S_SCORE_NUMBERS_W = 4
 S_SCORE_NUMBERS_H = 15
 
 BOARD_X_COORD = 1   ;; X 

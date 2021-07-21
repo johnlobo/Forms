@@ -420,15 +420,15 @@ sys_render_erase_player::
     call cpct_drawSprite_asm            ;; draw sprite
     ret
 
-    ;-----------------------------------------------------------------
-    ;;
-    ;; sys_reder_update
-    ;;
-    ;;   Draw test screen
-    ;;  Input: 
-    ;;  Output: 
-    ;;  Destroyed: af, bc,de, hl
-    ;;
+;-----------------------------------------------------------------
+;;
+;; sys_reder_update
+;;
+;;   Draw test screen
+;;  Input: 
+;;  Output: 
+;;  Destroyed: af, bc,de, hl
+;;
 sys_render_update::
     ld ix, #player1                     ;; moved??
     ld a, e_moved(ix)                   ;;  
@@ -441,7 +441,7 @@ sys_render_update::
 
 ;-----------------------------------------------------------------
 ;;
-;; sys_render_increment_hl
+;; sys_render_increment_hl_small
 ;;
 ;;   Increments hl with the width of a ball
 ;;  Input: 
@@ -457,7 +457,7 @@ sys_render_increment_hl_small::
 
 ;-----------------------------------------------------------------
 ;;
-;; sys_render_draw_player_tile
+;; sys_render_draw_small_tile
 ;;
 ;;   Draw player tile
 ;;  Input:  de screen address to draw the tile 
@@ -470,7 +470,7 @@ sys_render_draw_small_tile::
     push de
     push bc
     ex de, hl
-    ld   hl, #_s_balls_small_6
+    ld   hl, #_s_balls_small_0
     ld c, #S_BALLS_SMALL_W            ;; load in c the sprite width 
     ld b, #S_BALLS_SMALL_H            ;; load in b sprite height
     call cpct_drawSprite_asm        ;; draw sprite
