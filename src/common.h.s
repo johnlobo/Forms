@@ -32,6 +32,7 @@
 .globl _s_balls_big_5
 .globl _s_balls_big_6
 .globl _s_balls_big_7
+.globl _s_balls_big_8
 .globl _s_balls_small_0
 .globl _s_balls_small_1
 .globl _s_balls_small_2
@@ -106,13 +107,15 @@ BOARD_COLS = 10     ;;
 
 HIGH_SCORE_TITLE_X_COORD = 4        ;;
 HIGH_SCORE_TITLE_Y_COORD = 6        ;;   
-HIGH_SCORE_X_COORD = 4
+HIGH_SCORE_X_COORD = 1
 HIGH_SCORE_Y_COORD = 20
+HIGH_SCORE_SCREEN_ADDRESS = 0xE0A1
 
 SCORE_TITLE_X_COORD = 57       ;;
 SCORE_TITLE_Y_COORD = 20       ;; 
 SCORE_X_COORD = 57
 SCORE_Y_COORD = 40
+SCORE_SCREEN_ADDRESS = 0xE16D
 
 UNO_TITLE_X_COORD = 47       ;;
 UNO_TITLE_Y_COORD = 80       ;;

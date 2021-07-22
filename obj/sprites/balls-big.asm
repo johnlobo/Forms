@@ -8,6 +8,7 @@
 ;--------------------------------------------------------
 ; Public variables in this module
 ;--------------------------------------------------------
+	.globl _s_balls_big_8
 	.globl _s_balls_big_7
 	.globl _s_balls_big_6
 	.globl _s_balls_big_5
@@ -408,5 +409,50 @@ _s_balls_big_7:
 	.db #0xc3	; 195
 	.db #0xc3	; 195
 	.db #0x00	; 0
+_s_balls_big_8:
+	.db #0x89	; 137
+	.db #0x00	; 0
+	.db #0x44	; 68	'D'
+	.db #0x88	; 136
+	.db #0xcc	; 204
+	.db #0x02	; 2
+	.db #0x44	; 68	'D'
+	.db #0x88	; 136
+	.db #0x44	; 68	'D'
+	.db #0x88	; 136
+	.db #0xcc	; 204
+	.db #0x00	; 0
+	.db #0x44	; 68	'D'
+	.db #0xcc	; 204
+	.db #0xcc	; 204
+	.db #0x00	; 0
+	.db #0x00	; 0
+	.db #0xcc	; 204
+	.db #0x88	; 136
+	.db #0x00	; 0
+	.db #0x00	; 0
+	.db #0xcc	; 204
+	.db #0x88	; 136
+	.db #0x00	; 0
+	.db #0x44	; 68	'D'
+	.db #0xcc	; 204
+	.db #0xcc	; 204
+	.db #0x00	; 0
+	.db #0x44	; 68	'D'
+	.db #0x8c	; 140
+	.db #0xcc	; 204
+	.db #0x08	; 8
+	.db #0x44	; 68	'D'
+	.db #0x08	; 8
+	.db #0x44	; 68	'D'
+	.db #0x08	; 8
+	.db #0xcc	; 204
+	.db #0x08	; 8
+	.db #0x44	; 68	'D'
+	.db #0x88	; 136
+	.db #0xcc	; 204
+	.db #0x08	; 8
+	.db #0x44	; 68	'D'
+	.db #0x88	; 136
 	.area _INITIALIZER
 	.area _CABS (ABS)

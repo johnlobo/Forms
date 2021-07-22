@@ -48,7 +48,7 @@ _main::
    ;; Disable firmware to prevent it from interfering with string drawing
    call cpct_disableFirmware_asm
 
-   call sys_board_init
+   ;call sys_board_init
    call sys_render_init
    call sys_render_game_screen
    call sys_input_init
