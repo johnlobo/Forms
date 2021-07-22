@@ -2743,6 +2743,7 @@ Hexadecimal [16-Bits]
                              25 .globl sys_render_draw_piece_small
                              26 .globl sys_render_next_pieces
                              27 .globl sys_render_score
+                             28 .globl sys_render_hi_score
 ASxxxx Assembler V02.00 + NoICE + SDCC mods  (Zilog Z80 / Hitachi HD64180), page 54.
 Hexadecimal [16-Bits]
 
@@ -2769,7 +2770,11 @@ Hexadecimal [16-Bits]
                              18 
                              19 .module board_system
                              20 
-                             21 .globl sys_board_init
+                             21 .globl board
+                             22 
+                             23 .globl sys_board_init
+                             24 .globl sys_board_cell_content
+                             25 .globl sys_board_cell_sprite
 ASxxxx Assembler V02.00 + NoICE + SDCC mods  (Zilog Z80 / Hitachi HD64180), page 55.
 Hexadecimal [16-Bits]
 
@@ -2926,119 +2931,122 @@ Hexadecimal [16-Bits]
                              32 .globl _s_balls_big_5
                              33 .globl _s_balls_big_6
                              34 .globl _s_balls_big_7
-                             35 .globl _s_balls_small_0
-                             36 .globl _s_balls_small_1
-                             37 .globl _s_balls_small_2
-                             38 .globl _s_balls_small_3
-                             39 .globl _s_balls_small_4
-                             40 .globl _s_balls_small_5
-                             41 .globl _s_balls_small_6
-                             42 .globl _g_palette0
-                             43 .globl _s_hi_score
-                             44 .globl _s_score
-                             45 .globl _s_uno
-                             46 .globl _s_dos
-                             47 .globl _s_tres
-                             48 .globl _s_score_numbers_00
-                             49 .globl _s_score_numbers_01
-                             50 .globl _s_score_numbers_02
-                             51 .globl _s_score_numbers_03
-                             52 .globl _s_score_numbers_04
-                             53 .globl _s_score_numbers_05
-                             54 .globl _s_score_numbers_06
+                             35 .globl _s_balls_big_8
+                             36 .globl _s_balls_small_0
+                             37 .globl _s_balls_small_1
+                             38 .globl _s_balls_small_2
+                             39 .globl _s_balls_small_3
+                             40 .globl _s_balls_small_4
+                             41 .globl _s_balls_small_5
+                             42 .globl _s_balls_small_6
+                             43 .globl _g_palette0
+                             44 .globl _s_hi_score
+                             45 .globl _s_score
+                             46 .globl _s_uno
+                             47 .globl _s_dos
+                             48 .globl _s_tres
+                             49 .globl _s_score_numbers_00
+                             50 .globl _s_score_numbers_01
+                             51 .globl _s_score_numbers_02
+                             52 .globl _s_score_numbers_03
+                             53 .globl _s_score_numbers_04
+                             54 .globl _s_score_numbers_05
 ASxxxx Assembler V02.00 + NoICE + SDCC mods  (Zilog Z80 / Hitachi HD64180), page 59.
 Hexadecimal [16-Bits]
 
 
 
-                             55 .globl _s_score_numbers_07
-                             56 .globl _s_score_numbers_08
-                             57 .globl _s_score_numbers_09
-                             58 
-                             59 ;;===============================================================================
-                             60 ;; CPCTELERA FUNCTIONS
-                             61 ;;===============================================================================
-                             62 .globl cpct_disableFirmware_asm
-                             63 .globl cpct_getScreenPtr_asm
-                             64 .globl cpct_drawSprite_asm
-                             65 .globl cpct_setVideoMode_asm
-                             66 .globl cpct_setPalette_asm
-                             67 .globl cpct_setPALColour_asm
-                             68 .globl cpct_memset_asm
-                             69 .globl cpct_getScreenToSprite_asm
-                             70 .globl cpct_scanKeyboard_asm
-                             71 .globl cpct_isKeyPressed_asm
-                             72 .globl cpct_waitHalts_asm
-                             73 .globl cpct_drawSolidBox_asm
-                             74 .globl cpct_getRandom_mxor_u8_asm
-                             75 .globl cpct_setSeed_mxor_asm
-                             76 
-                             77 ;;===============================================================================
-                             78 ;; DEFINED CONSTANTS
-                             79 ;;===============================================================================
-                     0004    80 S_BALLS_BIG_W = 4
-                     000B    81 S_BALLS_BIG_H = 11
-                             82 
-                     0002    83 S_BALLS_SMALL_W = 2
-                     0005    84 S_BALLS_SMALL_H = 5
-                             85 
-                     000F    86 S_HI_SCORE_W = 15
-                     0007    87 S_HI_SCORE_H = 7
-                             88 
-                     000A    89 S_SCORE_W = 10
-                     0007    90 S_SCORE_H = 7
-                             91 
-                     0002    92 S_UNO_W = 2
-                     0010    93 S_UNO_H = 16
-                     0003    94 S_DOS_W = 3
-                     0010    95 S_DOS_H = 16
-                     0003    96 S_TRES_W = 3
-                     0010    97 S_TRES_H = 16
-                             98 
-                     0004    99 S_SCORE_NUMBERS_W = 4
-                     000F   100 S_SCORE_NUMBERS_H = 15
-                            101 
-                     0001   102 BOARD_X_COORD = 1   ;; X 
-                     0036   103 BOARD_Y_COORD = 54  ;; Y 
-                     000A   104 BOARD_ROWS = 10     ;;
-                     000A   105 BOARD_COLS = 10     ;;
-                            106 
-                     0004   107 HIGH_SCORE_TITLE_X_COORD = 4        ;;
-                     0006   108 HIGH_SCORE_TITLE_Y_COORD = 6        ;;   
-                     0004   109 HIGH_SCORE_X_COORD = 4
+                             55 .globl _s_score_numbers_06
+                             56 .globl _s_score_numbers_07
+                             57 .globl _s_score_numbers_08
+                             58 .globl _s_score_numbers_09
+                             59 
+                             60 ;;===============================================================================
+                             61 ;; CPCTELERA FUNCTIONS
+                             62 ;;===============================================================================
+                             63 .globl cpct_disableFirmware_asm
+                             64 .globl cpct_getScreenPtr_asm
+                             65 .globl cpct_drawSprite_asm
+                             66 .globl cpct_setVideoMode_asm
+                             67 .globl cpct_setPalette_asm
+                             68 .globl cpct_setPALColour_asm
+                             69 .globl cpct_memset_asm
+                             70 .globl cpct_getScreenToSprite_asm
+                             71 .globl cpct_scanKeyboard_asm
+                             72 .globl cpct_isKeyPressed_asm
+                             73 .globl cpct_waitHalts_asm
+                             74 .globl cpct_drawSolidBox_asm
+                             75 .globl cpct_getRandom_mxor_u8_asm
+                             76 .globl cpct_setSeed_mxor_asm
+                             77 
+                             78 ;;===============================================================================
+                             79 ;; DEFINED CONSTANTS
+                             80 ;;===============================================================================
+                     0004    81 S_BALLS_BIG_W = 4
+                     000B    82 S_BALLS_BIG_H = 11
+                             83 
+                     0002    84 S_BALLS_SMALL_W = 2
+                     0005    85 S_BALLS_SMALL_H = 5
+                             86 
+                     000F    87 S_HI_SCORE_W = 15
+                     0007    88 S_HI_SCORE_H = 7
+                             89 
+                     000A    90 S_SCORE_W = 10
+                     0007    91 S_SCORE_H = 7
+                             92 
+                     0002    93 S_UNO_W = 2
+                     0010    94 S_UNO_H = 16
+                     0003    95 S_DOS_W = 3
+                     0010    96 S_DOS_H = 16
+                     0003    97 S_TRES_W = 3
+                     0010    98 S_TRES_H = 16
+                             99 
+                     0004   100 S_SCORE_NUMBERS_W = 4
+                     000F   101 S_SCORE_NUMBERS_H = 15
+                            102 
+                     0001   103 BOARD_X_COORD = 1   ;; X 
+                     0036   104 BOARD_Y_COORD = 54  ;; Y 
+                     000A   105 BOARD_ROWS = 10     ;;
+                     000A   106 BOARD_COLS = 10     ;;
+                            107 
+                     0004   108 HIGH_SCORE_TITLE_X_COORD = 4        ;;
+                     0006   109 HIGH_SCORE_TITLE_Y_COORD = 6        ;;   
 ASxxxx Assembler V02.00 + NoICE + SDCC mods  (Zilog Z80 / Hitachi HD64180), page 60.
 Hexadecimal [16-Bits]
 
 
 
-                     0014   110 HIGH_SCORE_Y_COORD = 20
-                            111 
-                     0039   112 SCORE_TITLE_X_COORD = 57       ;;
-                     0014   113 SCORE_TITLE_Y_COORD = 20       ;; 
-                     0039   114 SCORE_X_COORD = 57
-                     0028   115 SCORE_Y_COORD = 40
-                            116 
-                     002F   117 UNO_TITLE_X_COORD = 47       ;;
-                     0050   118 UNO_TITLE_Y_COORD = 80       ;;
-                     003C   119 DOS_TITLE_X_COORD = 60       ;;
-                     0050   120 DOS_TITLE_Y_COORD = 80       ;; 
-                     0047   121 TRES_TITLE_X_COORD = 71       ;;
-                     0050   122 TRES_TITLE_Y_COORD = 80       ;; 
-                            123 
-                     0005   124 PIECE_HOR_SIZE = 5
-                     0005   125 PIECE_VER_SIZE = 5
+                     0001   110 HIGH_SCORE_X_COORD = 1
+                     0014   111 HIGH_SCORE_Y_COORD = 20
+                     E0A1   112 HIGH_SCORE_SCREEN_ADDRESS = 0xE0A1
+                            113 
+                     0039   114 SCORE_TITLE_X_COORD = 57       ;;
+                     0014   115 SCORE_TITLE_Y_COORD = 20       ;; 
+                     0039   116 SCORE_X_COORD = 57
+                     0028   117 SCORE_Y_COORD = 40
+                     E16D   118 SCORE_SCREEN_ADDRESS = 0xE16D
+                            119 
+                     002F   120 UNO_TITLE_X_COORD = 47       ;;
+                     0050   121 UNO_TITLE_Y_COORD = 80       ;;
+                     003C   122 DOS_TITLE_X_COORD = 60       ;;
+                     0050   123 DOS_TITLE_Y_COORD = 80       ;; 
+                     0047   124 TRES_TITLE_X_COORD = 71       ;;
+                     0050   125 TRES_TITLE_Y_COORD = 80       ;; 
                             126 
-                     0012   127 MAX_PIECE = 18
-                            128 
-                     002E   129 NEXT_PIECE_1_X = 46
-                     006E   130 NEXT_PIECE_1_Y = 110
-                     003B   131 NEXT_PIECE_2_X = 59
-                     006E   132 NEXT_PIECE_2_Y = 110
-                     0046   133 NEXT_PIECE_3_X = 70
-                     006E   134 NEXT_PIECE_3_Y = 110
-                            135 
-                     0004   136 SCORE_NUM_BYTES = 4
-                            137 
+                     0005   127 PIECE_HOR_SIZE = 5
+                     0005   128 PIECE_VER_SIZE = 5
+                            129 
+                     0012   130 MAX_PIECE = 18
+                            131 
+                     002E   132 NEXT_PIECE_1_X = 46
+                     006E   133 NEXT_PIECE_1_Y = 110
+                     003B   134 NEXT_PIECE_2_X = 59
+                     006E   135 NEXT_PIECE_2_Y = 110
+                     0046   136 NEXT_PIECE_3_X = 70
+                     006E   137 NEXT_PIECE_3_Y = 110
+                            138 
+                     0004   139 SCORE_NUM_BYTES = 4
+                            140 
 ASxxxx Assembler V02.00 + NoICE + SDCC mods  (Zilog Z80 / Hitachi HD64180), page 61.
 Hexadecimal [16-Bits]
 
@@ -3068,18 +3076,18 @@ Hexadecimal [16-Bits]
                              48    ;; Disable firmware to prevent it from interfering with string drawing
    0000 CD 00 00      [17]   49    call cpct_disableFirmware_asm
                              50 
-   0003 CD 00 00      [17]   51    call sys_board_init
-   0006 CD 00 00      [17]   52    call sys_render_init
-   0009 CD 00 00      [17]   53    call sys_render_game_screen
-   000C CD 00 00      [17]   54    call sys_input_init
+                             51    ;call sys_board_init
+   0003 CD 00 00      [17]   52    call sys_render_init
+   0006 CD 00 00      [17]   53    call sys_render_game_screen
+   0009 CD 00 00      [17]   54    call sys_input_init
                              55 
-   000F CD 00 00      [17]   56    call man_game_init
+   000C CD 00 00      [17]   56    call man_game_init
                              57 
                              58    ;; Loop forever
-   0012                      59 loop:
-   0012 06 12         [ 7]   60    ld b,#18
-   0014 CD 00 00      [17]   61    call cpct_waitHalts_asm
+   000F                      59 loop:
+   000F 06 12         [ 7]   60    ld b,#18
+   0011 CD 00 00      [17]   61    call cpct_waitHalts_asm
                              62 
-   0017 CD 00 00      [17]   63    call sys_input_update
-   001A CD 00 00      [17]   64    call sys_render_update
-   001D 18 F3         [12]   65    jr    loop
+   0014 CD 00 00      [17]   63    call sys_input_update
+   0017 CD 00 00      [17]   64    call sys_render_update
+   001A 18 F3         [12]   65    jr    loop

@@ -18,4 +18,8 @@
 
 .module board_system
 
+.globl board
+
 .globl sys_board_init
+.globl sys_board_cell_content
+.globl sys_board_cell_sprite

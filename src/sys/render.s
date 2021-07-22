@@ -20,6 +20,7 @@
 .include "../common.h.s"
 .include "man/entity.h.s"
 .include "man/game.h.s"
+.include "sys/board.h.s"
 .include "util.h.s"
 
 .module render_system
@@ -33,13 +34,14 @@
 ;;
 .area _DATA
 
-_piece_byte::    .db #0
-_piece_x::  .db #0
-_piece_y::  .db #0
-_piece_width:: .db #0
-_piece_height:: .db #0
-_piece:: .db #00
-_score_digit: .db #00
+_piece_byte::   .db #00
+_piece_x::      .db #00
+_piece_y::      .db #00
+_piece_width::  .db #00
+_piece_height:: .db #00
+_piece::        .db #00
+_score_digit:   .db #00
+_fila:          .db #00
 
 ;;
 ;; Start of _CODE area
@@ -158,6 +160,9 @@ _render_board_loop02:
     push bc
     ld a, #BOARD_ROWS           ;; Initial number of times
     sub b                       ;; Minus the number of rows drawn
+    
+    ld (current_row + 1), a     ;; Store current row for printing sprite (self modifying code)
+    
     ld h, a                     ;; Move to h
     ld e, #S_BALLS_BIG_H + 1    ;; Cell height + 1
     call h_times_e              ;; Number of rows drawn x cell height + 1
@@ -173,7 +178,18 @@ _render_board_loop02:
 _render_board_loop01:
     push bc                     ;; store number of columns in the stack
     push de                     ;; store screen address in the stack
-    ld hl, #_s_balls_big_7      ;; load in HL the address of the sprite
+
+    ;;ld hl, #_s_balls_big_7    ;; load in HL the address of the sprite
+
+    ld a, #BOARD_COLS           ;;
+    sub b                      ;;
+    ld c, a                     ;; load in a the current col
+
+current_row:
+    ld b, #00                   ;; load in b current row 
+    call sys_board_cell_sprite  ;; retrieve in hl the addres of the corresponding sprite
+
+
     ld c, #S_BALLS_BIG_W        ;; load in c the sprite width 
     ld b, #S_BALLS_BIG_H        ;; load in b sprite height
     call cpct_drawSprite_asm    ;; draw sprite
@@ -258,6 +274,8 @@ sys_render_increment_hl::
 ;;
 ;;   Draw player tile
 ;;  Input:  de screen address to draw the tile 
+;;          b: current row (inverse)
+;;          c: current col
 ;;  Output: 
 ;;  Destroyed: AF, BC, DE, HL
 ;;
@@ -266,11 +284,41 @@ sys_render_draw_player_tile::
     push hl
     push de
     push bc
+
     ex de, hl
+
+    ;; check if cell board is empty
+    ld a, e_h(ix)                           ;; Store heith of piece in a
+    sub b                                   ;; Substract b to know current row
+    ld (draw_player_tile_add_row + 1), a    ;; Self modifying code to add the current row
+    ld a, c
+    ld (draw_player_tile_add_col + 1), a    ;; Self modifying code to add the current col
+    ld a, e_y(ix)                           ;; load y coord in a
+draw_player_tile_add_row:
+    add #00                                 ;; add current row (self modifying code)
+    ld b, a                                 ;; and save the same value in b
+    sla a
+    sla a
+    sla a                                   ;; multiply by 8
+    add b
+    add b                                   ;; then add 2 times coord y and thats it.
+    ld b, e_x(ix)
+    add b                                   ;; then add the x coord and we have the offset for the cell
+draw_player_tile_add_col:
+    add #00                                 ;; add current row (self modifying code)
+    ld hl, #board
+    add l
+    ld l,a                                  ;; Then add the offset
+    ld a, (hl)                      ;; load the content of the board in a
     ld   hl, #_s_balls_big_5
+    or a                            ;; check if the content is 0
+    jr z, draw_player_tile_draw     ;; if 0 just print the default tile
+    ld hl, #_s_balls_big_8          ;; other wise draw the not valid tile
+draw_player_tile_draw:
     ld c, #S_BALLS_BIG_W            ;; load in c the sprite width 
     ld b, #S_BALLS_BIG_H            ;; load in b sprite height
     call cpct_drawSprite_asm        ;; draw sprite
+
     pop bc
     pop de
     pop hl
@@ -287,7 +335,6 @@ sys_render_draw_player_tile::
 ;;
 sys_render_draw_player1::
     ld ix, #player1                 ;; move the address of p1 to ix
-
     ld e, e_x(ix)                   ;; Calculate x screen position
     ld h, #S_BALLS_BIG_W            ;;
     call h_times_e                  ;; e_x(ix) x S_BALLS_BIG_W
@@ -325,13 +372,15 @@ _render_draw_start:
     call sys_render_capture_background  ;; capture background
 
     ld a, e_type(ix)                    ;; Type of piece
-    call man_entity_get_hl_from_piece   ;; get address for a type o piece in hl
+    call man_entity_get_hl_from_piece   ;; get address for a type of piece in hl
     inc hl                          ;; skip piece width
     inc hl                          ;; skip piece height
 
     ld b, e_h(ix)                   ;; Number of rows to loop (piece_height)
 
 _render_dp_loop_0:
+    ld a,b
+    ld (_fila), a
     push bc                         ;; save number of rows in the stack
     push hl                         ;; store the start of the model of the piece in the stack
 
@@ -364,26 +413,41 @@ _render_dp_loop_0:
     ex de, hl                       ;; load in hl the screen to draw
  
     bit 4,a                         ;; first bit
+    ld c, #00                       ;; load number of col in c
+    ld a, (_fila)
+    ld b, a
     call nz, sys_render_draw_player_tile
     call sys_render_increment_hl    ;; increment hl to next sprite position
     
     ld a, (_piece_byte)
-    bit 3,a                         ;; second bit
+    bit 3,a  
+    ld c, #01                       ;; load number of col in c
+    ld a, (_fila)
+    ld b, a
     call nz, sys_render_draw_player_tile
     call sys_render_increment_hl    ;; increment hl to next sprite position    
 
     ld a, (_piece_byte)
-    bit 2,a                         ;; third bit
+    bit 2,a  
+    ld c, #02                       ;; load number of col in c
+    ld a, (_fila)
+    ld b, a
     call nz, sys_render_draw_player_tile
     call sys_render_increment_hl    ;; increment hl to next sprite position    
 
     ld a, (_piece_byte)
-    bit 1,a                         ;; forth bit
+    bit 1,a  
+    ld c, #03                       ;; load number of col in c
+    ld a, (_fila)
+    ld b, a
     call nz, sys_render_draw_player_tile
     call sys_render_increment_hl    ;; increment hl to next sprite position 
 
     ld a, (_piece_byte)
-    bit 0,a                         ;; forth bit
+    bit 0,a  
+    ld c, #04                       ;; load number of col in c
+    ld a, (_fila)
+    ld b, a
     call nz, sys_render_draw_player_tile
     call sys_render_increment_hl    ;; increment hl to next sprite position 
 
@@ -623,7 +687,22 @@ sys_render_next_pieces::
 ;;
 sys_render_score::
     ld de,#score
-    ld b, #SCORE_NUM_BYTES
+    ld hl, #SCORE_SCREEN_ADDRESS
+    call sys_render_BCD_show
+    ret
+
+;-----------------------------------------------------------------
+;;
+;; sys_render_score
+;;
+;;   Draw socre
+;;  Input: 
+;;  Output: 
+;;  Destroyed: af, bc,de, hl
+;;
+sys_render_hi_score::
+    ld de,#hi_score
+    ld hl, #HIGH_SCORE_SCREEN_ADDRESS
     call sys_render_BCD_show
     ret
 
@@ -632,15 +711,16 @@ sys_render_score::
 ;; sys_render_BCD_show
 ;;
 ;;   Draw score
-;;  Input:  de: source of BCD
-;;          b: number of bytes of the BCD number
+;;  Input:  hl: screen address to render numbers
+;;          de: source of BCD
 ;;  Output: 
 ;;  Destroyed: af, bc,de, hl
 ;;
 ;;  Chibi Akumas BCD code (https://www.chibiakumas.com/z80/advanced.php#LessonA1)
 ;;
 sys_render_BCD_show::
-    call BCD_GetEnd		;Need to process from the end of the array
+    ld b, #SCORE_NUM_BYTES
+    ld c, #0
 _BCD_show_direct:
 	ld a,(de)
 	and #0b11110000		;Use the high nibble
@@ -650,11 +730,63 @@ _BCD_show_direct:
 	rrca
 	call sys_render_print_score_char
 	ld a,(de)	
-	dec de
+	inc de
+    inc c
 	and #0b00001111		;Now the Low nibble
-	call sys_render_print_score_char	
+	call sys_render_print_score_char
+    inc c	
 	djnz _BCD_show_direct	;Next byte
     ret
+
+
+;;-----------------------------------------------------------------
+;;
+;; sys_render_print_score_char
+;;
+;;   Draw socre
+;;  Input:  a: number to print
+;;          hl: screen address
+;;          c: position
+;;  Output: 
+;;  Destroyed: a
+;;
+sys_render_print_score_char::
+;Some of our commands need to start from the most significant byte
+;This will shift HL and DE along b bytes
+    push bc
+    push de
+    push hl
+
+    ;; point hl to number sprite
+    ld hl, #_s_score_numbers_00                 ;; load in hl the initial address of the score numbers sprites
+    ld b, a                                     ;; store digit to draw in b
+    ld a, c                                     ;; load digit positio in a
+    ld (_retrive_digit_position+1),a            ;; self modifying code to load digit position without the stack
+    or a
+    jr z, _print_score_draw_number              ;; if number to show is 0 offset = 0
+    ld de, #(S_SCORE_NUMBERS_W * S_SCORE_NUMBERS_H)
+_print_score_char_loop0:
+    add hl, de
+    djnz _print_score_char_loop0    
+    ;; draw number
+_print_score_draw_number:                       ;; draw sprite
+    pop de                                      ;; retrieve screen addres to draw form stack
+    push de                                     ;; restore the stack
+_retrive_digit_position:
+    ld c, #00                                   ;; load digit position in c (self modifying code)
+    sla c
+    sla c                                       ;; multiply digit position by 4 wich is the width of the number sprite (hard coded) to get the screen offset
+    ld a, e                                     ;;
+    add c                                       ;; add the offset to the screen address
+    ld e, a                                     ;;
+    ld c, #S_SCORE_NUMBERS_W
+    ld b, #S_SCORE_NUMBERS_H
+    call cpct_drawSprite_asm
+
+    pop hl
+    pop de
+    pop bc
+	ret
 
 ;;-----------------------------------------------------------------
 ;;
@@ -682,57 +814,3 @@ BCD_GetEnd:
 	ex de, hl
 	pop bc
 	ret
-
-;;-----------------------------------------------------------------
-;;
-;; sys_render_print_score_char
-;;
-;;   Draw socre
-;;  Input:  a: number to print
-;;          b: position for number
-;;  Output: 
-;;  Destroyed: af, bc,de, hl
-;;
-;;  Chibi Akumas BCD code (https://www.chibiakumas.com/z80/advanced.php#LessonA1)
-;;
-sys_render_print_score_char:
-;Some of our commands need to start from the most significant byte
-;This will shift HL and DE along b bytes
-    push bc
-    push de
-    ld (_score_digit), a
-    ld a,#SCORE_NUM_BYTES
-    sub b
-    ld e,a              ;; store in e the number of digit to print
-    ld h,#S_SCORE_W
-    call h_times_e
-    ld a, #SCORE_X_COORD
-    add l               ;; store in a the X coord for the digit
-    ld c,a              ;; c SCORE_X
-    ld b, #SCORE_Y_COORD
-    ;; Get Screen Pointer
-    ld  de, #CPCT_VMEM_START_ASM    ;; DE = Pointer to video memory start
-    call cpct_getScreenPtr_asm      ;; Get Screen Pointer
-    ;; Return value: HL = Screen Pointer to (X, Y) byte
-    ex de, hl
-    push de
-    ;; put the first byte of the sprite number in hl
-    ld hl, #_s_score_numbers_00
-    ld de, #(S_SCORE_W*S_SCORE_H)
-    ld a, (_score_digit)
-    or a
-    jr z, _draw_number              ;; if number is 0 we just have to print
-    ld b, a
-_loop01:
-    add hl, de
-    djnz _loop01
-_draw_number:                       ;; draw sprite
-    pop de
-    ld c, #S_SCORE_NUMBERS_W
-    ld b, #S_SCORE_NUMBERS_H
-    call cpct_drawSprite_asm
-
-    pop de
-    pop bc
-	ret
-

@@ -27,5 +27,8 @@ extern const u8 s_balls_big_6[4 * 11];
 #define S_BALLS_BIG_7_W 4
 #define S_BALLS_BIG_7_H 11
 extern const u8 s_balls_big_7[4 * 11];
+#define S_BALLS_BIG_8_W 4
+#define S_BALLS_BIG_8_H 11
+extern const u8 s_balls_big_8[4 * 11];
 
 #endif

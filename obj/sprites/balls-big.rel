@@ -1,9 +1,9 @@
 XL2
-H 9 areas 9 global symbols
+H 9 areas A global symbols
 M balls_big
 O -mz80
 S .__.ABS. Def0000
-A _CODE size 160 flags 0 addr 0
+A _CODE size 18C flags 0 addr 0
 S _s_balls_big_0 Def0000
 S _s_balls_big_1 Def002C
 S _s_balls_big_2 Def0058
@@ -12,6 +12,7 @@ S _s_balls_big_4 Def00B0
 S _s_balls_big_5 Def00DC
 S _s_balls_big_6 Def0108
 S _s_balls_big_7 Def0134
+S _s_balls_big_8 Def0160
 A _DATA size 0 flags 0 addr 0
 A _INITIALIZED size 0 flags 0 addr 0
 A _DABS size 0 flags 8 addr 0
@@ -99,4 +100,14 @@ R 00 00 00 00
 T 50 01 82 00 00 82 82 00 00 82 82 00 00 82 41 C3
 R 00 00 00 00
 T 5E 01 C3 00
+R 00 00 00 00
+T 60 01
+R 00 00 00 00
+T 60 01 89 00 44 88 CC 02 44 88 44 88 CC 00 44 CC
+R 00 00 00 00
+T 6E 01 CC 00 00 CC 88 00 00 CC 88 00 44 CC CC 00
+R 00 00 00 00
+T 7C 01 44 8C CC 08 44 08 44 08 CC 08 44 88 CC 08
+R 00 00 00 00
+T 8A 01 44 88
 R 00 00 00 00

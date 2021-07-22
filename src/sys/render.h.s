@@ -25,3 +25,4 @@
 .globl sys_render_draw_piece_small
 .globl sys_render_next_pieces
 .globl sys_render_score
+.globl sys_render_hi_score
