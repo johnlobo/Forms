@@ -156,26 +156,30 @@ sys_render_game_screen::
 ;;  Modified: af, hl, de, bc
 ;;
 sys_render_cell::
-    ;; set width and heigth for further processing
-    ld a, c                         ;; store width in a
+    ;; set x and y for further processing
+    ld a, c                         ;; store x in a
     ld (sr_cell_x + 1), a           ;; Self modifying code to set x coord of the board
-    ld a, b                         ;; store width in a
+    ld a, b                         ;; store y in a
     ld (sr_cell_y + 1), a           ;; Self modifying code to set y coord of the board
     
     ;; calculate x coord of screen
-    ld e, c
+    ld a, e_x(ix)
+    add c
+    ld e, a
     ld h, #S_BALLS_BIG_W
     call h_times_e
     ld a, #BOARD_X_COORD
-    add h
+    add l
     ld c, a
 
     ;; calculate y coord of screen
-    ld e, b
+    ld a, e_y(ix)
+    add b
+    ld e, a
     ld h, #S_BALLS_BIG_H
     call h_times_e
     ld a, #BOARD_Y_COORD
-    add h
+    add l
     ld b, a
 
     ;; calculate screen address
