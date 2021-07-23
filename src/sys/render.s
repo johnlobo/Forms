@@ -147,6 +147,56 @@ sys_render_game_screen::
 
 ;-----------------------------------------------------------------
 ;;
+;; sys_render_cell
+;;
+;;   Renders a single cell of the board
+;;  Input:  b: y coord
+;;          c: x coord
+;;  Output:
+;;  Modified: af, hl, de, bc
+;;
+sys_render_cell::
+    ;; set width and heigth for further processing
+    ld a, c                         ;; store width in a
+    ld (sr_cell_x + 1), a           ;; Self modifying code to set x coord of the board
+    ld a, b                         ;; store width in a
+    ld (sr_cell_y + 1), a           ;; Self modifying code to set y coord of the board
+    
+    ;; calculate x coord of screen
+    ld e, c
+    ld h, #S_BALLS_BIG_W
+    call h_times_e
+    ld a, #BOARD_X_COORD
+    add h
+    ld c, a
+
+    ;; calculate y coord of screen
+    ld e, b
+    ld h, #S_BALLS_BIG_H
+    call h_times_e
+    ld a, #BOARD_Y_COORD
+    add h
+    ld b, a
+
+    ;; calculate screen address
+    ld de, #CPCT_VMEM_START_ASM         ;; DE = Pointer to start of the screen
+    call cpct_getScreenPtr_asm          ;; Calculate video memory location and return it in HL
+    ex de, hl                           ;; move screen address to de
+
+    ;; draw sprite
+sr_cell_x:    
+    ld c, #00
+sr_cell_y:    
+    ld b, #00
+    call sys_board_cell_sprite
+    ld c, #S_BALLS_BIG_W                ;; load in c the sprite width 
+    ld b, #S_BALLS_BIG_H                ;; load in b sprite height
+    call cpct_drawSprite_asm            ;; draw sprite
+
+    ret
+
+;-----------------------------------------------------------------
+;;
 ;; sys_render_board
 ;;
 ;;   Renders board
@@ -182,7 +232,7 @@ _render_board_loop01:
     ;;ld hl, #_s_balls_big_7    ;; load in HL the address of the sprite
 
     ld a, #BOARD_COLS           ;;
-    sub b                      ;;
+    sub b                       ;;
     ld c, a                     ;; load in a the current col
 
 current_row:
@@ -195,11 +245,7 @@ current_row:
     call cpct_drawSprite_asm    ;; draw sprite
     pop hl                      ;; retrieve the destiny screen adress from the stack in hl
     ld a, #S_BALLS_BIG_W        ;;--
-    add l                       ;;
-    ld l, a                     ;; add hl and S_BALLS_BIG_W
-    ld a, #0                    ;;
-    adc h                       ;;
-    ld h, a                     ;;--
+    add_hl_a                    ;; add hl and S_BALLS_BIG_W
     ex de, hl                   ;; load screen address in de
     pop bc                      ;; retrieve b from the stack
     djnz _render_board_loop01
@@ -307,8 +353,7 @@ draw_player_tile_add_row:
 draw_player_tile_add_col:
     add #00                                 ;; add current row (self modifying code)
     ld hl, #board
-    add l
-    ld l,a                                  ;; Then add the offset
+    add_hl_a                                  ;; Then add the offset
     ld a, (hl)                      ;; load the content of the board in a
     ld   hl, #_s_balls_big_5
     or a                            ;; check if the content is 0

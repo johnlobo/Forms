@@ -50,7 +50,7 @@ _main::
 
    ;call sys_board_init
    call sys_render_init
-   call sys_render_game_screen
+   
    call sys_input_init
 
    call man_game_init
@@ -59,7 +59,7 @@ _main::
 loop:
    ld b,#18
    call cpct_waitHalts_asm
+   
+   call man_game_update
 
-   call sys_input_update
-   call sys_render_update
    jr    loop

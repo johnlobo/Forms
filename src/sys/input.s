@@ -50,22 +50,33 @@ sys_input_init::
 sys_input_update::
     ld ix, #player1                     ;; get player1 struct
     call cpct_scanKeyboard_asm          ;; scan keyboard
-    ld hl, #Key_O                       ;;    
-    call cpct_isKeyPressed_asm          ;; check key O
+
+    ld hl, #Key_O                       ;; check key O   
+    call cpct_isKeyPressed_asm          ;; 
     jp nz, _move_left                   ;; if press O move left
-    ld hl, #Key_P                       ;; 
-    call cpct_isKeyPressed_asm          ;; check key P
+    
+    ld hl, #Key_P                       ;; check key P
+    call cpct_isKeyPressed_asm          ;; 
     jp nz, _move_right                  ;; if press P move right    
-    ld hl, #Key_Q
-    call cpct_isKeyPressed_asm
-    jp nz, _move_up
-    ld hl, #Key_A
-    call cpct_isKeyPressed_asm
-    jp nz, _move_down
-    ld hl, #Key_I
-    call cpct_isKeyPressed_asm
-    jp nz, _change_piece
+    
+    ld hl, #Key_Q                       ;; check key Q
+    call cpct_isKeyPressed_asm          ;;
+    jp nz, _move_up                     ;; if press Q move up
+    
+    ld hl, #Key_A                       ;; check key A
+    call cpct_isKeyPressed_asm          ;;
+    jp nz, _move_down                   ;; if press A move down
+    
+    ld hl, #Key_I                       ;; check key I
+    call cpct_isKeyPressed_asm          ;;
+    jp nz, _change_piece                ;; if press I change piece
+
+    ld hl, #Key_Space                   ;; check key Space
+    call cpct_isKeyPressed_asm          ;;
+    jp nz, _set_piece                ;; if press Space set piece in board
+    
     jp _end_input_update
+
 _move_right:
     ld b, e_w(ix)                       ;; load b with the width of th piece
     ld a, #BOARD_COLS                   ;; load a with the width of the board
@@ -77,6 +88,7 @@ _move_right:
     inc a                               ;; inc x position stored in a
     ld e_x(ix), a                       ;; store it in player1 struct
     jr #_input_update_moved             ;; jump to return moved
+
 _move_left:
     ld a, e_x(ix)
     or a
@@ -84,6 +96,7 @@ _move_left:
     dec a
     ld e_x(ix), a
     jr #_input_update_moved             ;; jump to return moved
+
 _move_up:
     ld a, e_y(ix)
     or a
@@ -91,6 +104,7 @@ _move_up:
     dec a
     ld e_y(ix), a
     jr #_input_update_moved             ;; jump to return moved
+
 _move_down:     
     ld b, e_h(ix)                       ;; load b with the width of th piece
     ld a, #BOARD_ROWS                   ;; load a with the width of the board
@@ -102,6 +116,7 @@ _move_down:
     inc a                               ;; inc x position stored in a
     ld e_y(ix), a                       ;; store it in player1 struct
     jr #_input_update_moved             ;; jump to return moved
+
 _change_piece:      
     ld a, (selected_piece)              ;; read selected piece
     inc a                               ;; increment piece type
@@ -128,7 +143,6 @@ _check_width:
     ld e_x(ix), a                       ;; load in player struct the new x coord
 _check_height:      
     inc hl                              ;; read next byte of piece
-
     ld a, (hl)                          ;; read width of piece
     ld e_h(ix), a                       ;; store height of piece in player1 struct
     ld b, e_y(ix)                       ;; read y position in b
@@ -139,6 +153,11 @@ _check_height:
     ld b, e_h(ix)       
     sub b                               ;; substract the width of the piece as new coord
     ld e_y(ix), a                       ;; load in player struct the new x coord
+    jr _input_update_moved
+    
+_set_piece:
+    ld e_set(ix), #1
+
 _input_update_moved:
     ld a, #1
     ld e_moved(ix), a
