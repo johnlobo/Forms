@@ -19,10 +19,17 @@
 
 .module game_manager
 
-.globl man_game_init
-
+;;------------------------------------------------------------------------------
+;; Global variables
+;;------------------------------------------------------------------------------
 .globl next_pieces
 .globl selected_piece
 .globl next_pieces_count
 .globl score
 .globl hi_score
+
+;;------------------------------------------------------------------------------
+;; Global routines
+;;------------------------------------------------------------------------------
+.globl man_game_init
+.globl man_game_update

@@ -20,7 +20,9 @@
 .include "../common.h.s"
 .include "man/entity.h.s"
 .include "sys/util.h.s"
+.include "sys/board.h.s"
 .include "sys/render.h.s"
+.include "sys/input.h.s"
 
 
 .module game_manager
@@ -72,7 +74,7 @@ _get_random_piece_continue:
 ;;
 ;; man_game_init
 ;;
-;;   Initializes render
+;;   Initializes game
 ;;  Input: 
 ;;  Output:
 ;;  Modified:
@@ -100,6 +102,8 @@ man_game_init::
     ld a,(hl)
     ld e_h(ix), a
 
+    call sys_render_game_screen
+
     call sys_render_hi_score
     
     call sys_render_score
@@ -108,4 +112,72 @@ man_game_init::
 
     call sys_render_draw_player1
 
+    ret
+
+;;-----------------------------------------------------------------
+;;
+;; man_game_set_piece
+;;
+;;   set piece in board
+;;  Input: 
+;;  Output:
+;;  Modified:
+;;
+man_game_set_piece:
+    ld ix, #player1                     ;; load player struct in ix
+
+    call sys_render_erase_player        ;; erase current piece
+    
+    ld c, e_x(ix)                       ;; load x coord in c
+    ld b, e_y(ix)                       ;; load y coord in b
+    ld a, e_type(ix)                    ;; load piece in a
+    call sys_board_set_piece            ;; set piece in board
+
+    ld a, (selected_piece)              ;; read selected piece
+    inc a                               ;; increment piece type
+    cp #3       
+    jr nz, _valid_piece     
+    xor a       
+_valid_piece:       
+    ld (selected_piece), a              ;; Update selected piece 
+    ld hl, #next_pieces
+    add_hl_a
+    ld a, (hl)
+    ld e_type(ix), a                    ;; Update piece in Player1 struct
+
+    call man_entity_get_hl_from_piece   ;; get address of the new piece
+    ld a,(hl)                           ;; get piece width
+    ld e_w(ix),a
+    
+    inc hl
+
+    ld a,(hl)                           ;; get piece height
+    ld e_h(ix),a
+
+    ld e_x(ix), #0      
+    ld e_y(ix), #0
+
+    ld e_set(ix), #0
+
+    ret
+
+;;-----------------------------------------------------------------
+;;
+;; man_game_update
+;;
+;;   Main loop of the game
+;;  Input: 
+;;  Output:
+;;  Modified:
+;;
+man_game_update::
+    ld ix, #player1                 ;; load player1 struct in ix
+
+    call sys_input_update           ;; call input system update
+    
+    ld a, e_set(ix)                 ;; check if piece has been set
+    or a                            ;;
+    call nz, man_game_set_piece     ;; if so manage set piece
+
+    call sys_render_update
     ret

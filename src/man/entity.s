@@ -38,7 +38,8 @@ player1::
     .dw #0x0000                 ;; Previous screen address
     .db #0                      ;; width of background buffer
     .db #0                      ;; height of background buffer
-    .db #0
+    .db #0                      ;; moved flag
+    .db #0                      ;; set flag
 
 
 ;;-----------------------------------------------------------------

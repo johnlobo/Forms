@@ -16,6 +16,11 @@
 ;;  along with this program.  If not, see <http://www.gnu.org/licenses/>.
 ;;-------------------------------------------------------------------------------6
 
+.module render_system
+
+;;------------------------------------------------------------------------------
+;; Global routines
+;;------------------------------------------------------------------------------
 .globl sys_render_init
 .globl sys_render_board
 .globl sys_render_game_screen
@@ -26,3 +31,4 @@
 .globl sys_render_next_pieces
 .globl sys_render_score
 .globl sys_render_hi_score
+.globl sys_render_cell

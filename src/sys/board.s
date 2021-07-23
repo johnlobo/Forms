@@ -19,6 +19,8 @@
 .include "cpctelera.h.s"
 .include "../common.h.s"
 .include "man/entity.h.s"
+.include "sys/render.h.s"
+
 
 
 .module board_system
@@ -34,6 +36,7 @@
 _piece_w: .db #00
 _piece_h: .db #00
 _current_row: .db #00
+_piece_byte: .db #00
 
 ;;
 ;; Start of _CODE area
@@ -74,7 +77,7 @@ sys_board_init::
 ;;
 ;; sys_board_cell_content
 ;;
-;;   Renders board
+;;   Returns the content of a board cell
 ;;  Input:  c: col
 ;;          b: row
 ;;  Output: a: content of cell
@@ -90,8 +93,7 @@ sys_board_cell_content::
     add b                                   ;; then add 2 times coord y and thats it.
     add c                                   ;; then add the x coord and we have the offset for the cell
     ld hl, #board
-    add l
-    ld l,a                                  ;; Then add the offset
+    add_hl_a
     ld a, (hl)                      ;; load the content of the board in a
     ret
 
@@ -99,7 +101,7 @@ sys_board_cell_content::
 ;;
 ;; sys_board_cell_sprite
 ;;
-;;   Renders board
+;;   Returns the address of the corresponding cell sprite
 ;;  Input:  c: col
 ;;          b: row
 ;;  Output: hl : address fo the corresponding cell sprite
@@ -115,15 +117,16 @@ sys_board_cell_sprite::
 
 ;;-----------------------------------------------------------------
 ;;
-;; sys_board_cell_sprite
+;; sys_board_set_cell
 ;;
 ;;   Renders board
 ;;  Input:  c: col
 ;;          b: row
 ;;  Output: 
-;;  Modified: af, hl, bc
+;;  Modified: af, hl
 ;;
 sys_board_set_cell::
+    push hl
     ld a, b
     sla a
     sla a
@@ -132,14 +135,17 @@ sys_board_set_cell::
     add b                                   ;; then add 2 times coord y and thats it.
     add c                                   ;; then add the x coord and we have the offset for the cell
     ld hl, #board
-    add l
-    ld l,a                                  ;; Then add the offset
+    add_hl_a
     ld (hl), #01                            ;; load 1 in the corresponding cell
+    push bc
+    call sys_render_cell                    ;; draw cell
+    pop bc
+    pop hl
     ret
 
 ;;-----------------------------------------------------------------
 ;;
-;; sys_board_cell_sprite
+;; sys_board_set_piece
 ;;
 ;;   Renders board
 ;;  Input:  c: col
@@ -149,27 +155,52 @@ sys_board_set_cell::
 ;;  Modified: af, hl, de, bc
 ;;
 sys_board_set_piece::
-    call man_entity_get_hl_from_piece   ;; get address for a type of piece in hl
-    ld a, (hl)
-    ld (_piece_w),a
-    ld (sb_set_piece_condition_width + 1), a        ;; self modifying code for width condition
-    inc (hl)
-    ld a, (hl)
-    ld (_piece_h),a
-    ld (sb_set_piece_condition_height + 1), a        ;; self modifying code for height condition
-    inc (hl)
+    call man_entity_get_hl_from_piece               ;; get address for a type of piece in hl
+    inc hl                                        ;; skip first byte, don't need width of piece
+    ld a, (hl)                                      ;; read height
+    ld (sb_set_piece_condition_height + 1), a       ;; self modifying code for height condition
+    inc hl
 
-    ld b, #0
+    ld bc, #00                                      ;; reset counters
+
 sb_set_piece_loop0:
+    push bc
 
-    ld c, #0
-sb_set_piece_loop1:
+    ld a, (hl)                      ;; load first row (byte) in a
+    or a                            ;; check if piece byte is 00
+    jr z, sb_set_piece_continue_0            ;; jump to next byte if so
 
-    ld a, c
-sb_set_piece_condition_width:
-    cp #00
-    jr c, sb_set_piece_loop1
+    ld (_piece_byte),a
+ 
+    ld a, (_piece_byte)
+    bit 4,a                         ;; first bit
+    call nz, sys_board_set_cell
+    inc c
 
+    ld a, (_piece_byte)
+    bit 3,a                         ;; first bit
+    call nz, sys_board_set_cell
+    inc c
+
+    ld a, (_piece_byte)
+    bit 2,a                         ;; first bit
+    call nz, sys_board_set_cell
+    inc c
+
+    ld a, (_piece_byte)
+    bit 1,a                         ;; first bit
+    call nz, sys_board_set_cell
+    inc c
+
+    ld a, (_piece_byte)
+    bit 0,a                         ;; first bit
+    call nz, sys_board_set_cell
+    
+sb_set_piece_continue_0:
+    inc hl                          ;; and go to th6e next byte of the piece
+    pop bc                          ;; retrive number of rows
+    inc b
+    ld a, b
 sb_set_piece_condition_height:
     cp #00
     jr c, sb_set_piece_loop0
