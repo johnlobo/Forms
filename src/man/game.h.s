@@ -23,8 +23,10 @@
 ;; Global variables
 ;;------------------------------------------------------------------------------
 .globl next_pieces
+.globl next_pieces_coords
 .globl selected_piece
 .globl next_pieces_count
+.globl next_pieces_coords
 .globl score
 .globl hi_score
 

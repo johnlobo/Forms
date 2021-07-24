@@ -37,6 +37,7 @@
 
 next_pieces:: .db #00, #00, #00
 next_pieces_count:: .db #00
+next_pieces_coords:: .db #46, #150, #59, #150, #70, #150
 selected_piece:: .db #00
 score:: .db #0x01, #0x23, #0x45, #0x67
 hi_score:: .db #0x01, #0x23, #0x45, #0x67
@@ -72,14 +73,14 @@ _get_random_piece_continue:
 
 ;;-----------------------------------------------------------------
 ;;
-;; man_game_init
+;; man_game_renew_next_pieces
 ;;
-;;   Initializes game
+;;   Renews the set of next pieces
 ;;  Input: 
 ;;  Output:
 ;;  Modified:
 ;;
-man_game_init::
+man_game_renew_next_pieces::
     ;; Generate radom pieces
     call man_game_get_random_piece
     ld (next_pieces), a
@@ -87,6 +88,9 @@ man_game_init::
     ld (next_pieces+1), a
     call man_game_get_random_piece
     ld (next_pieces+2), a
+    ;; initial number of pieces
+    ld a, #3
+    ld (next_pieces_count), a
     ;; Initializate selected piece
     xor a
     ld (selected_piece),a
@@ -101,6 +105,20 @@ man_game_init::
     inc hl
     ld a,(hl)
     ld e_h(ix), a
+    ret
+
+;;-----------------------------------------------------------------
+;;
+;; man_game_init
+;;
+;;   Initializes game
+;;  Input: 
+;;  Output:
+;;  Modified:
+;;
+man_game_init::
+
+    call man_game_renew_next_pieces
 
     call sys_render_game_screen
 
@@ -111,6 +129,29 @@ man_game_init::
     call sys_render_next_pieces     ;; Render next pieces on screen
 
     call sys_render_draw_player1
+
+    ret
+
+;;-----------------------------------------------------------------
+;;
+;; man_game_erase_current_next_piece
+;;
+;;   set piece in board
+;;  Input: 
+;;  Output:
+;;  Modified:
+;;
+man_game_erase_current_next_piece::
+    ld ix, #player1                     ;; load player struct in ix
+
+    ld (selected_piece), a              ;; get selectedpiece 
+    ld hl, #next_pieces
+    add_hl_a
+    ld (hl), #0xff
+    ld hl, #next_pieces_count 
+    dec (hl)
+    ld (selected_piece), a              ;; get selectedpiece 
+    call sys_render_erase_next_piece
 
     ret
 
@@ -132,6 +173,12 @@ man_game_set_piece:
     ld b, e_y(ix)                       ;; load y coord in b
     ld a, e_type(ix)                    ;; load piece in a
     call sys_board_set_piece            ;; set piece in board
+
+    call man_game_erase_current_next_piece
+
+    ld a, #next_pieces_count            ;; Check if there are next pieces available
+    or a        
+    call z, man_game_renew_next_pieces  ;; If not renew the pieces
 
     ld a, (selected_piece)              ;; read selected piece
     inc a                               ;; increment piece type

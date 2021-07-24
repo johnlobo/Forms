@@ -32,3 +32,4 @@
 .globl sys_render_score
 .globl sys_render_hi_score
 .globl sys_render_cell
+.globl sys_render_erase_next_piece

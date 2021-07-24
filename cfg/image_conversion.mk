@@ -54,6 +54,8 @@ $(eval $(call IMG2SP, CONVERT         , assets/balls-small.png, 4, 5, s_balls_sm
 $(eval $(call IMG2SP, CONVERT         , assets/score-numbers.png, 8, 15, s_score_numbers, ,))
 $(eval $(call IMG2SP, CONVERT         , assets/next.png, 24, 16, s_next, ,))
 $(eval $(call IMG2SP, CONVERT         , assets/pieces.png, 36, 16, s_pieces, ,))
+$(eval $(call IMG2SP, CONVERT         , assets/press.png, 50, 8, s_press_any_key, ,))
+$(eval $(call IMG2SP, CONVERT         , assets/logo1010.png, 52, 32, s_logo_1010, ,))
 $(eval $(call IMG2SP, CONVERT         , assets/hi-score.png, 30, 7, s_hi_score, ,))
 $(eval $(call IMG2SP, CONVERT         , assets/score.png, 20, 7, s_score, ,))
 $(eval $(call IMG2SP, CONVERT         , assets/uno.png, 4, 16, s_uno, ,))
