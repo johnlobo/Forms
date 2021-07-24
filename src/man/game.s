@@ -105,6 +105,9 @@ man_game_renew_next_pieces::
     inc hl
     ld a,(hl)
     ld e_h(ix), a
+
+    call sys_render_next_pieces     ;; Render next pieces on screen
+
     ret
 
 ;;-----------------------------------------------------------------
@@ -144,13 +147,13 @@ man_game_init::
 man_game_erase_current_next_piece::
     ld ix, #player1                     ;; load player struct in ix
 
-    ld (selected_piece), a              ;; get selectedpiece 
+    ld a, (selected_piece)              ;; get selectedpiece 
     ld hl, #next_pieces
     add_hl_a
     ld (hl), #0xff
     ld hl, #next_pieces_count 
     dec (hl)
-    ld (selected_piece), a              ;; get selectedpiece 
+    ld a, (selected_piece)              ;; get selectedpiece 
     call sys_render_erase_next_piece
 
     ret
@@ -164,7 +167,7 @@ man_game_erase_current_next_piece::
 ;;  Output:
 ;;  Modified:
 ;;
-man_game_set_piece:
+man_game_set_piece::
     ld ix, #player1                     ;; load player struct in ix
 
     call sys_render_erase_player        ;; erase current piece
@@ -176,7 +179,7 @@ man_game_set_piece:
 
     call man_game_erase_current_next_piece
 
-    ld a, #next_pieces_count            ;; Check if there are next pieces available
+    ld a, (next_pieces_count)            ;; Check if there are next pieces available
     or a        
     call z, man_game_renew_next_pieces  ;; If not renew the pieces
 
@@ -201,8 +204,8 @@ _valid_piece:
     ld a,(hl)                           ;; get piece height
     ld e_h(ix),a
 
-    ld e_x(ix), #0      
-    ld e_y(ix), #0
+    ld e_x(ix), #3      
+    ld e_y(ix), #3
 
     ld e_set(ix), #0
     
@@ -222,6 +225,9 @@ _valid_piece:
 ;;
 man_game_update::
     ld ix, #player1                 ;; load player1 struct in ix
+    
+    ld b, #6
+    call cpct_waitHalts_asm
 
     call sys_input_update           ;; call input system update
     

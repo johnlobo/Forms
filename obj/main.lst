@@ -2635,7 +2635,7 @@ Hexadecimal [16-Bits]
                               5 ;;  This program is free software: you can redistribute it and/or modify
                               6 ;;  it under the terms of the GNU Lesser General Public License as published by
                               7 ;;  the Free Software Foundation, either version 3 of the License, or
-                              8 ;;  (at your option) any later version
+                              8 ;;  (at your option) any later version.
                               9 ;;
                              10 ;;  This program is distributed in the hope that it will be useful,
                              11 ;;  but WITHOUT ANY WARRANTY; without even the implied warranty of
@@ -2658,7 +2658,7 @@ Hexadecimal [16-Bits]
                              28 ;; Macro: cpctm_ld_spbloff
                              29 ;;
                              30 ;;    Macro that calculates the offset to add to a sprite pointer to point 
-                             31 ;; to it sbottom left pixel.
+                             31 ;; to its bottom left pixel.
                              32 ;;
                              33 ;; ASM Definition:
                              34 ;;    .macro <cpctm_ld_spbloff> *REG*, *W*, *H*
@@ -2695,7 +2695,7 @@ Hexadecimal [16-Bits]
                              60 ;; of a given sprite (i.e. its bottom-left byte), with respect to its first
                              61 ;; byte (top-left corner). This value can easily be added to any sprite 
                              62 ;; pointer to get a pointer to the bottom-left byte. This pointer is required
-                             63 ;; byte many flipping functions (like <cpct_vflipSpriteM0>). Values for width
+                             63 ;; byte many flipping functions (like <cpct_vflipSprite>). Values for width
                              64 ;; and height of the sprite must be constant immediate values. Otherwise, this
                              65 ;; macro will generate incorrect code that will fail to compile. 
                              66 ;;    The macro calculates *W* * (*H*-1) at compile-time and loads it into
@@ -2751,6 +2751,7 @@ Hexadecimal [16-Bits]
                              33 .globl sys_render_hi_score
                              34 .globl sys_render_cell
                              35 .globl sys_render_erase_next_piece
+                             36 .globl sys_render_logo_screen
 ASxxxx Assembler V02.00 + NoICE + SDCC mods  (Zilog Z80 / Hitachi HD64180), page 54.
 Hexadecimal [16-Bits]
 
@@ -3128,58 +3129,54 @@ Hexadecimal [16-Bits]
                              49 ;;  Output: 
                              50 ;;  Destroyed: af, bc,de, hl
                              51 ;;
-   0000                      52 main_init::
+   0000                      52 _main_init::
    0000 CD 00 00      [17]   53    call sys_render_init
                              54 
-                             55 
-   0003 11 AA E0      [10]   56    ld de, #0xe0aa                ;; screen address for 10, 20
-   0006 21 00 00      [10]   57    ld hl, #_s_logo_1010
-   0009 0E 1A         [ 7]   58    ld c, #S_LOGO_1010_W
-   000B 06 20         [ 7]   59    ld b, #S_LOGO_1010_H
-   000D CD 00 00      [17]   60    call cpct_drawSprite_asm
-                             61 
-   0010 11 AA E0      [10]   62    ld de, #0xe0aa                ;; screen address for 10, 20
-   0013 21 00 00      [10]   63    ld hl, #_s_logo_1010
-   0016 0E 1A         [ 7]   64    ld c, #S_LOGO_1010_W
-   0018 06 20         [ 7]   65    ld b, #S_LOGO_1010_H
-   001A CD 00 00      [17]   66    call cpct_drawSprite_asm
-                             67 
-                             68    ;; set random seed
-   001D 1E 00         [ 7]   69    ld e,#0
-   001F                      70 _main_init_keypress:
-   001F CD 00 00      [17]   71    call cpct_scanKeyboard_asm          ;; scan keyboard
-   0022 24            [ 4]   72    inc h
-   0023 CD 00 00      [17]   73    call cpct_isAnyKeyPressed_asm
-   0026 B7            [ 4]   74    or a
-   0027 28 F6         [12]   75    jr z, _main_init_keypress
-   0029 CD 00 00      [17]   76    call cpct_setSeed_mxor_asm               ;; change seed
-                             77    
-   002C CD 00 00      [17]   78    call sys_input_init
-                             79 
-   002F CD 00 00      [17]   80    call man_game_init
-                             81 
+   0003 CD 00 00      [17]   55    call sys_render_logo_screen
+                             56 
+                             57    ;; set random seed
+   0006 21 00 00      [10]   58    ld hl,#0
+   0009                      59 _main_init_keypress:
+   0009 CD 00 00      [17]   60    call cpct_scanKeyboard_asm          ;; scan keyboard
+   000C 23            [ 6]   61    inc hl
+   000D CD 00 00      [17]   62    call cpct_isAnyKeyPressed_asm
+   0010 B7            [ 4]   63    or a
+   0011 28 F6         [12]   64    jr z, _main_init_keypress
+   0013 CD 00 00      [17]   65    call cpct_setSeed_mxor_asm               ;; change seed
+                             66 
+   0016                      67    cpctm_clearScreen_asm 0
+   0016 21 00 C0      [10]    1    ld    hl, #0xC000    ;; [3] HL Points to Start of Video Memory
+   0019 11 01 C0      [10]    2    ld    de, #0xC001    ;; [3] DE Points to the next byte
+   001C 01 00 40      [10]    3    ld    bc, #0x4000    ;; [3] BC = 16384 bytes to be copied
+   001F 36 00         [10]    4    ld   (hl), #0      ;; [3] First Byte = given Colour
+   0021 ED B0         [21]    5    ldir                 ;; [98297] Perform the copy
+                             68    
+   0023 CD 00 00      [17]   69    call sys_input_init
+                             70 
+   0026 CD 00 00      [17]   71    call man_game_init
+                             72 
+   0029 C9            [10]   73    ret
+                             74 ;;-----------------------------------------------------------------
+                             75 ;;
+                             76 ;; MAIN function. This is the entry point of the application.
 ASxxxx Assembler V02.00 + NoICE + SDCC mods  (Zilog Z80 / Hitachi HD64180), page 62.
 Hexadecimal [16-Bits]
 
 
 
-   0032 C9            [10]   82    ret
-                             83 ;;-----------------------------------------------------------------
-                             84 ;;
-                             85 ;; MAIN function. This is the entry point of the application.
-                             86 ;;    _main:: global symbol is required for correctly compiling and linking
-                             87 ;;
-   0033                      88 main::
-                             89    ;; Disable firmware to prevent it from interfering with string drawing
-   0033 CD 00 00      [17]   90    call cpct_disableFirmware_asm
+                             77 ;;    _main:: global symbol is required for correctly compiling and linking
+                             78 ;;
+   002A                      79 _main::
+                             80    ;; Disable firmware to prevent it from interfering with string drawing
+   002A CD 00 00      [17]   81    call cpct_disableFirmware_asm
+                             82 
+   002D CD 00 00      [17]   83    call _main_init
+                             84 
+                             85    ;; Loop forever
+   0030                      86 loop:
+   0030 06 12         [ 7]   87    ld b,#18
+   0032 CD 00 00      [17]   88    call cpct_waitHalts_asm
+                             89    
+   0035 CD 00 00      [17]   90    call man_game_update
                              91 
-   0036 CD 00 00      [17]   92    call main_init
-                             93 
-                             94    ;; Loop forever
-   0039                      95 loop:
-   0039 06 12         [ 7]   96    ld b,#18
-   003B CD 00 00      [17]   97    call cpct_waitHalts_asm
-                             98    
-   003E CD 00 00      [17]   99    call man_game_update
-                            100 
-   0041 18 F6         [12]  101    jr    loop
+   0038 18 F6         [12]   92    jr    loop

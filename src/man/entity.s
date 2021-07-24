@@ -30,8 +30,8 @@
 
 player1::
     .db #0                      ;; Status of the Player
-    .db #0                      ;; X location of the Player (grid)
-    .db #0                      ;; Y location of the Player (grid)
+    .db #3                      ;; X location of the Player (grid)
+    .db #3                      ;; Y location of the Player (grid)
     .db #0                      ;; player piece type
     .db #0                      ;; Width of the player
     .db #0                      ;; Height of the player
