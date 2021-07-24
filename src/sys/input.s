@@ -121,13 +121,15 @@ _change_piece:
     ld a, (selected_piece)              ;; read selected piece
     inc a                               ;; increment piece type
     cp #3       
-    jr nz, _valid_piece     
+    jr nz, _valid_piece_0     
     xor a       
-_valid_piece:       
-    ld (selected_piece), a              ;; Update selected piece 
+_valid_piece_0:
     ld hl, #next_pieces
     add_hl_a
     ld a, (hl)
+    cp #0xff
+    jr z, _change_piece
+    ;; New piece ok       
     ld e_type(ix), a                    ;; Update piece in Player1 struct
     call man_entity_get_hl_from_piece   ;; get address of the piece type in hl
 _check_width:

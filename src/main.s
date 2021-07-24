@@ -49,31 +49,22 @@
 ;;  Output: 
 ;;  Destroyed: af, bc,de, hl
 ;;
-main_init::
+_main_init::
    call sys_render_init
 
-
-   ld de, #0xe0aa                ;; screen address for 10, 20
-   ld hl, #_s_logo_1010
-   ld c, #S_LOGO_1010_W
-   ld b, #S_LOGO_1010_H
-   call cpct_drawSprite_asm
-
-   ld de, #0xe0aa                ;; screen address for 10, 20
-   ld hl, #_s_logo_1010
-   ld c, #S_LOGO_1010_W
-   ld b, #S_LOGO_1010_H
-   call cpct_drawSprite_asm
+   call sys_render_logo_screen
 
    ;; set random seed
-   ld e,#0
+   ld hl,#0
 _main_init_keypress:
    call cpct_scanKeyboard_asm          ;; scan keyboard
-   inc h
+   inc hl
    call cpct_isAnyKeyPressed_asm
    or a
    jr z, _main_init_keypress
    call cpct_setSeed_mxor_asm               ;; change seed
+
+   cpctm_clearScreen_asm 0
    
    call sys_input_init
 
@@ -85,11 +76,11 @@ _main_init_keypress:
 ;; MAIN function. This is the entry point of the application.
 ;;    _main:: global symbol is required for correctly compiling and linking
 ;;
-main::
+_main::
    ;; Disable firmware to prevent it from interfering with string drawing
    call cpct_disableFirmware_asm
 
-   call main_init
+   call _main_init
 
    ;; Loop forever
 loop:

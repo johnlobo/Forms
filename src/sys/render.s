@@ -66,14 +66,34 @@ sys_render_init::
     ld de, #16
     call cpct_setPalette_asm
     ;; Set Border
-    cpctm_setBorder_asm HW_WHITE
+    cpctm_setBorder_asm HW_BLACK
 
-    ;; Clean up the screen 
-    ld de, #CPCT_VMEM_START_ASM
-    ld a, #0x00
-    ld bc, #4000
-    call cpct_memset_asm
+    cpctm_clearScreen_asm 0
 
+    ret
+
+;;-----------------------------------------------------------------
+;;
+;; sys_render_logo_screen
+;;
+;;   Initializes render
+;;  Input: 
+;;  Output:
+;;  Modified: af, hl, de, bc
+;;
+sys_render_logo_screen::
+    
+    cpctm_screenPtr_asm de, CPCT_VMEM_START_ASM, 29, 76  ;; screen address for 30, 76 in de
+    ld hl, #_s_logo_1010
+    ld c, #S_LOGO_1010_W
+    ld b, #S_LOGO_1010_H
+    call cpct_drawSprite_asm
+
+    cpctm_screenPtr_asm de, CPCT_VMEM_START_ASM, 30, 120  ;; screen address for 30, 120 in de
+    ld hl, #_s_press_any_key
+    ld c, #S_PRESS_ANY_KEY_W
+    ld b, #S_PRESS_ANY_KEY_H
+    call cpct_drawSprite_asm
     ret
 
 ;-----------------------------------------------------------------
