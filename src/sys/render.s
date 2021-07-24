@@ -110,39 +110,6 @@ sys_render_game_screen::
 
     call sys_render_board
 
-    ;;;; Draw One
-    ;;ld de, #CPCT_VMEM_START_ASM     ;; DE = Pointer to start of the screen
-    ;;ld b, #UNO_TITLE_Y_COORD        ;; B = y coordinate (24 = 0x18)
-    ;;ld c, #UNO_TITLE_X_COORD        ;; C = x coordinate (16 = 0x10)
-    ;;call cpct_getScreenPtr_asm      ;; Calculate video memory location and return it in HL
-    ;;ex de, hl                       ;; move screen address to de
-    ;;ld hl, #_s_uno                  ;; load in HL the address of the sprite
-    ;;ld c, #S_UNO_W                  ;; load in c the sprite width 
-    ;;ld b, #S_UNO_H                  ;; load in b sprite height
-    ;;call cpct_drawSprite_asm        ;; draw sprite
-
-    ;;;; Draw Two
-    ;;ld de, #CPCT_VMEM_START_ASM     ;; DE = Pointer to start of the screen
-    ;;ld b, #DOS_TITLE_Y_COORD        ;; B = y coordinate (24 = 0x18)
-    ;;ld c, #DOS_TITLE_X_COORD        ;; C = x coordinate (16 = 0x10)
-    ;;call cpct_getScreenPtr_asm      ;; Calculate video memory location and return it in HL
-    ;;ex de, hl                       ;; move screen address to de
-    ;;ld hl, #_s_dos                  ;; load in HL the address of the sprite
-    ;;ld c, #S_DOS_W                  ;; load in c the sprite width 
-    ;;ld b, #S_DOS_H                  ;; load in b sprite height
-    ;;call cpct_drawSprite_asm        ;; draw sprite
-
-    ;;;; Draw Three
-    ;;ld de, #CPCT_VMEM_START_ASM     ;; DE = Pointer to start of the screen
-    ;;ld b, #TRES_TITLE_Y_COORD       ;; B = y coordinate (24 = 0x18)
-    ;;ld c, #TRES_TITLE_X_COORD       ;; C = x coordinate (16 = 0x10)
-    ;;call cpct_getScreenPtr_asm      ;; Calculate video memory location and return it in HL
-    ;;ex de, hl                       ;; move screen address to de
-    ;;ld hl, #_s_tres                 ;; load in HL the address of the sprite
-    ;;ld c, #S_TRES_W                 ;; load in c the sprite width 
-    ;;ld b, #S_TRES_H                 ;; load in b sprite height
-    ;;call cpct_drawSprite_asm        ;; draw sprite
-
     ;; Draw Next
     ld de, #CPCT_VMEM_START_ASM     ;; DE = Pointer to start of the screen
     ld b, #NEXT_TITLE_Y_COORD        ;; B = y coordinate (24 = 0x18)
@@ -172,22 +139,15 @@ sys_render_game_screen::
 ;; sys_render_cell
 ;;
 ;;   Renders a single cell of the board
-;;  Input:  b: y coord
-;;          c: x coord
+;;  Input:  b: y coord of board to render
+;;          c: x coord of board to render
 ;;  Output:
 ;;  Modified: af, hl, de, bc
 ;;
 sys_render_cell::
-    ;; set x and y for further processing
-    ld a, c                         ;; store x in a
-    ld (sr_cell_x + 1), a           ;; Self modifying code to set x coord of the board
-    ld a, b                         ;; store y in a
-    ld (sr_cell_y + 1), a           ;; Self modifying code to set y coord of the board
-    
+    push bc
     ;; calculate x coord of screen
-    ld a, e_x(ix)
-    add c
-    ld e, a
+    ld e, c
     ld h, #S_BALLS_BIG_W
     call h_times_e
     ld a, #BOARD_X_COORD
@@ -195,9 +155,7 @@ sys_render_cell::
     ld c, a
 
     ;; calculate y coord of screen
-    ld a, e_y(ix)
-    add b
-    ld e, a
+    ld e, b
     ld h, #S_BALLS_BIG_H + 1
     call h_times_e
     ld a, #BOARD_Y_COORD
@@ -210,10 +168,7 @@ sys_render_cell::
     ex de, hl                           ;; move screen address to de
 
     ;; draw sprite
-sr_cell_x:    
-    ld c, #00
-sr_cell_y:    
-    ld b, #00
+    pop bc                              ;; retrieve x,y coords of board
     call sys_board_cell_sprite
     ld c, #S_BALLS_BIG_W                ;; load in c the sprite width 
     ld b, #S_BALLS_BIG_H                ;; load in b sprite height
@@ -614,6 +569,37 @@ sys_render_draw_small_tile::
     pop hl
     ret
 
+;-----------------------------------------------------------------
+;;
+;; sys_render_erase_next_piece
+;;
+;;   Draw player1
+;;  Input:  a : number of piece
+;;  Output: 
+;;  Destroyed: af, bc,de, hl
+;;
+sys_render_erase_next_piece::
+    ;; Get Screen Pointer
+    add a                           ;; duplicate piece number to get the offset
+    ld hl, #next_pieces_coords
+    add_hl_a                        ;; sum netx piece coords address with offset to get piece address
+    ld a, (hl)                      ;; load x coord of piece in a
+    ld c, a                         ;; store it in c
+    inc hl                          ;; inc pointer to get y coord
+    ld a, (hl)                      ;; load y coord of piece in a
+    ld b, a                         ;; store it in b
+    ld  de, #CPCT_VMEM_START_ASM    ;; DE = Pointer to video memory start
+    call cpct_getScreenPtr_asm      ;; Get Screen Pointer to upper left corner of next piece
+
+    ex de, hl                       ;; store screen addres in de
+    ld c,#NEXT_PIECE_MAX_WIDTH
+    ld b,#NEXT_PIECE_MAX_HEIGHT
+    ld a,#00                        ;; Patern of solid box
+
+    call cpct_drawSolidBox_asm
+
+    ret
+
 
 ;-----------------------------------------------------------------
 ;;
@@ -725,23 +711,29 @@ _dp2_continue_0:
 ;;  Destroyed: af, bc,de, hl
 ;;
 sys_render_next_pieces::
-    ld a, #NEXT_PIECE_1_X
+    ld hl, #next_pieces_coords
+    ld a, (hl)
     ld b, a
-    ld a, #NEXT_PIECE_1_Y
+    inc hl
+    ld a, (hl)
     ld c, a
     ld a, (next_pieces)
     call sys_render_draw_piece_small
 
-    ld a, #NEXT_PIECE_2_X
+    ld hl, #next_pieces_coords + 2
+    ld a, (hl)
     ld b, a
-    ld a, #NEXT_PIECE_2_Y
+    inc hl
+    ld a, (hl)
     ld c, a
     ld a, (next_pieces + 1)
     call sys_render_draw_piece_small
     
-    ld a, #NEXT_PIECE_3_X
+    ld hl, #next_pieces_coords + 4
+    ld a, (hl)
     ld b, a
-    ld a, #NEXT_PIECE_3_Y
+    inc hl
+    ld a, (hl)
     ld c, a
     ld a, (next_pieces + 2)
     call sys_render_draw_piece_small

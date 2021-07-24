@@ -2635,7 +2635,7 @@ Hexadecimal [16-Bits]
                               5 ;;  This program is free software: you can redistribute it and/or modify
                               6 ;;  it under the terms of the GNU Lesser General Public License as published by
                               7 ;;  the Free Software Foundation, either version 3 of the License, or
-                              8 ;;  (at your option) any later version.
+                              8 ;;  (at your option) any later version
                               9 ;;
                              10 ;;  This program is distributed in the hope that it will be useful,
                              11 ;;  but WITHOUT ANY WARRANTY; without even the implied warranty of
@@ -2658,7 +2658,7 @@ Hexadecimal [16-Bits]
                              28 ;; Macro: cpctm_ld_spbloff
                              29 ;;
                              30 ;;    Macro that calculates the offset to add to a sprite pointer to point 
-                             31 ;; to its bottom left pixel.
+                             31 ;; to it sbottom left pixel.
                              32 ;;
                              33 ;; ASM Definition:
                              34 ;;    .macro <cpctm_ld_spbloff> *REG*, *W*, *H*
@@ -2695,7 +2695,7 @@ Hexadecimal [16-Bits]
                              60 ;; of a given sprite (i.e. its bottom-left byte), with respect to its first
                              61 ;; byte (top-left corner). This value can easily be added to any sprite 
                              62 ;; pointer to get a pointer to the bottom-left byte. This pointer is required
-                             63 ;; byte many flipping functions (like <cpct_vflipSprite>). Values for width
+                             63 ;; byte many flipping functions (like <cpct_vflipSpriteM0>). Values for width
                              64 ;; and height of the sprite must be constant immediate values. Otherwise, this
                              65 ;; macro will generate incorrect code that will fail to compile. 
                              66 ;;    The macro calculates *W* * (*H*-1) at compile-time and loads it into
@@ -2750,6 +2750,7 @@ Hexadecimal [16-Bits]
                              32 .globl sys_render_score
                              33 .globl sys_render_hi_score
                              34 .globl sys_render_cell
+                             35 .globl sys_render_erase_next_piece
 ASxxxx Assembler V02.00 + NoICE + SDCC mods  (Zilog Z80 / Hitachi HD64180), page 54.
 Hexadecimal [16-Bits]
 
@@ -2905,16 +2906,18 @@ Hexadecimal [16-Bits]
                              23 ;; Global variables
                              24 ;;------------------------------------------------------------------------------
                              25 .globl next_pieces
-                             26 .globl selected_piece
-                             27 .globl next_pieces_count
-                             28 .globl score
-                             29 .globl hi_score
-                             30 
-                             31 ;;------------------------------------------------------------------------------
-                             32 ;; Global routines
+                             26 .globl next_pieces_coords
+                             27 .globl selected_piece
+                             28 .globl next_pieces_count
+                             29 .globl next_pieces_coords
+                             30 .globl score
+                             31 .globl hi_score
+                             32 
                              33 ;;------------------------------------------------------------------------------
-                             34 .globl man_game_init
-                             35 .globl man_game_update
+                             34 ;; Global routines
+                             35 ;;------------------------------------------------------------------------------
+                             36 .globl man_game_init
+                             37 .globl man_game_update
 ASxxxx Assembler V02.00 + NoICE + SDCC mods  (Zilog Z80 / Hitachi HD64180), page 58.
 Hexadecimal [16-Bits]
 
@@ -2985,106 +2988,116 @@ Hexadecimal [16-Bits]
                              57 .globl _s_score_numbers_08
                              58 .globl _s_next
                              59 .globl _s_pieces
-                             60 
-                             61 
-                             62 ;;===============================================================================
-                             63 ;; CPCTELERA FUNCTIONS
+                             60 .globl _s_logo_1010
+                             61 .globl _s_press_any_key
+                             62 
+                             63 
                              64 ;;===============================================================================
-                             65 .globl cpct_disableFirmware_asm
-                             66 .globl cpct_getScreenPtr_asm
-                             67 .globl cpct_drawSprite_asm
-                             68 .globl cpct_setVideoMode_asm
-                             69 .globl cpct_setPalette_asm
-                             70 .globl cpct_setPALColour_asm
-                             71 .globl cpct_memset_asm
-                             72 .globl cpct_getScreenToSprite_asm
-                             73 .globl cpct_scanKeyboard_asm
-                             74 .globl cpct_isKeyPressed_asm
-                             75 .globl cpct_waitHalts_asm
-                             76 .globl cpct_drawSolidBox_asm
-                             77 .globl cpct_getRandom_mxor_u8_asm
-                             78 .globl cpct_setSeed_mxor_asm
-                             79 
-                             80 ;;===============================================================================
-                             81 ;; DEFINED CONSTANTS
-                             82 ;;===============================================================================
-                     0004    83 S_BALLS_BIG_W = 4
-                     000B    84 S_BALLS_BIG_H = 11
-                             85 
-                     0002    86 S_BALLS_SMALL_W = 2
-                     0005    87 S_BALLS_SMALL_H = 5
+                             65 ;; CPCTELERA FUNCTIONS
+                             66 ;;===============================================================================
+                             67 .globl cpct_disableFirmware_asm
+                             68 .globl cpct_getScreenPtr_asm
+                             69 .globl cpct_drawSprite_asm
+                             70 .globl cpct_setVideoMode_asm
+                             71 .globl cpct_setPalette_asm
+                             72 .globl cpct_setPALColour_asm
+                             73 .globl cpct_memset_asm
+                             74 .globl cpct_getScreenToSprite_asm
+                             75 .globl cpct_scanKeyboard_asm
+                             76 .globl cpct_isKeyPressed_asm
+                             77 .globl cpct_waitHalts_asm
+                             78 .globl cpct_drawSolidBox_asm
+                             79 .globl cpct_getRandom_mxor_u8_asm
+                             80 .globl cpct_setSeed_mxor_asm
+                             81 .globl cpct_isAnyKeyPressed_asm
+                             82 
+                             83 ;;===============================================================================
+                             84 ;; DEFINED CONSTANTS
+                             85 ;;===============================================================================
+                     0004    86 S_BALLS_BIG_W = 4
+                     000B    87 S_BALLS_BIG_H = 11
                              88 
-                     000F    89 S_HI_SCORE_W = 15
-                     0007    90 S_HI_SCORE_H = 7
+                     0002    89 S_BALLS_SMALL_W = 2
+                     0005    90 S_BALLS_SMALL_H = 5
                              91 
-                     000A    92 S_SCORE_W = 10
-                     0007    93 S_SCORE_H = 7
+                     000F    92 S_HI_SCORE_W = 15
+                     0007    93 S_HI_SCORE_H = 7
                              94 
-                     0002    95 S_UNO_W = 2
-                     0010    96 S_UNO_H = 16
-                     0003    97 S_DOS_W = 3
-                     0010    98 S_DOS_H = 16
-                     0003    99 S_TRES_W = 3
-                     0010   100 S_TRES_H = 16
-                            101 
-                     0004   102 S_SCORE_NUMBERS_W = 4
-                     000F   103 S_SCORE_NUMBERS_H = 15
+                     000A    95 S_SCORE_W = 10
+                     0007    96 S_SCORE_H = 7
+                             97 
+                     0002    98 S_UNO_W = 2
+                     0010    99 S_UNO_H = 16
+                     0003   100 S_DOS_W = 3
+                     0010   101 S_DOS_H = 16
+                     0003   102 S_TRES_W = 3
+                     0010   103 S_TRES_H = 16
                             104 
-                     0001   105 BOARD_X_COORD = 1   ;; X 
-                     0036   106 BOARD_Y_COORD = 54  ;; Y 
-                     000A   107 BOARD_ROWS = 10     ;;
-                     000A   108 BOARD_COLS = 10     ;;
-                            109 
+                     0004   105 S_SCORE_NUMBERS_W = 4
+                     000F   106 S_SCORE_NUMBERS_H = 15
+                            107 
+                     0019   108 S_PRESS_ANY_KEY_W = 25
+                     0008   109 S_PRESS_ANY_KEY_H = 8
 ASxxxx Assembler V02.00 + NoICE + SDCC mods  (Zilog Z80 / Hitachi HD64180), page 60.
 Hexadecimal [16-Bits]
 
 
 
-                     0004   110 HIGH_SCORE_TITLE_X_COORD = 4        ;;
-                     0006   111 HIGH_SCORE_TITLE_Y_COORD = 6        ;;   
-                     0001   112 HIGH_SCORE_X_COORD = 1
-                     0014   113 HIGH_SCORE_Y_COORD = 20
-                     E0A1   114 HIGH_SCORE_SCREEN_ADDRESS = 0xE0A1
-                            115 
-                     0039   116 SCORE_TITLE_X_COORD = 57       ;;
-                     0014   117 SCORE_TITLE_Y_COORD = 20       ;; 
-                     0039   118 SCORE_X_COORD = 57
-                     0028   119 SCORE_Y_COORD = 40
-                     E16D   120 SCORE_SCREEN_ADDRESS = 0xE16D
-                            121 
-                     002F   122 UNO_TITLE_X_COORD = 47       ;;
-                     0050   123 UNO_TITLE_Y_COORD = 80       ;;
-                     003C   124 DOS_TITLE_X_COORD = 60       ;;
-                     0050   125 DOS_TITLE_Y_COORD = 80       ;; 
-                     0047   126 TRES_TITLE_X_COORD = 71       ;;
-                     0050   127 TRES_TITLE_Y_COORD = 80       ;; 
-                            128 
-                     0005   129 PIECE_HOR_SIZE = 5
-                     0005   130 PIECE_VER_SIZE = 5
-                            131 
-                     0012   132 MAX_PIECE = 18
-                            133 
-                     002E   134 NEXT_PIECE_1_X = 46
-                     0096   135 NEXT_PIECE_1_Y = 150
-                     003B   136 NEXT_PIECE_2_X = 59
-                     0096   137 NEXT_PIECE_2_Y = 150
-                     0046   138 NEXT_PIECE_3_X = 70
-                     0096   139 NEXT_PIECE_3_Y = 150
-                            140 
-                     0004   141 SCORE_NUM_BYTES = 4
-                            142 
-                     000C   143 S_NEXT_W = 12
-                     0010   144 S_NEXT_H = 16
-                     002D   145 NEXT_TITLE_X_COORD = 45       ;;
-                     0078   146 NEXT_TITLE_Y_COORD = 120       ;;
-                            147 
-                     0012   148 S_PIECES_W = 18
-                     0010   149 S_PIECES_H = 16
-                     003C   150 PIECES_TITLE_X_COORD = 60       ;;
-                     0078   151 PIECES_TITLE_Y_COORD = 120       ;;
+                     001A   110 S_LOGO_1010_W = 26
+                     0020   111 S_LOGO_1010_H = 32
+                            112 
+                     0001   113 BOARD_X_COORD = 1   ;; X 
+                     0036   114 BOARD_Y_COORD = 54  ;; Y 
+                     000A   115 BOARD_ROWS = 10     ;;
+                     000A   116 BOARD_COLS = 10     ;;
+                            117 
+                     0004   118 HIGH_SCORE_TITLE_X_COORD = 4        ;;
+                     0006   119 HIGH_SCORE_TITLE_Y_COORD = 6        ;;   
+                     0001   120 HIGH_SCORE_X_COORD = 1
+                     0014   121 HIGH_SCORE_Y_COORD = 20
+                     E0A1   122 HIGH_SCORE_SCREEN_ADDRESS = 0xE0A1
+                            123 
+                     0039   124 SCORE_TITLE_X_COORD = 57       ;;
+                     0014   125 SCORE_TITLE_Y_COORD = 20       ;; 
+                     0039   126 SCORE_X_COORD = 57
+                     0028   127 SCORE_Y_COORD = 40
+                     E16D   128 SCORE_SCREEN_ADDRESS = 0xE16D
+                            129 
+                     002F   130 UNO_TITLE_X_COORD = 47       ;;
+                     0050   131 UNO_TITLE_Y_COORD = 80       ;;
+                     003C   132 DOS_TITLE_X_COORD = 60       ;;
+                     0050   133 DOS_TITLE_Y_COORD = 80       ;; 
+                     0047   134 TRES_TITLE_X_COORD = 71       ;;
+                     0050   135 TRES_TITLE_Y_COORD = 80       ;; 
+                            136 
+                     0005   137 PIECE_HOR_SIZE = 5
+                     0005   138 PIECE_VER_SIZE = 5
+                            139 
+                     0012   140 MAX_PIECE = 18
+                            141 
+                     002E   142 NEXT_PIECE_1_X = 46
+                     0096   143 NEXT_PIECE_1_Y = 150
+                     003B   144 NEXT_PIECE_2_X = 59
+                     0096   145 NEXT_PIECE_2_Y = 150
+                     0046   146 NEXT_PIECE_3_X = 70
+                     0096   147 NEXT_PIECE_3_Y = 150
+                     0019   148 NEXT_PIECE_MAX_HEIGHT = 25
+                     000A   149 NEXT_PIECE_MAX_WIDTH = 10
+                            150 
+                     0004   151 SCORE_NUM_BYTES = 4
                             152 
-                            153 
-                            154 
+                     000C   153 S_NEXT_W = 12
+                     0010   154 S_NEXT_H = 16
+                     002D   155 NEXT_TITLE_X_COORD = 45       ;;
+                     0078   156 NEXT_TITLE_Y_COORD = 120       ;;
+                            157 
+                     0012   158 S_PIECES_W = 18
+                     0010   159 S_PIECES_H = 16
+                     003C   160 PIECES_TITLE_X_COORD = 60       ;;
+                     0078   161 PIECES_TITLE_Y_COORD = 120       ;;
+                            162 
+                            163 
+                            164 
 ASxxxx Assembler V02.00 + NoICE + SDCC mods  (Zilog Z80 / Hitachi HD64180), page 61.
 Hexadecimal [16-Bits]
 
@@ -3093,39 +3106,80 @@ Hexadecimal [16-Bits]
                              27 
                              28 .module main
                              29 
-                             30 ;;
-                             31 ;; Start of _DATA area 
-                             32 ;;  SDCC requires at least _DATA and _CODE areas to be declared, but you may use
-                             33 ;;  any one of them for any purpose. Usually, compiler puts _DATA area contents
-                             34 ;;  right after _CODE area contents.
-                             35 ;;
-                             36 .area _DATA
-                             37 
-                             38 ;;
-                             39 ;; Start of _CODE area
-                             40 ;; 
-                             41 .area _CODE
-                             42 
-                             43 ;;
-                             44 ;; MAIN function. This is the entry point of the application.
-                             45 ;;    _main:: global symbol is required for correctly compiling and linking
-                             46 ;;
-   0000                      47 _main::
-                             48    ;; Disable firmware to prevent it from interfering with string drawing
-   0000 CD 00 00      [17]   49    call cpct_disableFirmware_asm
-                             50 
-                             51    ;call sys_board_init
-   0003 CD 00 00      [17]   52    call sys_render_init
-                             53    
-   0006 CD 00 00      [17]   54    call sys_input_init
+                             30 ;;-----------------------------------------------------------------
+                             31 ;;
+                             32 ;; Start of _DATA area 
+                             33 ;;  SDCC requires at least _DATA and _CODE areas to be declared, but you may use
+                             34 ;;  any one of them for any purpose. Usually, compiler puts _DATA area contents
+                             35 ;;  right after _CODE area contents.
+                             36 ;;
+                             37 .area _DATA
+                             38 
+                             39 ;;
+                             40 ;; Start of _CODE area
+                             41 ;; 
+                             42 .area _CODE
+                             43 
+                             44 ;;-----------------------------------------------------------------
+                             45 ;;
+                             46 ;; main_init
+                             47 ;;   Draw player1
+                             48 ;;  Input:  
+                             49 ;;  Output: 
+                             50 ;;  Destroyed: af, bc,de, hl
+                             51 ;;
+   0000                      52 main_init::
+   0000 CD 00 00      [17]   53    call sys_render_init
+                             54 
                              55 
-   0009 CD 00 00      [17]   56    call man_game_init
-                             57 
-                             58    ;; Loop forever
-   000C                      59 loop:
-   000C 06 12         [ 7]   60    ld b,#18
-   000E CD 00 00      [17]   61    call cpct_waitHalts_asm
-                             62    
-   0011 CD 00 00      [17]   63    call man_game_update
-                             64 
-   0014 18 F6         [12]   65    jr    loop
+   0003 11 AA E0      [10]   56    ld de, #0xe0aa                ;; screen address for 10, 20
+   0006 21 00 00      [10]   57    ld hl, #_s_logo_1010
+   0009 0E 1A         [ 7]   58    ld c, #S_LOGO_1010_W
+   000B 06 20         [ 7]   59    ld b, #S_LOGO_1010_H
+   000D CD 00 00      [17]   60    call cpct_drawSprite_asm
+                             61 
+   0010 11 AA E0      [10]   62    ld de, #0xe0aa                ;; screen address for 10, 20
+   0013 21 00 00      [10]   63    ld hl, #_s_logo_1010
+   0016 0E 1A         [ 7]   64    ld c, #S_LOGO_1010_W
+   0018 06 20         [ 7]   65    ld b, #S_LOGO_1010_H
+   001A CD 00 00      [17]   66    call cpct_drawSprite_asm
+                             67 
+                             68    ;; set random seed
+   001D 1E 00         [ 7]   69    ld e,#0
+   001F                      70 _main_init_keypress:
+   001F CD 00 00      [17]   71    call cpct_scanKeyboard_asm          ;; scan keyboard
+   0022 24            [ 4]   72    inc h
+   0023 CD 00 00      [17]   73    call cpct_isAnyKeyPressed_asm
+   0026 B7            [ 4]   74    or a
+   0027 28 F6         [12]   75    jr z, _main_init_keypress
+   0029 CD 00 00      [17]   76    call cpct_setSeed_mxor_asm               ;; change seed
+                             77    
+   002C CD 00 00      [17]   78    call sys_input_init
+                             79 
+   002F CD 00 00      [17]   80    call man_game_init
+                             81 
+ASxxxx Assembler V02.00 + NoICE + SDCC mods  (Zilog Z80 / Hitachi HD64180), page 62.
+Hexadecimal [16-Bits]
+
+
+
+   0032 C9            [10]   82    ret
+                             83 ;;-----------------------------------------------------------------
+                             84 ;;
+                             85 ;; MAIN function. This is the entry point of the application.
+                             86 ;;    _main:: global symbol is required for correctly compiling and linking
+                             87 ;;
+   0033                      88 main::
+                             89    ;; Disable firmware to prevent it from interfering with string drawing
+   0033 CD 00 00      [17]   90    call cpct_disableFirmware_asm
+                             91 
+   0036 CD 00 00      [17]   92    call main_init
+                             93 
+                             94    ;; Loop forever
+   0039                      95 loop:
+   0039 06 12         [ 7]   96    ld b,#18
+   003B CD 00 00      [17]   97    call cpct_waitHalts_asm
+                             98    
+   003E CD 00 00      [17]   99    call man_game_update
+                            100 
+   0041 18 F6         [12]  101    jr    loop

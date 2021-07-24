@@ -64,33 +64,36 @@ Hexadecimal [16-Bits]
 Symbol Table
 
     NEXT_PIE=  0096     |     NEXT_PIE=  0046     |     NEXT_PIE=  0096 
-    NEXT_TIT=  002D     |     NEXT_TIT=  0078     |     PAL_INKR=  0040 
-    PAL_PENR=  0000     |     PIECES_T=  003C     |     PIECES_T=  0078 
-    PIECE_HO=  0005     |     PIECE_SI=  0007     |     PIECE_VE=  0005 
-    PPI_PORT=  00F5     |     SCORE_NU=  0004     |     SCORE_SC=  E16D 
-    SCORE_TI=  0039     |     SCORE_TI=  0014     |     SCORE_X_=  0039 
-    SCORE_Y_=  0028     |     S_BALLS_=  000B     |     S_BALLS_=  0004 
-    S_BALLS_=  0005     |     S_BALLS_=  0002     |     S_DOS_H =  0010 
-    S_DOS_W =  0003     |     S_HI_SCO=  0007     |     S_HI_SCO=  000F 
-    S_NEXT_H=  0010     |     S_NEXT_W=  000C     |     S_PIECES=  0010 
-    S_PIECES=  0012     |     S_SCORE_=  0007     |     S_SCORE_=  000F 
+    NEXT_PIE=  0019     |     NEXT_PIE=  000A     |     NEXT_TIT=  002D 
+    NEXT_TIT=  0078     |     PAL_INKR=  0040     |     PAL_PENR=  0000 
+    PIECES_T=  003C     |     PIECES_T=  0078     |     PIECE_HO=  0005 
+    PIECE_SI=  0007     |     PIECE_VE=  0005     |     PPI_PORT=  00F5 
+    SCORE_NU=  0004     |     SCORE_SC=  E16D     |     SCORE_TI=  0039 
+    SCORE_TI=  0014     |     SCORE_X_=  0039     |     SCORE_Y_=  0028 
+    S_BALLS_=  000B     |     S_BALLS_=  0004     |     S_BALLS_=  0005 
+    S_BALLS_=  0002     |     S_DOS_H =  0010     |     S_DOS_W =  0003 
+    S_HI_SCO=  0007     |     S_HI_SCO=  000F     |     S_LOGO_1=  0020 
+    S_LOGO_1=  001A     |     S_NEXT_H=  0010     |     S_NEXT_W=  000C 
+    S_PIECES=  0010     |     S_PIECES=  0012     |     S_PRESS_=  0008 
+    S_PRESS_=  0019     |     S_SCORE_=  0007     |     S_SCORE_=  000F 
     S_SCORE_=  0004     |     S_SCORE_=  000A     |     S_TRES_H=  0010 
     S_TRES_W=  0003     |     S_UNO_H =  0010     |     S_UNO_W =  0002 
     TRES_TIT=  0047     |     TRES_TIT=  0050     |     UNO_TITL=  002F 
-    UNO_TITL=  0050     |     _g_palet   **** GX  |   0 _main      0000 GR
+    UNO_TITL=  0050     |     _g_palet   **** GX  |   0 _main_in   001F R
     _s_balls   **** GX  |     _s_balls   **** GX  |     _s_balls   **** GX
     _s_balls   **** GX  |     _s_balls   **** GX  |     _s_balls   **** GX
     _s_balls   **** GX  |     _s_balls   **** GX  |     _s_balls   **** GX
     _s_balls   **** GX  |     _s_balls   **** GX  |     _s_balls   **** GX
     _s_balls   **** GX  |     _s_balls   **** GX  |     _s_balls   **** GX
     _s_balls   **** GX  |     _s_dos     **** GX  |     _s_hi_sc   **** GX
-    _s_next    **** GX  |     _s_piece   **** GX  |     _s_score   **** GX
+    _s_logo_   **** GX  |     _s_next    **** GX  |     _s_piece   **** GX
+    _s_press   **** GX  |     _s_score   **** GX  |     _s_score   **** GX
     _s_score   **** GX  |     _s_score   **** GX  |     _s_score   **** GX
     _s_score   **** GX  |     _s_score   **** GX  |     _s_score   **** GX
-    _s_score   **** GX  |     _s_score   **** GX  |     _s_score   **** GX
-    _s_tres    **** GX  |     _s_uno     **** GX  |     board      **** GX
-    cpct_dis   **** GX  |     cpct_dra   **** GX  |     cpct_dra   **** GX
-    cpct_get   **** GX  |     cpct_get   **** GX  |     cpct_get   **** GX
+    _s_score   **** GX  |     _s_score   **** GX  |     _s_tres    **** GX
+    _s_uno     **** GX  |     board      **** GX  |     cpct_dis   **** GX
+    cpct_dra   **** GX  |     cpct_dra   **** GX  |     cpct_get   **** GX
+    cpct_get   **** GX  |     cpct_get   **** GX  |     cpct_isA   **** GX
     cpct_isK   **** GX  |     cpct_mem   **** GX  |     cpct_pag=  0000 
     cpct_pag=  0010     |     cpct_pag=  0020     |     cpct_pag=  0030 
     cpct_sca   **** GX  |     cpct_set   **** GX  |     cpct_set   **** GX
@@ -99,8 +102,9 @@ Symbol Table
     e_moved =  000A     |     e_p_scre=  0006     |     e_set   =  000B 
     e_status=  0000     |     e_type  =  0003     |     e_w     =  0004 
     e_x     =  0001     |     e_y     =  0002     |     hi_score   **** GX
-  0 loop       000C R   |     man_enti   **** GX  |     man_game   **** GX
-    man_game   **** GX  |     next_pie   **** GX  |     next_pie   **** GX
+  0 loop       0039 R   |   0 main       0033 GR  |   0 main_ini   0000 GR
+    man_enti   **** GX  |     man_game   **** GX  |     man_game   **** GX
+    next_pie   **** GX  |     next_pie   **** GX  |     next_pie   **** GX
     opc_DI  =  00F3     |     opc_EI  =  00FB     |     opc_JR  =  0018 
     opc_LD_D=  0016     |     piece_ty   **** GX  |     player1    **** GX
     player_b   **** GX  |     score      **** GX  |     selected   **** GX
@@ -110,12 +114,13 @@ Symbol Table
     sys_rend   **** GX  |     sys_rend   **** GX  |     sys_rend   **** GX
     sys_rend   **** GX  |     sys_rend   **** GX  |     sys_rend   **** GX
     sys_rend   **** GX  |     sys_rend   **** GX  |     sys_rend   **** GX
+    sys_rend   **** GX
 
 ASxxxx Assembler V02.00 + NoICE + SDCC mods  (Zilog Z80 / Hitachi HD64180), page 3.
 Hexadecimal [16-Bits]
 
 Area Table
 
-   0 _CODE      size   16   flags    0
+   0 _CODE      size   43   flags    0
    1 _DATA      size    0   flags    0
 

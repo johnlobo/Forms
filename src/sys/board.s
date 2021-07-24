@@ -127,22 +127,13 @@ sys_board_cell_sprite::
 ;;
 sys_board_set_cell::
     push hl
-    ld a, e_x(ix)
-    ld (sb_set_cell_add_x+1), a             ;; self modifying code to add x coord
-    ld a, e_y(ix)                           ;; add y coord
-    add b
-    ld (sb_set_cell_add_y0+1), a            ;; self modifying code to add y coord
-    ld (sb_set_cell_add_y1+1), a            ;; self modifying code to add y coord
+    ld a, b
     sla a
     sla a
     sla a                                   ;; multiply by 8
-sb_set_cell_add_y0:
-    add #00
-sb_set_cell_add_y1:
-    add #00
+    add b                                   ;; multiply by 9    
+    add b                                   ;; multiply by 10
     add c                                   ;; then add the x coord and we have the offset for the cell
-sb_set_cell_add_x:
-    add #00                                 ;; add x coord
     ld hl, #board
     add_hl_a
     ld (hl), #01                            ;; load 1 in the corresponding cell
@@ -174,7 +165,15 @@ sys_board_set_piece::
 
 sb_set_piece_loop0:
     push bc
-
+    ;; add x coord of piece
+    ld a, e_x(ix)
+    add c
+    ld c, a
+    ;; add y coord of piece
+    ld a, e_y(ix)
+    add b
+    ld b, a
+    ;; check if piece byte is #0 to skip processing
     ld a, (hl)                      ;; load first row (byte) in a
     or a                            ;; check if piece byte is 00
     jr z, sb_set_piece_continue_0            ;; jump to next byte if so

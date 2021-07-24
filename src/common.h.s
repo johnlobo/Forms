@@ -57,6 +57,8 @@
 .globl _s_score_numbers_08
 .globl _s_next
 .globl _s_pieces
+.globl _s_logo_1010
+.globl _s_press_any_key
 
 
 ;;===============================================================================
@@ -76,6 +78,7 @@
 .globl cpct_drawSolidBox_asm
 .globl cpct_getRandom_mxor_u8_asm
 .globl cpct_setSeed_mxor_asm
+.globl cpct_isAnyKeyPressed_asm
 
 ;;===============================================================================
 ;; DEFINED CONSTANTS
@@ -101,6 +104,11 @@ S_TRES_H = 16
 
 S_SCORE_NUMBERS_W = 4
 S_SCORE_NUMBERS_H = 15
+
+S_PRESS_ANY_KEY_W = 25
+S_PRESS_ANY_KEY_H = 8
+S_LOGO_1010_W = 26
+S_LOGO_1010_H = 32
 
 BOARD_X_COORD = 1   ;; X 
 BOARD_Y_COORD = 54  ;; Y 
@@ -137,6 +145,8 @@ NEXT_PIECE_2_X = 59
 NEXT_PIECE_2_Y = 150
 NEXT_PIECE_3_X = 70
 NEXT_PIECE_3_Y = 150
+NEXT_PIECE_MAX_HEIGHT = 25
+NEXT_PIECE_MAX_WIDTH = 10
 
 SCORE_NUM_BYTES = 4
 

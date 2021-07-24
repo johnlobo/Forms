@@ -27,6 +27,7 @@
 
 .module main
 
+;;-----------------------------------------------------------------
 ;;
 ;; Start of _DATA area 
 ;;  SDCC requires at least _DATA and _CODE areas to be declared, but you may use
@@ -40,20 +41,55 @@
 ;; 
 .area _CODE
 
+;;-----------------------------------------------------------------
 ;;
-;; MAIN function. This is the entry point of the application.
-;;    _main:: global symbol is required for correctly compiling and linking
+;; main_init
+;;   Draw player1
+;;  Input:  
+;;  Output: 
+;;  Destroyed: af, bc,de, hl
 ;;
-_main::
-   ;; Disable firmware to prevent it from interfering with string drawing
-   call cpct_disableFirmware_asm
-
-   ;call sys_board_init
+main_init::
    call sys_render_init
+
+
+   ld de, #0xe0aa                ;; screen address for 10, 20
+   ld hl, #_s_logo_1010
+   ld c, #S_LOGO_1010_W
+   ld b, #S_LOGO_1010_H
+   call cpct_drawSprite_asm
+
+   ld de, #0xe0aa                ;; screen address for 10, 20
+   ld hl, #_s_logo_1010
+   ld c, #S_LOGO_1010_W
+   ld b, #S_LOGO_1010_H
+   call cpct_drawSprite_asm
+
+   ;; set random seed
+   ld e,#0
+_main_init_keypress:
+   call cpct_scanKeyboard_asm          ;; scan keyboard
+   inc h
+   call cpct_isAnyKeyPressed_asm
+   or a
+   jr z, _main_init_keypress
+   call cpct_setSeed_mxor_asm               ;; change seed
    
    call sys_input_init
 
    call man_game_init
+
+   ret
+;;-----------------------------------------------------------------
+;;
+;; MAIN function. This is the entry point of the application.
+;;    _main:: global symbol is required for correctly compiling and linking
+;;
+main::
+   ;; Disable firmware to prevent it from interfering with string drawing
+   call cpct_disableFirmware_asm
+
+   call main_init
 
    ;; Loop forever
 loop:
