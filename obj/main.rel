@@ -1,5 +1,5 @@
 XL2
-H 2 areas 4D global symbols
+H 2 areas 4E global symbols
 M cpct_keyboard
 S sys_input_init Ref0000
 S man_entity_get_hl_from_piece Ref0000
@@ -54,6 +54,7 @@ S sys_render_draw_piece_small Ref0000
 S sys_render_draw_player1 Ref0000
 S _s_score_numbers_02 Ref0000
 S sys_render_hi_score Ref0000
+S _s_pieces Ref0000
 S _s_score_numbers_03 Ref0000
 S _s_score_numbers_04 Ref0000
 S _s_score_numbers_05 Ref0000
@@ -62,7 +63,7 @@ S _s_score_numbers_07 Ref0000
 S selected_piece Ref0000
 S _s_score_numbers_08 Ref0000
 S _s_tres Ref0000
-S _s_score_numbers_09 Ref0000
+S _s_next Ref0000
 S cpct_setVideoMode_asm Ref0000
 S cpct_memset_asm Ref0000
 S sys_render_next_pieces Ref0000
@@ -83,7 +84,7 @@ A _DATA size 0 flags 0 addr 0
 T 00 00
 R 00 00 00 00
 T 00 00 CD 00 00 CD 00 00 CD 00 00 CD
-R 00 00 00 00 02 03 43 00 02 06 15 00 02 09 00 00
+R 00 00 00 00 02 03 44 00 02 06 15 00 02 09 00 00
 T 0A 00 00 00
 R 00 00 00 00 02 02 0B 00
 T 0C 00

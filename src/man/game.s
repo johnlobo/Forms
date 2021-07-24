@@ -158,6 +158,9 @@ _valid_piece:
     ld e_y(ix), #0
 
     ld e_set(ix), #0
+    
+    ld e_p_screen_p(ix), #0             ;; erase previous pointer so that update capture
+    ld e_p_screen_p+1(ix), #0           ;; the background
 
     ret
 

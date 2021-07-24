@@ -55,7 +55,9 @@
 .globl _s_score_numbers_06
 .globl _s_score_numbers_07
 .globl _s_score_numbers_08
-.globl _s_score_numbers_09
+.globl _s_next
+.globl _s_pieces
+
 
 ;;===============================================================================
 ;; CPCTELERA FUNCTIONS
@@ -130,11 +132,23 @@ PIECE_VER_SIZE = 5
 MAX_PIECE = 18
 
 NEXT_PIECE_1_X = 46
-NEXT_PIECE_1_Y = 110
+NEXT_PIECE_1_Y = 150
 NEXT_PIECE_2_X = 59
-NEXT_PIECE_2_Y = 110
+NEXT_PIECE_2_Y = 150
 NEXT_PIECE_3_X = 70
-NEXT_PIECE_3_Y = 110
+NEXT_PIECE_3_Y = 150
 
 SCORE_NUM_BYTES = 4
+
+S_NEXT_W = 12
+S_NEXT_H = 16
+NEXT_TITLE_X_COORD = 45       ;;
+NEXT_TITLE_Y_COORD = 120       ;;
+
+S_PIECES_W = 18
+S_PIECES_H = 16
+PIECES_TITLE_X_COORD = 60       ;;
+PIECES_TITLE_Y_COORD = 120       ;;
+
+
 
