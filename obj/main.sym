@@ -57,31 +57,34 @@ Symbol Table
     Key_T   =  0806     |     Key_Tab =  1008     |     Key_U   =  0405 
     Key_V   =  8006     |     Key_W   =  0807     |     Key_X   =  8007 
     Key_Y   =  0805     |     Key_Z   =  8008     |     MAX_PIEC=  0012 
-    NEXT_PIE=  002E     |     NEXT_PIE=  006E     |     NEXT_PIE=  003B 
+    NEXT_PIE=  002E     |     NEXT_PIE=  0096     |     NEXT_PIE=  003B 
 ASxxxx Assembler V02.00 + NoICE + SDCC mods  (Zilog Z80 / Hitachi HD64180), page 2.
 Hexadecimal [16-Bits]
 
 Symbol Table
 
-    NEXT_PIE=  006E     |     NEXT_PIE=  0046     |     NEXT_PIE=  006E 
-    PAL_INKR=  0040     |     PAL_PENR=  0000     |     PIECE_HO=  0005 
-    PIECE_SI=  0007     |     PIECE_VE=  0005     |     PPI_PORT=  00F5 
-    SCORE_NU=  0004     |     SCORE_SC=  E16D     |     SCORE_TI=  0039 
-    SCORE_TI=  0014     |     SCORE_X_=  0039     |     SCORE_Y_=  0028 
-    S_BALLS_=  000B     |     S_BALLS_=  0004     |     S_BALLS_=  0005 
-    S_BALLS_=  0002     |     S_DOS_H =  0010     |     S_DOS_W =  0003 
-    S_HI_SCO=  0007     |     S_HI_SCO=  000F     |     S_SCORE_=  0007 
-    S_SCORE_=  000F     |     S_SCORE_=  0004     |     S_SCORE_=  000A 
-    S_TRES_H=  0010     |     S_TRES_W=  0003     |     S_UNO_H =  0010 
-    S_UNO_W =  0002     |     TRES_TIT=  0047     |     TRES_TIT=  0050 
-    UNO_TITL=  002F     |     UNO_TITL=  0050     |     _g_palet   **** GX
-  0 _main      0000 GR  |     _s_balls   **** GX  |     _s_balls   **** GX
+    NEXT_PIE=  0096     |     NEXT_PIE=  0046     |     NEXT_PIE=  0096 
+    NEXT_TIT=  002D     |     NEXT_TIT=  0078     |     PAL_INKR=  0040 
+    PAL_PENR=  0000     |     PIECES_T=  003C     |     PIECES_T=  0078 
+    PIECE_HO=  0005     |     PIECE_SI=  0007     |     PIECE_VE=  0005 
+    PPI_PORT=  00F5     |     SCORE_NU=  0004     |     SCORE_SC=  E16D 
+    SCORE_TI=  0039     |     SCORE_TI=  0014     |     SCORE_X_=  0039 
+    SCORE_Y_=  0028     |     S_BALLS_=  000B     |     S_BALLS_=  0004 
+    S_BALLS_=  0005     |     S_BALLS_=  0002     |     S_DOS_H =  0010 
+    S_DOS_W =  0003     |     S_HI_SCO=  0007     |     S_HI_SCO=  000F 
+    S_NEXT_H=  0010     |     S_NEXT_W=  000C     |     S_PIECES=  0010 
+    S_PIECES=  0012     |     S_SCORE_=  0007     |     S_SCORE_=  000F 
+    S_SCORE_=  0004     |     S_SCORE_=  000A     |     S_TRES_H=  0010 
+    S_TRES_W=  0003     |     S_UNO_H =  0010     |     S_UNO_W =  0002 
+    TRES_TIT=  0047     |     TRES_TIT=  0050     |     UNO_TITL=  002F 
+    UNO_TITL=  0050     |     _g_palet   **** GX  |   0 _main      0000 GR
     _s_balls   **** GX  |     _s_balls   **** GX  |     _s_balls   **** GX
     _s_balls   **** GX  |     _s_balls   **** GX  |     _s_balls   **** GX
     _s_balls   **** GX  |     _s_balls   **** GX  |     _s_balls   **** GX
     _s_balls   **** GX  |     _s_balls   **** GX  |     _s_balls   **** GX
-    _s_balls   **** GX  |     _s_balls   **** GX  |     _s_dos     **** GX
-    _s_hi_sc   **** GX  |     _s_score   **** GX  |     _s_score   **** GX
+    _s_balls   **** GX  |     _s_balls   **** GX  |     _s_balls   **** GX
+    _s_balls   **** GX  |     _s_dos     **** GX  |     _s_hi_sc   **** GX
+    _s_next    **** GX  |     _s_piece   **** GX  |     _s_score   **** GX
     _s_score   **** GX  |     _s_score   **** GX  |     _s_score   **** GX
     _s_score   **** GX  |     _s_score   **** GX  |     _s_score   **** GX
     _s_score   **** GX  |     _s_score   **** GX  |     _s_score   **** GX

@@ -110,37 +110,59 @@ sys_render_game_screen::
 
     call sys_render_board
 
-    ;; Draw One
+    ;;;; Draw One
+    ;;ld de, #CPCT_VMEM_START_ASM     ;; DE = Pointer to start of the screen
+    ;;ld b, #UNO_TITLE_Y_COORD        ;; B = y coordinate (24 = 0x18)
+    ;;ld c, #UNO_TITLE_X_COORD        ;; C = x coordinate (16 = 0x10)
+    ;;call cpct_getScreenPtr_asm      ;; Calculate video memory location and return it in HL
+    ;;ex de, hl                       ;; move screen address to de
+    ;;ld hl, #_s_uno                  ;; load in HL the address of the sprite
+    ;;ld c, #S_UNO_W                  ;; load in c the sprite width 
+    ;;ld b, #S_UNO_H                  ;; load in b sprite height
+    ;;call cpct_drawSprite_asm        ;; draw sprite
+
+    ;;;; Draw Two
+    ;;ld de, #CPCT_VMEM_START_ASM     ;; DE = Pointer to start of the screen
+    ;;ld b, #DOS_TITLE_Y_COORD        ;; B = y coordinate (24 = 0x18)
+    ;;ld c, #DOS_TITLE_X_COORD        ;; C = x coordinate (16 = 0x10)
+    ;;call cpct_getScreenPtr_asm      ;; Calculate video memory location and return it in HL
+    ;;ex de, hl                       ;; move screen address to de
+    ;;ld hl, #_s_dos                  ;; load in HL the address of the sprite
+    ;;ld c, #S_DOS_W                  ;; load in c the sprite width 
+    ;;ld b, #S_DOS_H                  ;; load in b sprite height
+    ;;call cpct_drawSprite_asm        ;; draw sprite
+
+    ;;;; Draw Three
+    ;;ld de, #CPCT_VMEM_START_ASM     ;; DE = Pointer to start of the screen
+    ;;ld b, #TRES_TITLE_Y_COORD       ;; B = y coordinate (24 = 0x18)
+    ;;ld c, #TRES_TITLE_X_COORD       ;; C = x coordinate (16 = 0x10)
+    ;;call cpct_getScreenPtr_asm      ;; Calculate video memory location and return it in HL
+    ;;ex de, hl                       ;; move screen address to de
+    ;;ld hl, #_s_tres                 ;; load in HL the address of the sprite
+    ;;ld c, #S_TRES_W                 ;; load in c the sprite width 
+    ;;ld b, #S_TRES_H                 ;; load in b sprite height
+    ;;call cpct_drawSprite_asm        ;; draw sprite
+
+    ;; Draw Next
     ld de, #CPCT_VMEM_START_ASM     ;; DE = Pointer to start of the screen
-    ld b, #UNO_TITLE_Y_COORD        ;; B = y coordinate (24 = 0x18)
-    ld c, #UNO_TITLE_X_COORD        ;; C = x coordinate (16 = 0x10)
+    ld b, #NEXT_TITLE_Y_COORD        ;; B = y coordinate (24 = 0x18)
+    ld c, #NEXT_TITLE_X_COORD        ;; C = x coordinate (16 = 0x10)
     call cpct_getScreenPtr_asm      ;; Calculate video memory location and return it in HL
     ex de, hl                       ;; move screen address to de
-    ld hl, #_s_uno                  ;; load in HL the address of the sprite
-    ld c, #S_UNO_W                  ;; load in c the sprite width 
-    ld b, #S_UNO_H                  ;; load in b sprite height
+    ld hl, #_s_next     ;; load in HL the address of the sprite
+    ld c, #S_NEXT_W       ;; load in c the sprite width 
+    ld b, #S_NEXT_H       ;; load in b sprite height
     call cpct_drawSprite_asm        ;; draw sprite
 
-    ;; Draw Two
+    ;; Draw Pieces
     ld de, #CPCT_VMEM_START_ASM     ;; DE = Pointer to start of the screen
-    ld b, #DOS_TITLE_Y_COORD        ;; B = y coordinate (24 = 0x18)
-    ld c, #DOS_TITLE_X_COORD        ;; C = x coordinate (16 = 0x10)
+    ld b, #PIECES_TITLE_Y_COORD        ;; B = y coordinate (24 = 0x18)
+    ld c, #PIECES_TITLE_X_COORD        ;; C = x coordinate (16 = 0x10)
     call cpct_getScreenPtr_asm      ;; Calculate video memory location and return it in HL
     ex de, hl                       ;; move screen address to de
-    ld hl, #_s_dos                  ;; load in HL the address of the sprite
-    ld c, #S_DOS_W                  ;; load in c the sprite width 
-    ld b, #S_DOS_H                  ;; load in b sprite height
-    call cpct_drawSprite_asm        ;; draw sprite
-
-    ;; Draw Three
-    ld de, #CPCT_VMEM_START_ASM     ;; DE = Pointer to start of the screen
-    ld b, #TRES_TITLE_Y_COORD       ;; B = y coordinate (24 = 0x18)
-    ld c, #TRES_TITLE_X_COORD       ;; C = x coordinate (16 = 0x10)
-    call cpct_getScreenPtr_asm      ;; Calculate video memory location and return it in HL
-    ex de, hl                       ;; move screen address to de
-    ld hl, #_s_tres                 ;; load in HL the address of the sprite
-    ld c, #S_TRES_W                 ;; load in c the sprite width 
-    ld b, #S_TRES_H                 ;; load in b sprite height
+    ld hl, #_s_pieces     ;; load in HL the address of the sprite
+    ld c, #S_PIECES_W       ;; load in c the sprite width 
+    ld b, #S_PIECES_H       ;; load in b sprite height
     call cpct_drawSprite_asm        ;; draw sprite
 
     ret
@@ -176,7 +198,7 @@ sys_render_cell::
     ld a, e_y(ix)
     add b
     ld e, a
-    ld h, #S_BALLS_BIG_H
+    ld h, #S_BALLS_BIG_H + 1
     call h_times_e
     ld a, #BOARD_Y_COORD
     add l

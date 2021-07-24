@@ -127,13 +127,22 @@ sys_board_cell_sprite::
 ;;
 sys_board_set_cell::
     push hl
-    ld a, b
+    ld a, e_x(ix)
+    ld (sb_set_cell_add_x+1), a             ;; self modifying code to add x coord
+    ld a, e_y(ix)                           ;; add y coord
+    add b
+    ld (sb_set_cell_add_y0+1), a            ;; self modifying code to add y coord
+    ld (sb_set_cell_add_y1+1), a            ;; self modifying code to add y coord
     sla a
     sla a
     sla a                                   ;; multiply by 8
-    add b
-    add b                                   ;; then add 2 times coord y and thats it.
+sb_set_cell_add_y0:
+    add #00
+sb_set_cell_add_y1:
+    add #00
     add c                                   ;; then add the x coord and we have the offset for the cell
+sb_set_cell_add_x:
+    add #00                                 ;; add x coord
     ld hl, #board
     add_hl_a
     ld (hl), #01                            ;; load 1 in the corresponding cell
@@ -172,7 +181,6 @@ sb_set_piece_loop0:
 
     ld (_piece_byte),a
  
-    ld a, (_piece_byte)
     bit 4,a                         ;; first bit
     call nz, sys_board_set_cell
     inc c
