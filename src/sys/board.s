@@ -109,10 +109,10 @@ sys_board_cell_content::
 ;;
 sys_board_cell_sprite::
     call sys_board_cell_content     ;; retrieve the content of the cell
-    ld   hl, #_s_balls_big_7        ;; load in hl the default sprite
+    ld   hl, #_s_balls_big_07        ;; load in hl the default sprite
     or a                            ;; check if the content is 0
     ret z                           ;; if 0 just return with hl pointing to the default sprite
-    ld hl, #_s_balls_big_0          ;; otherwise load in hl the occupied sprite
+    ld hl, #_s_balls_big_00          ;; otherwise load in hl the occupied sprite
     ret
 
 ;;-----------------------------------------------------------------

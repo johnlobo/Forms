@@ -66,7 +66,7 @@ sys_render_init::
     ld de, #16
     call cpct_setPalette_asm
     ;; Set Border
-    cpctm_setBorder_asm HW_BLACK
+    cpctm_setBorder_asm HW_WHITE
 
     cpctm_clearScreen_asm 0
 
@@ -83,13 +83,13 @@ sys_render_init::
 ;;
 sys_render_logo_screen::
     
-    cpctm_screenPtr_asm de, CPCT_VMEM_START_ASM, 29, 76  ;; screen address for 30, 76 in de
+    cpctm_screenPtr_asm de, CPCT_VMEM_START_ASM, 28, 76  ;; screen address for 30, 76 in de
     ld hl, #_s_logo_1010
     ld c, #S_LOGO_1010_W
     ld b, #S_LOGO_1010_H
     call cpct_drawSprite_asm
 
-    cpctm_screenPtr_asm de, CPCT_VMEM_START_ASM, 30, 120  ;; screen address for 30, 120 in de
+    cpctm_screenPtr_asm de, CPCT_VMEM_START_ASM, 29, 120  ;; screen address for 30, 120 in de
     ld hl, #_s_press_any_key
     ld c, #S_PRESS_ANY_KEY_W
     ld b, #S_PRESS_ANY_KEY_H
@@ -230,8 +230,6 @@ _render_board_loop01:
     push bc                     ;; store number of columns in the stack
     push de                     ;; store screen address in the stack
 
-    ;;ld hl, #_s_balls_big_7    ;; load in HL the address of the sprite
-
     ld a, #BOARD_COLS           ;;
     sub b                       ;;
     ld c, a                     ;; load in a the current col
@@ -356,10 +354,10 @@ draw_player_tile_add_col:
     ld hl, #board
     add_hl_a                                  ;; Then add the offset
     ld a, (hl)                      ;; load the content of the board in a
-    ld   hl, #_s_balls_big_5
+    ld   hl, #_s_balls_big_05
     or a                            ;; check if the content is 0
     jr z, draw_player_tile_draw     ;; if 0 just print the default tile
-    ld hl, #_s_balls_big_8          ;; other wise draw the not valid tile
+    ld hl, #_s_balls_big_08          ;; other wise draw the not valid tile
 draw_player_tile_draw:
     ld c, #S_BALLS_BIG_W            ;; load in c the sprite width 
     ld b, #S_BALLS_BIG_H            ;; load in b sprite height
@@ -613,7 +611,7 @@ sys_render_erase_next_piece::
 
     ex de, hl                       ;; store screen addres in de
     ld c,#NEXT_PIECE_MAX_WIDTH
-    ld b,#NEXT_PIECE_MAX_HEIGHT
+    ld b,#NEXT_PIECE_MAX_HEIGHT+1
     ld a,#00                        ;; Patern of solid box
 
     call cpct_drawSolidBox_asm
