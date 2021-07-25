@@ -168,20 +168,26 @@ man_game_erase_current_next_piece::
 ;;  Modified:
 ;;
 man_game_set_piece::
-    ld ix, #player1                     ;; load player struct in ix
+    ld ix, #player1                             ;; load player struct in ix
 
-    call sys_render_erase_player        ;; erase current piece
-    
-    ld c, e_x(ix)                       ;; load x coord in c
-    ld b, e_y(ix)                       ;; load y coord in b
-    ld a, e_type(ix)                    ;; load piece in a
-    call sys_board_set_piece            ;; set piece in board
+    call sys_render_erase_player                ;; erase current piece
 
-    call man_game_erase_current_next_piece
+    ld c, e_x(ix)                               ;; load x coord in c
+    ld b, e_y(ix)                               ;; load y coord in b
+    ld a, e_type(ix)                            ;; load piece in a
+    call sys_board_set_piece                    ;; set piece in board
 
-    ld a, (next_pieces_count)            ;; Check if there are next pieces available
+    ld b, e_y(ix)                               ;; load in b the initial line to check if it's complete
+    ld a, b                                     ;;
+    add e_h(ix)                                 ;;
+    ld c, a                                     ;; load in c the final line to check
+    call sys_board_check_partial_board          ;; check if the piece set has completed any line
+
+    call man_game_erase_current_next_piece      ;; Erase current next piece from screen
+
+    ld a, (next_pieces_count)                   ;; Check if there are next pieces available
     or a        
-    call z, man_game_renew_next_pieces  ;; If not renew the pieces
+    call z, man_game_renew_next_pieces          ;; If not renew the pieces
 
     ld a, (selected_piece)              ;; read selected piece
     inc a                               ;; increment piece type

@@ -895,3 +895,41 @@ BCD_GetEnd:
 	ex de, hl
 	pop bc
 	ret
+
+;;-----------------------------------------------------------------
+;;
+;; sys_render_get_hl_from_row
+;;
+;;  Check if a prticular line is complete
+;;  Input:  a: row
+;;  Output: hl: point to the address of the first element od the a row
+;;  Modified: af, hl 
+;;
+sys_render_get_hl_from_row::
+    cpctm_screenPtr_asm hl, CPCT_VMEM_START_ASM, BOARD_X_COORD, BOARD_Y_COORD  ;; screen address for the begining of the board 
+
+    ld (by_nine+1),a
+    ld (by_ten+1),a
+    sla a
+    sla a
+    sla a
+by_nine:   
+    add #0
+by_ten:
+    add #0
+    ld hl, #board
+    add_hl_a
+    ret
+
+;;-----------------------------------------------------------------
+;;
+;; sys_render_erase_line
+;;
+;;  erases a complete line of the board
+;;  Input:  a: line to erase
+;;  Output: 
+;;  Modified: af, hl, bc
+;;
+sys_render_erase_line::
+    ld c, #3
+
