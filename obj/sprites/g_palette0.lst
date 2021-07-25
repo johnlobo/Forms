@@ -1,6 +1,6 @@
                               1 ;--------------------------------------------------------
                               2 ; File Created by SDCC : free open source ANSI-C Compiler
-                              3 ; Version 3.6.8 #9946 (Mac OS X x86_64)
+                              3 ; Version 3.6.8 #9946 (Linux)
                               4 ;--------------------------------------------------------
                               5 	.module g_palette0
                               6 	.optsdcc -mz80
@@ -56,7 +56,7 @@
    000B 4A                   56 	.db #0x4a	; 74	'J'
    000C 58                   57 	.db #0x58	; 88	'X'
    000D 53                   58 	.db #0x53	; 83	'S'
-   000E 46                   59 	.db #0x46	; 70	'F'
+   000E 5F                   59 	.db #0x5f	; 95
    000F 4B                   60 	.db #0x4b	; 75	'K'
                              61 	.area _INITIALIZER
                              62 	.area _CABS (ABS)

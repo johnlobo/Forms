@@ -1,6 +1,6 @@
 ;--------------------------------------------------------
 ; File Created by SDCC : free open source ANSI-C Compiler
-; Version 3.6.8 #9946 (Mac OS X x86_64)
+; Version 3.6.8 #9946 (Linux)
 ;--------------------------------------------------------
 	.module balls_small
 	.optsdcc -mz80
@@ -60,15 +60,15 @@ _s_balls_small_0:
 	.db #0x20	; 32
 _s_balls_small_1:
 	.db #0xf3	; 243
-	.db #0x82	; 130
-	.db #0xe3	; 227
-	.db #0x82	; 130
-	.db #0xc3	; 195
-	.db #0x82	; 130
-	.db #0xc3	; 195
-	.db #0x82	; 130
-	.db #0xc3	; 195
-	.db #0x82	; 130
+	.db #0x2a	; 42
+	.db #0xb7	; 183
+	.db #0x2a	; 42
+	.db #0x3f	; 63
+	.db #0x2a	; 42
+	.db #0x3f	; 63
+	.db #0x2a	; 42
+	.db #0x3f	; 63
+	.db #0x2a	; 42
 _s_balls_small_2:
 	.db #0xcc	; 204
 	.db #0x08	; 8

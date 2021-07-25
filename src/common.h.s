@@ -17,6 +17,8 @@
 ;;-------------------------------------------------------------------------------
 
 
+.module common
+
 ;; 
 ;; Declare all function entry points as global symbols for the compiler.
 ;; (The linker will know what to do with them)
@@ -24,15 +26,18 @@
 ;; symbols for functions you do not use.
 ;;
 
-.globl _s_balls_big_0
-.globl _s_balls_big_1
-.globl _s_balls_big_2
-.globl _s_balls_big_3
-.globl _s_balls_big_4
-.globl _s_balls_big_5
-.globl _s_balls_big_6
-.globl _s_balls_big_7
-.globl _s_balls_big_8
+.globl _s_balls_big_00
+.globl _s_balls_big_01
+.globl _s_balls_big_02
+.globl _s_balls_big_03
+.globl _s_balls_big_04
+.globl _s_balls_big_05
+.globl _s_balls_big_06
+.globl _s_balls_big_07
+.globl _s_balls_big_08
+.globl _s_balls_big_09
+.globl _s_balls_big_10
+.globl _s_balls_big_11
 .globl _s_balls_small_0
 .globl _s_balls_small_1
 .globl _s_balls_small_2

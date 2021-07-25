@@ -1,6 +1,6 @@
 ;--------------------------------------------------------
 ; File Created by SDCC : free open source ANSI-C Compiler
-; Version 3.6.8 #9946 (Mac OS X x86_64)
+; Version 3.6.8 #9946 (Linux)
 ;--------------------------------------------------------
 	.module balls_big
 	.optsdcc -mz80
@@ -8,15 +8,18 @@
 ;--------------------------------------------------------
 ; Public variables in this module
 ;--------------------------------------------------------
-	.globl _s_balls_big_8
-	.globl _s_balls_big_7
-	.globl _s_balls_big_6
-	.globl _s_balls_big_5
-	.globl _s_balls_big_4
-	.globl _s_balls_big_3
-	.globl _s_balls_big_2
-	.globl _s_balls_big_1
-	.globl _s_balls_big_0
+	.globl _s_balls_big_11
+	.globl _s_balls_big_10
+	.globl _s_balls_big_09
+	.globl _s_balls_big_08
+	.globl _s_balls_big_07
+	.globl _s_balls_big_06
+	.globl _s_balls_big_05
+	.globl _s_balls_big_04
+	.globl _s_balls_big_03
+	.globl _s_balls_big_02
+	.globl _s_balls_big_01
+	.globl _s_balls_big_00
 ;--------------------------------------------------------
 ; special function registers
 ;--------------------------------------------------------
@@ -49,7 +52,7 @@
 ;--------------------------------------------------------
 	.area _CODE
 	.area _CODE
-_s_balls_big_0:
+_s_balls_big_00:
 	.db #0x10	; 16
 	.db #0x30	; 48	'0'
 	.db #0x30	; 48	'0'
@@ -94,7 +97,7 @@ _s_balls_big_0:
 	.db #0x30	; 48	'0'
 	.db #0x30	; 48	'0'
 	.db #0x00	; 0
-_s_balls_big_1:
+_s_balls_big_01:
 	.db #0x50	; 80	'P'
 	.db #0xf0	; 240
 	.db #0xf0	; 240
@@ -139,7 +142,7 @@ _s_balls_big_1:
 	.db #0xf0	; 240
 	.db #0xf0	; 240
 	.db #0x00	; 0
-_s_balls_big_2:
+_s_balls_big_02:
 	.db #0x04	; 4
 	.db #0x0c	; 12
 	.db #0x0c	; 12
@@ -184,7 +187,7 @@ _s_balls_big_2:
 	.db #0x0c	; 12
 	.db #0x0c	; 12
 	.db #0x00	; 0
-_s_balls_big_3:
+_s_balls_big_03:
 	.db #0x01	; 1
 	.db #0x03	; 3
 	.db #0x03	; 3
@@ -229,7 +232,7 @@ _s_balls_big_3:
 	.db #0x03	; 3
 	.db #0x03	; 3
 	.db #0x00	; 0
-_s_balls_big_4:
+_s_balls_big_04:
 	.db #0x40	; 64
 	.db #0xc0	; 192
 	.db #0xc0	; 192
@@ -274,7 +277,7 @@ _s_balls_big_4:
 	.db #0xc0	; 192
 	.db #0xc0	; 192
 	.db #0x00	; 0
-_s_balls_big_5:
+_s_balls_big_05:
 	.db #0x05	; 5
 	.db #0x0f	; 15
 	.db #0x0f	; 15
@@ -319,7 +322,7 @@ _s_balls_big_5:
 	.db #0x0f	; 15
 	.db #0x0f	; 15
 	.db #0x00	; 0
-_s_balls_big_6:
+_s_balls_big_06:
 	.db #0x44	; 68	'D'
 	.db #0xcc	; 204
 	.db #0xcc	; 204
@@ -364,52 +367,52 @@ _s_balls_big_6:
 	.db #0xcc	; 204
 	.db #0xcc	; 204
 	.db #0x00	; 0
-_s_balls_big_7:
-	.db #0x55	; 85	'U'
-	.db #0xc3	; 195
-	.db #0xc3	; 195
+_s_balls_big_07:
+	.db #0x14	; 20
+	.db #0x3c	; 60
+	.db #0x3c	; 60
 	.db #0x00	; 0
-	.db #0xea	; 234
-	.db #0x00	; 0
-	.db #0x40	; 64
-	.db #0x82	; 130
-	.db #0x82	; 130
+	.db #0x28	; 40
 	.db #0x00	; 0
 	.db #0x00	; 0
-	.db #0x82	; 130
-	.db #0x82	; 130
+	.db #0x28	; 40
+	.db #0x28	; 40
 	.db #0x00	; 0
 	.db #0x00	; 0
-	.db #0x82	; 130
-	.db #0x82	; 130
-	.db #0x80	; 128
-	.db #0x80	; 128
-	.db #0x82	; 130
-	.db #0x82	; 130
-	.db #0x40	; 64
-	.db #0x00	; 0
-	.db #0x82	; 130
-	.db #0x82	; 130
-	.db #0x80	; 128
-	.db #0x80	; 128
-	.db #0x82	; 130
-	.db #0x82	; 130
+	.db #0x28	; 40
+	.db #0x28	; 40
 	.db #0x00	; 0
 	.db #0x00	; 0
-	.db #0x82	; 130
-	.db #0x82	; 130
+	.db #0x28	; 40
+	.db #0x28	; 40
 	.db #0x00	; 0
 	.db #0x00	; 0
-	.db #0x82	; 130
-	.db #0xc2	; 194
+	.db #0x28	; 40
+	.db #0x28	; 40
 	.db #0x00	; 0
-	.db #0x40	; 64
-	.db #0x82	; 130
-	.db #0x41	; 65	'A'
-	.db #0xc3	; 195
-	.db #0xc3	; 195
 	.db #0x00	; 0
-_s_balls_big_8:
+	.db #0x28	; 40
+	.db #0x28	; 40
+	.db #0x00	; 0
+	.db #0x00	; 0
+	.db #0x28	; 40
+	.db #0x28	; 40
+	.db #0x00	; 0
+	.db #0x00	; 0
+	.db #0x28	; 40
+	.db #0x28	; 40
+	.db #0x00	; 0
+	.db #0x00	; 0
+	.db #0x28	; 40
+	.db #0x28	; 40
+	.db #0x00	; 0
+	.db #0x00	; 0
+	.db #0x28	; 40
+	.db #0x14	; 20
+	.db #0x3c	; 60
+	.db #0x3c	; 60
+	.db #0x00	; 0
+_s_balls_big_08:
 	.db #0x46	; 70	'F'
 	.db #0x08	; 8
 	.db #0x09	; 9
@@ -454,5 +457,140 @@ _s_balls_big_8:
 	.db #0x08	; 8
 	.db #0x4c	; 76	'L'
 	.db #0x88	; 136
+_s_balls_big_09:
+	.db #0x00	; 0
+	.db #0x44	; 68	'D'
+	.db #0x88	; 136
+	.db #0x00	; 0
+	.db #0x00	; 0
+	.db #0x88	; 136
+	.db #0x44	; 68	'D'
+	.db #0x00	; 0
+	.db #0x44	; 68	'D'
+	.db #0x04	; 4
+	.db #0x08	; 8
+	.db #0x88	; 136
+	.db #0x88	; 136
+	.db #0x09	; 9
+	.db #0x06	; 6
+	.db #0x44	; 68	'D'
+	.db #0x8c	; 140
+	.db #0x47	; 71	'G'
+	.db #0x8b	; 139
+	.db #0x4c	; 76	'L'
+	.db #0x8c	; 140
+	.db #0x47	; 71	'G'
+	.db #0x8b	; 139
+	.db #0x4c	; 76	'L'
+	.db #0x8c	; 140
+	.db #0x47	; 71	'G'
+	.db #0x8b	; 139
+	.db #0x4c	; 76	'L'
+	.db #0x88	; 136
+	.db #0x09	; 9
+	.db #0x06	; 6
+	.db #0x44	; 68	'D'
+	.db #0x44	; 68	'D'
+	.db #0x04	; 4
+	.db #0x08	; 8
+	.db #0x88	; 136
+	.db #0x00	; 0
+	.db #0x88	; 136
+	.db #0x44	; 68	'D'
+	.db #0x00	; 0
+	.db #0x00	; 0
+	.db #0x44	; 68	'D'
+	.db #0x88	; 136
+	.db #0x00	; 0
+_s_balls_big_10:
+	.db #0x88	; 136
+	.db #0x08	; 8
+	.db #0x04	; 4
+	.db #0x44	; 68	'D'
+	.db #0x04	; 4
+	.db #0x45	; 69	'E'
+	.db #0x8a	; 138
+	.db #0x88	; 136
+	.db #0x08	; 8
+	.db #0x8a	; 138
+	.db #0x01	; 1
+	.db #0x04	; 4
+	.db #0x45	; 69	'E'
+	.db #0x01	; 1
+	.db #0x00	; 0
+	.db #0x8a	; 138
+	.db #0x01	; 1
+	.db #0x00	; 0
+	.db #0x00	; 0
+	.db #0x45	; 69	'E'
+	.db #0x8a	; 138
+	.db #0x01	; 1
+	.db #0x02	; 2
+	.db #0x45	; 69	'E'
+	.db #0x8a	; 138
+	.db #0x01	; 1
+	.db #0x00	; 0
+	.db #0x00	; 0
+	.db #0x45	; 69	'E'
+	.db #0x00	; 0
+	.db #0x44	; 68	'D'
+	.db #0x8a	; 138
+	.db #0x08	; 8
+	.db #0x02	; 2
+	.db #0x45	; 69	'E'
+	.db #0x04	; 4
+	.db #0x04	; 4
+	.db #0x45	; 69	'E'
+	.db #0x8a	; 138
+	.db #0x88	; 136
+	.db #0x88	; 136
+	.db #0x08	; 8
+	.db #0x04	; 4
+	.db #0x44	; 68	'D'
+_s_balls_big_11:
+	.db #0x00	; 0
+	.db #0x08	; 8
+	.db #0x04	; 4
+	.db #0x00	; 0
+	.db #0x00	; 0
+	.db #0x00	; 0
+	.db #0x00	; 0
+	.db #0x08	; 8
+	.db #0x08	; 8
+	.db #0x00	; 0
+	.db #0x00	; 0
+	.db #0x00	; 0
+	.db #0x01	; 1
+	.db #0x00	; 0
+	.db #0x00	; 0
+	.db #0x02	; 2
+	.db #0x00	; 0
+	.db #0x00	; 0
+	.db #0x08	; 8
+	.db #0x00	; 0
+	.db #0x8a	; 138
+	.db #0x00	; 0
+	.db #0x00	; 0
+	.db #0x00	; 0
+	.db #0x00	; 0
+	.db #0x04	; 4
+	.db #0x00	; 0
+	.db #0x00	; 0
+	.db #0x00	; 0
+	.db #0x00	; 0
+	.db #0x00	; 0
+	.db #0x02	; 2
+	.db #0x00	; 0
+	.db #0x00	; 0
+	.db #0x00	; 0
+	.db #0x04	; 4
+	.db #0x04	; 4
+	.db #0x00	; 0
+	.db #0x02	; 2
+	.db #0x00	; 0
+	.db #0x00	; 0
+	.db #0x08	; 8
+	.db #0x04	; 4
+	.db #0x00	; 0
 	.area _INITIALIZER
 	.area _CABS (ABS)

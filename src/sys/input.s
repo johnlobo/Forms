@@ -37,46 +37,48 @@
 sys_input_init::
     ret 
 
-
 ;;-----------------------------------------------------------------
 ;;
-;; sys_input_update
+;; _input_update_moved
 ;;
-;;   Reads input
+;;   Initializes input
 ;;  Input: 
 ;;  Output:
 ;;  Modified: 
 ;;
-sys_input_update::
-    ld ix, #player1                     ;; get player1 struct
-    call cpct_scanKeyboard_asm          ;; scan keyboard
+_input_update_moved:
+    ld a, #1
+    ld e_moved(ix), a
+    ret
 
-    ld hl, #Key_O                       ;; check key O   
-    call cpct_isKeyPressed_asm          ;; 
-    jp nz, _move_left                   ;; if press O move left
-    
-    ld hl, #Key_P                       ;; check key P
-    call cpct_isKeyPressed_asm          ;; 
-    jp nz, _move_right                  ;; if press P move right    
-    
-    ld hl, #Key_Q                       ;; check key Q
-    call cpct_isKeyPressed_asm          ;;
-    jp nz, _move_up                     ;; if press Q move up
-    
-    ld hl, #Key_A                       ;; check key A
-    call cpct_isKeyPressed_asm          ;;
-    jp nz, _move_down                   ;; if press A move down
-    
-    ld hl, #Key_I                       ;; check key I
-    call cpct_isKeyPressed_asm          ;;
-    jp nz, _change_piece                ;; if press I change piece
+;;-----------------------------------------------------------------
+;;
+;; _move_left
+;;
+;;   Move left
+;;  Input: 
+;;  Output:
+;;  Modified: 
+;;
+_move_left:
+    ld a, e_x(ix)
+    or a
+    jp z, sys_input_vertical_check
+    dec a
+    ld e_x(ix), a
+    call #_input_update_moved             ;; jump to return moved
+    jp sys_input_vertical_check
 
-    ld hl, #Key_Space                   ;; check key Space
-    call cpct_isKeyPressed_asm          ;;
-    jp nz, _set_piece                ;; if press Space set piece in board
-    
-    jp _end_input_update
 
+;;-----------------------------------------------------------------
+;;
+;; _move_right
+;;
+;;   Move right
+;;  Input: 
+;;  Output:
+;;  Modified: 
+;;
 _move_right:
     ld b, e_w(ix)                       ;; load b with the width of th piece
     ld a, #BOARD_COLS                   ;; load a with the width of the board
@@ -84,27 +86,39 @@ _move_right:
     ld b, a                             ;; store that calculus in b
     ld a, e_x(ix)                       ;; load a with the x position
     cp b                                ;; compare with b
-    jp z, #_end_input_update            ;; if zero return
+    ret z                               ;; if zero return
     inc a                               ;; inc x position stored in a
     ld e_x(ix), a                       ;; store it in player1 struct
-    jr #_input_update_moved             ;; jump to return moved
+    call _input_update_moved            ;; jump to return moved
+    ret
 
-_move_left:
-    ld a, e_x(ix)
-    or a
-    jp z, _end_input_update
-    dec a
-    ld e_x(ix), a
-    jr #_input_update_moved             ;; jump to return moved
-
+;;-----------------------------------------------------------------
+;;
+;; _move_up
+;;
+;;   Move up
+;;  Input: 
+;;  Output:
+;;  Modified: 
+;;
 _move_up:
     ld a, e_y(ix)
     or a
-    jp z, _end_input_update
+    jp z, sys_input_actions_check
     dec a
     ld e_y(ix), a
-    jr #_input_update_moved             ;; jump to return moved
+    call _input_update_moved             ;; jump to return moved
+    jp sys_input_actions_check
 
+;;-----------------------------------------------------------------
+;;
+;; _move_down
+;;
+;;   Move down
+;;  Input: 
+;;  Output:
+;;  Modified: 
+;;
 _move_down:     
     ld b, e_h(ix)                       ;; load b with the width of th piece
     ld a, #BOARD_ROWS                   ;; load a with the width of the board
@@ -112,11 +126,21 @@ _move_down:
     ld b, a                             ;; store that calculus in b
     ld a, e_y(ix)                       ;; load a with the x position
     cp b                                ;; compare with b
-    jr z, #_end_input_update            ;; if zero return
+    ret z                               ;; if zero return
     inc a                               ;; inc x position stored in a
     ld e_y(ix), a                       ;; store it in player1 struct
-    jr #_input_update_moved             ;; jump to return moved
+    call _input_update_moved            ;; jump to return moved
+    ret
 
+;;-----------------------------------------------------------------
+;;
+;; _change_piece
+;;
+;;   Change piece
+;;  Input: 
+;;  Output:
+;;  Modified: 
+;;
 _change_piece:      
     ld a, (selected_piece)              ;; read selected piece
     inc a                               ;; increment piece type
@@ -150,18 +174,75 @@ _check_height:
     ld b, e_y(ix)                       ;; read y position in b
     add b                               ;; add y position and width
     cp #BOARD_ROWS - 1                  ;; Compare with number of cols in board
-    jp m, _input_update_moved           ;; If no overflow check height
+    jp m, _end_check                    ;; If no overflow check height
     ld a, #BOARD_ROWS                   ;; load in a the width of the board
     ld b, e_h(ix)       
     sub b                               ;; substract the width of the piece as new coord
     ld e_y(ix), a                       ;; load in player struct the new x coord
-    jr _input_update_moved
-    
-_set_piece:
-    ld e_set(ix), #1
+_end_check:
+    call _input_update_moved
+    jp _end_input_update
 
-_input_update_moved:
-    ld a, #1
-    ld e_moved(ix), a
+;;-----------------------------------------------------------------
+;;
+;; _set_piece
+;;
+;;   Move left
+;;  Input: 
+;;  Output:
+;;  Modified: 
+;;
+_set_piece:
+    ;; loop to wait until keyup
+    call cpct_scanKeyboard_asm
+    ld hl, #Key_Space                   ;; check key Space
+    call cpct_isKeyPressed_asm          ;; 
+    jp nz, _set_piece                   ;; if press Space loop
+
+    ld e_set(ix), #1
+    call _input_update_moved
+    ret
+
+;;-----------------------------------------------------------------
+;;
+;; sys_input_update
+;;
+;;   Reads input
+;;  Input: 
+;;  Output:
+;;  Modified: 
+;;
+sys_input_update::
+    ld ix, #player1                     ;; get player1 struct
+    call cpct_scanKeyboard_asm          ;; scan keyboard
+
+    ld hl, #Key_O                       ;; check key O   
+    call cpct_isKeyPressed_asm          ;; 
+    jp nz, _move_left                   ;; if press O move left
+    
+    ld hl, #Key_P                       ;; check key P
+    call cpct_isKeyPressed_asm          ;; 
+    call nz, _move_right                  ;; if press P move right  
+
+sys_input_vertical_check:   
+    
+    ld hl, #Key_Q                       ;; check key Q
+    call cpct_isKeyPressed_asm          ;;
+    jp nz, _move_up                     ;; if press Q move up
+    
+    ld hl, #Key_A                       ;; check key A
+    call cpct_isKeyPressed_asm          ;;
+    call nz, _move_down                   ;; if press A move down
+
+sys_input_actions_check:
+
+    ld hl, #Key_I                       ;; check key I
+    call cpct_isKeyPressed_asm          ;;
+    jp nz, _change_piece                ;; if press I change piece
+
+    ld hl, #Key_Space                   ;; check key Space
+    call cpct_isKeyPressed_asm          ;;
+    call nz, _set_piece                ;; if press Space set piece in board
+    
 _end_input_update:
     ret
