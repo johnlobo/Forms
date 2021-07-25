@@ -160,6 +160,22 @@ man_game_erase_current_next_piece::
 
 ;;-----------------------------------------------------------------
 ;;
+;; man_game_erase_line
+;;
+;;  Erase a complete line of the board
+;;  Input:  a: line to erase
+;;  Output:
+;;  Modified:
+;;
+man_game_erase_line::
+    push af
+    call sys_board_erase_line
+    pop af
+    call sys_render_erase_line
+    ret
+
+;;-----------------------------------------------------------------
+;;
 ;; man_game_set_piece
 ;;
 ;;   set piece in board
@@ -177,11 +193,17 @@ man_game_set_piece::
     ld a, e_type(ix)                            ;; load piece in a
     call sys_board_set_piece                    ;; set piece in board
 
+m_g_set_piece_check_lines:
     ld b, e_y(ix)                               ;; load in b the initial line to check if it's complete
     ld a, b                                     ;;
     add e_h(ix)                                 ;;
     ld c, a                                     ;; load in c the final line to check
     call sys_board_check_partial_board          ;; check if the piece set has completed any line
+    cp #0xff                                    ;; check if all the lines are incomplete
+    jr z, m_g_set_piece_all_clear               ;;
+    call man_game_erase_line                    ;; if one is complete erase line in a
+    jr m_g_set_piece_check_lines                ;; get back to check again
+m_g_set_piece_all_clear:
 
     call man_game_erase_current_next_piece      ;; Erase current next piece from screen
 
