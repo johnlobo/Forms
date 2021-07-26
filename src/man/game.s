@@ -161,7 +161,7 @@ man_game_erase_current_next_piece::
 
 ;;;-----------------------------------------------------------------
 ;;
-;; man_game_erase_line
+;; man_game_erase_row
 ;;
 ;;  Erase a complete line of the board
 ;;  Input:  a: line to erase

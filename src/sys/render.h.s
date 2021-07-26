@@ -34,4 +34,8 @@
 .globl sys_render_cell
 .globl sys_render_erase_next_piece
 .globl sys_render_logo_screen
+<<<<<<< HEAD
 .globl sys_render_render_row
+=======
+.globl sys_render_render_line
+>>>>>>> 0349c117f8ee10cd55bc40acc53b49e070f02c2a
