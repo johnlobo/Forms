@@ -41,6 +41,7 @@ next_pieces_coords:: .db #46, #150, #59, #150, #70, #150
 selected_piece:: .db #00
 score:: .db #0x01, #0x23, #0x45, #0x67
 hi_score:: .db #0x01, #0x23, #0x45, #0x67
+line_to_render: .db 00
 
 
 ;;
@@ -168,10 +169,24 @@ man_game_erase_current_next_piece::
 ;;  Modified:
 ;;
 man_game_erase_line::
-    push af
+    ld (line_to_render),a
     call sys_board_erase_line
-    pop af
-    call sys_render_erase_line
+    ;; first frame of animation
+    ld a, (line_to_render)
+    ld hl, #_s_balls_big_09
+    call sys_render_render_line
+    ;; second frame of animation
+    ld a, (line_to_render)
+    ld hl, #_s_balls_big_10
+    call sys_render_render_line
+    ;; first frame of animation
+    ld a, (line_to_render)
+    ld hl, #_s_balls_big_11
+    call sys_render_render_line
+    ;; first frame of animation
+    ld a, (line_to_render)
+    ld hl, #_s_balls_big_07
+    call sys_render_render_line
     ret
 
 ;;-----------------------------------------------------------------
