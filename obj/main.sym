@@ -110,8 +110,9 @@ Symbol Table
     opc_LD_D=  0016     |     piece_ty   **** GX  |     player1    **** GX
     player_b   **** GX  |     score      **** GX  |     selected   **** GX
     sizeof_e=  000C     |     sys_boar   **** GX  |     sys_boar   **** GX
-    sys_boar   **** GX  |     sys_boar   **** GX  |     sys_inpu   **** GX
-    sys_inpu   **** GX  |     sys_rend   **** GX  |     sys_rend   **** GX
+    sys_boar   **** GX  |     sys_boar   **** GX  |     sys_boar   **** GX
+    sys_boar   **** GX  |     sys_inpu   **** GX  |     sys_inpu   **** GX
+    sys_rend   **** GX  |     sys_rend   **** GX  |     sys_rend   **** GX
     sys_rend   **** GX  |     sys_rend   **** GX  |     sys_rend   **** GX
     sys_rend   **** GX  |     sys_rend   **** GX  |     sys_rend   **** GX
     sys_rend   **** GX  |     sys_rend   **** GX  |     sys_rend   **** GX

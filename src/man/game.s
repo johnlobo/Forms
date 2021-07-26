@@ -41,6 +41,7 @@ next_pieces_coords:: .db #46, #150, #59, #150, #70, #150
 selected_piece:: .db #00
 score:: .db #0x01, #0x23, #0x45, #0x67
 hi_score:: .db #0x01, #0x23, #0x45, #0x67
+line_to_render: .db 00
 
 
 ;;
@@ -158,7 +159,7 @@ man_game_erase_current_next_piece::
 
     ret
 
-;;-----------------------------------------------------------------
+;;;-----------------------------------------------------------------
 ;;
 ;; man_game_erase_line
 ;;
@@ -168,10 +169,30 @@ man_game_erase_current_next_piece::
 ;;  Modified:
 ;;
 man_game_erase_line::
-    push af
+    ld (line_to_render),a
     call sys_board_erase_line
-    pop af
-    call sys_render_erase_line
+    ;; first frame of animation
+    ld a, (line_to_render)
+    ld hl, #_s_balls_big_09
+    call sys_render_render_row
+    ld b, #36
+    call cpct_waitHalts_asm
+    ;; second frame of animation
+    ld a, (line_to_render)
+    ld hl, #_s_balls_big_10
+    call sys_render_render_row
+    ld b, #36
+    call cpct_waitHalts_asm
+    ;; first frame of animation
+    ld a, (line_to_render)
+    ld hl, #_s_balls_big_11
+    call sys_render_render_row
+    ld b, #36
+    call cpct_waitHalts_asm
+    ;; first frame of animation
+    ld a, (line_to_render)
+    ld hl, #_s_balls_big_07
+    call sys_render_render_row
     ret
 
 ;;-----------------------------------------------------------------
@@ -198,7 +219,7 @@ m_g_set_piece_check_lines:
     ld a, b                                     ;;
     add e_h(ix)                                 ;;
     ld c, a                                     ;; load in c the final line to check
-    call sys_board_check_partial_board          ;; check if the piece set has completed any line
+    call sys_board_check_partial_rows          ;; check if the piece set has completed any line
     cp #0xff                                    ;; check if all the lines are incomplete
     jr z, m_g_set_piece_all_clear               ;;
     call man_game_erase_line                    ;; if one is complete erase line in a

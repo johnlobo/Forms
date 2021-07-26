@@ -923,13 +923,37 @@ by_ten:
 
 ;;-----------------------------------------------------------------
 ;;
-;; sys_render_erase_line
+;; sys_render_render_row
 ;;
 ;;  erases a complete line of the board
 ;;  Input:  a: line to erase
+;;          hl: sprite to render
 ;;  Output: 
 ;;  Modified: af, hl, bc
 ;;
-sys_render_erase_line::
-    ld c, #3
+sys_render_render_row::
+    ld (s_r_render_line_sprite+1), hl   ;;self modifying code to save the sprite pointer
+    ld b, #0
+    push bc
+    call sys_render_get_hl_from_row     ;; obtain the origin address of the board row
+    ex de, hl                           ;; keep screen addres in de
+s_r_render_line_loop:
+    push de                             ;; save screen address in the stack
+s_r_render_line_sprite:
+    ld hl, #0000                        ;; load in hl a pointer to the sprite to draw
+    ld b, #S_BALLS_BIG_H                ;; Height of the sprite
+    ld c, #S_BALLS_BIG_W                ;; Height of the sprite
+    call cpct_drawSprite_asm            ;; draw sprite
+    pop hl                              ;; retrive screen address from the stack in hl
+    ld a, #S_BALLS_BIG_W                ;; add the width of the sprite to inc the pointer
+    add_hl_a                            ;;
+    ex de, hl                           ;; return screen pointer to de    
+    pop bc                              ;; retrieve bc
+    inc b                               ;; inc row
+    push bc
+    ld a, b                             ;; check if is the last row
+    cp #BOARD_COLS                      ;;
+    jr nz, s_r_render_line_loop          ;;  if not, get back to loop
+    pop bc                              ;; retrive bc form stack to reset the stack
+    ret
 

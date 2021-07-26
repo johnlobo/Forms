@@ -2752,6 +2752,7 @@ Hexadecimal [16-Bits]
                              34 .globl sys_render_cell
                              35 .globl sys_render_erase_next_piece
                              36 .globl sys_render_logo_screen
+                             37 .globl sys_render_render_row
 ASxxxx Assembler V02.00 + NoICE + SDCC mods  (Zilog Z80 / Hitachi HD64180), page 54.
 Hexadecimal [16-Bits]
 
@@ -2790,6 +2791,8 @@ Hexadecimal [16-Bits]
                              30 .globl sys_board_cell_content
                              31 .globl sys_board_cell_sprite
                              32 .globl sys_board_set_piece
+                             33 .globl sys_board_check_partial_rows
+                             34 .globl sys_board_erase_line
 ASxxxx Assembler V02.00 + NoICE + SDCC mods  (Zilog Z80 / Hitachi HD64180), page 55.
 Hexadecimal [16-Bits]
 
