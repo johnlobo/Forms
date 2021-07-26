@@ -175,14 +175,20 @@ man_game_erase_line::
     ld a, (line_to_render)
     ld hl, #_s_balls_big_09
     call sys_render_render_line
+    ld b, #36
+    call cpct_waitHalts_asm
     ;; second frame of animation
     ld a, (line_to_render)
     ld hl, #_s_balls_big_10
     call sys_render_render_line
+    ld b, #36
+    call cpct_waitHalts_asm
     ;; first frame of animation
     ld a, (line_to_render)
     ld hl, #_s_balls_big_11
     call sys_render_render_line
+    ld b, #36
+    call cpct_waitHalts_asm
     ;; first frame of animation
     ld a, (line_to_render)
     ld hl, #_s_balls_big_07
