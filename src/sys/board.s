@@ -217,14 +217,16 @@ sb_set_piece_condition_height:
 
 ;;-----------------------------------------------------------------
 ;;
-;; sys_board_get_hl_from_row
+;; sys_board_get_hl_from_cell
 ;;
 ;;  Check if a prticular line is complete
-;;  Input:  a: row
+;;  Input:  b: row
+;;          c: col
 ;;  Output: hl: point to the address of the first element od the a row
 ;;  Modified: af, hl 
 ;;
-sys_board_get_hl_from_row::
+sys_board_get_hl_from_cell::
+    ld a,b
     ld (by_nine+1),a
     ld (by_ten+1),a
     sla a
@@ -234,44 +236,75 @@ by_nine:
     add #0
 by_ten:
     add #0
+    add c
     ld hl, #board
     add_hl_a
     ret
 
 ;;-----------------------------------------------------------------
 ;;
-;; sys_board_check_line
+;; sys_board_check_row
 ;;
 ;;  Check if a prticular line is complete
 ;;  Input:  b: row
 ;;  Output: a: 1 if its complete, 0 in other case
 ;;  Modified: af, hl, bc
 ;;
-sys_board_check_line::
-    ld a, b
+sys_board_check_row::
+    ld c, #0                            ;; point first cell of the row
+    call sys_board_get_hl_from_cell
     ld b, #0
-    call sys_board_get_hl_from_row
-    ld (check_line_loop+1), hl          ;; self modifying code to se hl every roud of the loop
-check_line_loop:
+    ld (check_row_loop+1), hl          ;; self modifying code to se hl every roud of the loop
+check_row_loop:
     ld hl, #0000
     ld a, b
     add_hl_a
     ld a,(hl)
     or a
-    jr z, line_not_complete
+    jr z, row_not_complete
     inc b
     ld a,b
     cp #BOARD_ROWS
-    jr nz, check_line_loop
+    jr nz, check_row_loop
     ld a, #1
     ret
-line_not_complete:
+row_not_complete:
     xor a
     ret
 
 ;;-----------------------------------------------------------------
 ;;
-;; sys_board_check_board
+;; sys_board_check_col
+;;
+;;  Check if a prticular column is complete
+;;  Input:  b: col
+;;  Output: a: 1 if its complete, 0 in other case
+;;  Modified: af, hl, bc
+;;
+sys_board_check_col::
+    call sys_board_get_hl_from_cell
+    ld (check_col_loop+1), hl          ;; self modifying code to se hl every roud of the loop
+    ld b, #0
+check_col_loop:
+    ld hl, #0000
+    ld a, b
+    add_hl_a
+    ld a,(hl)
+    or a
+    jr z, col_not_complete
+    inc b
+    ld a,b
+    cp #BOARD_ROWS
+    jr nz, check_col_loop
+    ld a, #1
+    ret
+col_not_complete:
+    xor a
+    ret
+
+;;-----------------------------------------------------------------
+;;
+;; sys_board_check_partial_rows
 ;;
 ;;  Check if there is a complete line on lines specified, and returns inmediatly when find a complete line
 ;;  Input:  b: initial line to check
@@ -279,19 +312,46 @@ line_not_complete:
 ;;  Output: a: 0xff in no line is complete, otherwise the number of the first complete line
 ;;  Modified: af, hl, bc
 ;;
-sys_board_check_partial_board::
+sys_board_check_partial_rows::
     push bc
-    call sys_board_check_line
+    call sys_board_check_row
     or a
     jr nz, partial_board_line_is_complete
     pop bc                              ;; Retrieve bc from stack
     inc b                               ;; inc row
     ld a, b                             ;;
     cp c                                ;; chec if row is last row
-    jr nz, sys_board_check_partial_board;; back to the beinging of the loop
+    jr nz, sys_board_check_partial_rows;; back to the beinging of the loop
     ld a, #0xff                         ;; Return if checked boards are complete and no line found
     ret
 partial_board_line_is_complete:
+    pop bc
+    ld a, b
+    ret
+
+;;-----------------------------------------------------------------
+;;
+;; sys_board_check_rows
+;;
+;;  Check if there is a complete line on lines specified, and returns inmediatly when find a complete line
+;;  Input:  b: initial line to check
+;;          c: final line to check
+;;  Output: a: 0xff in no line is complete, otherwise the number of the first complete line
+;;  Modified: af, hl, bc
+;;
+sys_board_check_partial_cols::
+    push bc
+    call sys_board_check_col
+    or a
+    jr nz, partial_board_col_is_complete
+    pop bc                              ;; Retrieve bc from stack
+    inc b                               ;; inc row
+    ld a, b                             ;;
+    cp c                                ;; chec if row is last row
+    jr nz, sys_board_check_partial_cols;; back to the beinging of the loop
+    ld a, #0xff                         ;; Return if checked boards are complete and no line found
+    ret
+partial_board_col_is_complete:
     pop bc
     ld a, b
     ret
@@ -306,9 +366,11 @@ partial_board_line_is_complete:
 ;;  Modified: af, hl, bc
 ;;
 sys_board_erase_line::
-    ld b, #0
-    call sys_board_get_hl_from_row
+    ld b, a                             ;; load line to erase in b
+    ld c, #0                            ;; point to the first cell of the line
+    call sys_board_get_hl_from_cell
     ld (erase_line_loop+1), hl          ;; self modifying code to se hl every roud of the loop
+    ld b, #0
 erase_line_loop:
     ld hl, #0000
     ld a, b
