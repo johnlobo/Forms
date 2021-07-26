@@ -168,7 +168,7 @@ man_game_erase_current_next_piece::
 ;;  Output:
 ;;  Modified:
 ;;
-man_game_erase_line::
+man_game_erase_row::
     ld (line_to_render),a
     call sys_board_erase_line
     ;; first frame of animation
@@ -222,7 +222,7 @@ m_g_set_piece_check_lines:
     call sys_board_check_partial_rows          ;; check if the piece set has completed any line
     cp #0xff                                    ;; check if all the lines are incomplete
     jr z, m_g_set_piece_all_clear               ;;
-    call man_game_erase_line                    ;; if one is complete erase line in a
+    call man_game_erase_row                    ;; if one is complete erase line in a
     jr m_g_set_piece_check_lines                ;; get back to check again
 m_g_set_piece_all_clear:
 
