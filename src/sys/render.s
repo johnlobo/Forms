@@ -900,25 +900,21 @@ BCD_GetEnd:
 ;;
 ;; sys_render_get_hl_from_row
 ;;
-;;  Check if a prticular line is complete
+;;  return hl pointing to the first byte of the row stored in a
 ;;  Input:  a: row
 ;;  Output: hl: point to the address of the first element od the a row
 ;;  Modified: af, hl 
 ;;
 sys_render_get_hl_from_row::
-    cpctm_screenPtr_asm hl, CPCT_VMEM_START_ASM, BOARD_X_COORD, BOARD_Y_COORD  ;; screen address for the begining of the board 
-
-    ld (by_nine+1),a
-    ld (by_ten+1),a
-    sla a
-    sla a
-    sla a
-by_nine:   
-    add #0
-by_ten:
-    add #0
-    ld hl, #board
-    add_hl_a
+    ld e, a
+    ld h, #S_BALLS_BIG_H+1
+    call h_times_e
+    ld a, #BOARD_Y_COORD             ;; add Y coord of the board to the row 
+    add l
+    ld b, a                         ;; load sum in b
+    ld c, #BOARD_X_COORD            ;; load X coord of the board in c
+    ld de, #CPCT_VMEM_START_ASM     ;; load screen begin
+    call cpct_getScreenPtr_asm      ;; get string pointer in hl
     ret
 
 ;;-----------------------------------------------------------------
@@ -927,9 +923,33 @@ by_ten:
 ;;
 ;;  erases a complete line of the board
 ;;  Input:  a: line to erase
+;;          hl: sprite to render
 ;;  Output: 
 ;;  Modified: af, hl, bc
 ;;
-sys_render_erase_line::
-    ld c, #3
+sys_render_render_line::
+    ld (s_r_render_line_sprite+1), hl   ;;self modifying code to save the sprite pointer
+    ld b, #0
+    push bc
+    call sys_render_get_hl_from_row     ;; obtain the origin address of the board row
+    ex de, hl                           ;; keep screen addres in de
+s_r_render_line_loop:
+    push de                             ;; save screen address in the stack
+s_r_render_line_sprite:
+    ld hl, #0000                        ;; load in hl a pointer to the sprite to draw
+    ld b, #S_BALLS_BIG_H                ;; Height of the sprite
+    ld c, #S_BALLS_BIG_W                ;; Height of the sprite
+    call cpct_drawSprite_asm            ;; draw sprite
+    pop hl                              ;; retrive screen address from the stack in hl
+    ld a, #S_BALLS_BIG_W                ;; add the width of the sprite to inc the pointer
+    add_hl_a                            ;;
+    ex de, hl                           ;; return screen pointer to de    
+    pop bc                              ;; retrieve bc
+    inc b                               ;; inc row
+    push bc
+    ld a, b                             ;; check if is the last row
+    cp #BOARD_COLS                      ;;
+    jr nz, s_r_render_line_loop          ;;  if not, get back to loop
+    pop bc                              ;; retrive bc form stack to reset the stack
+    ret
 

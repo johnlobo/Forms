@@ -34,4 +34,4 @@
 .globl sys_render_cell
 .globl sys_render_erase_next_piece
 .globl sys_render_logo_screen
-.globl sys_render_erase_line
+.globl sys_render_render_line
