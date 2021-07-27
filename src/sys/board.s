@@ -20,6 +20,7 @@
 .include "../common.h.s"
 .include "man/entity.h.s"
 .include "sys/render.h.s"
+.include "util.h.s"
 
 
 
@@ -38,11 +39,6 @@ _piece_h: .db #00
 _current_row: .db #00
 _piece_byte: .db #00
 
-;;
-;; Start of _CODE area
-;; 
-.area _CODE
-
 board::
     .db #0x00, #0x00, #0x00, #0x00, #0x00, #0x00, #0x00, #0x00, #0x00, #0x00
     .db #0x00, #0x00, #0x00, #0x00, #0x00, #0x00, #0x00, #0x00, #0x00, #0x00
@@ -54,7 +50,55 @@ board::
     .db #0x00, #0x00, #0x00, #0x00, #0x00, #0x00, #0x00, #0x00, #0x00, #0x00
     .db #0x00, #0x00, #0x00, #0x00, #0x00, #0x00, #0x00, #0x00, #0x00, #0x00
     .db #0x00, #0x00, #0x00, #0x00, #0x00, #0x00, #0x00, #0x00, #0x00, #0x00
-    
+
+board_addresses::
+    .dw #0x0000, #0x0000, #0x0000, #0x0000, #0x0000, #0x0000, #0x0000, #0x0000, #0x00000, #0x0000, #0x0000
+;;
+;; Start of _CODE area
+;; 
+.area _CODE
+
+
+;;-----------------------------------------------------------------
+;;
+;; sys_board_generate_addresses
+;;
+;;  Generates a list with the address of the first cell in each row of the board   
+;;  Input: 
+;;  Output:
+;;  Modified: af, hl, de, bc
+;;
+sys_board_generate_addresses::
+    ld b, #0
+    ld c, #BOARD_X_COORD
+s_b_generate_addresses_loop:
+    push bc                         ;; save row and col for latter loop
+    ld e, #S_BALLS_BIG_H +1         ;; 
+    ld h, b                         ;; calculate row x sprite height
+    call h_times_e                  ;;
+    ld a, l                         ;;
+    add #BOARD_Y_COORD              ;; add y coord of the Board
+    ld b,a                          ;; load in b the result
+    ld  de, #CPCT_VMEM_START_ASM    ;; DE = Pointer to video memory start
+    call cpct_getScreenPtr_asm      ;; Get Screen Pointer to upper left corner of next piece
+
+    ex de, hl                       ;; save row address in de
+    pop bc                          ;; retrieve row and col
+    ld a, b                         ;; copy the row in a
+    sla a                           ;; multiply a by 2 two obtain the offset of the address list
+    ld hl, #board_addresses         ;; load in hl the address of the address list
+    add l                           ;; add a to l
+    ld l, a                         ;; and return the sum to l
+    ld (hl), e                      ;; stores the calculated address in the address list
+    inc hl
+    ld (hl), d                      ;; stores the calculated address in the address list
+
+    inc b                           ;; inc and check if already at the end of the loop
+    ld a, b                         ;;
+    cp #10                          ;;
+    jr nz, s_b_generate_addresses_loop
+    ret
+
 
 ;;-----------------------------------------------------------------
 ;;
@@ -71,6 +115,9 @@ sys_board_init::
     ld a, #0x00         ;; Set the initilization value, 0
     ld bc, # (BOARD_ROWS * BOARD_COLS)         ;; Set the size to set 10x10
     call cpct_memset_asm
+
+    call sys_board_generate_addresses        ;; Generate the address list with the first cell of each row
+
     ret
 
 ;;-----------------------------------------------------------------
@@ -369,9 +416,9 @@ sys_board_erase_row::
     ld b, a                             ;; load line to erase in b
     ld c, #0                            ;; point to the first cell of the line
     call sys_board_get_hl_from_cell
-    ld (erase_line_loop+1), hl          ;; self modifying code to se hl every roud of the loop
+    ld (erase_row_loop+1), hl          ;; self modifying code to se hl every roud of the loop
     ld b, #0
-erase_line_loop:
+erase_row_loop:
     ld hl, #0000
     ld a, b
     add_hl_a
@@ -379,7 +426,7 @@ erase_line_loop:
     inc b
     ld a,b
     cp #BOARD_ROWS
-    jr nz, erase_line_loop
+    jr nz, erase_row_loop
     ret
 
 ;;-----------------------------------------------------------------
@@ -395,9 +442,9 @@ sys_board_erase_col::
     ld c, a                             ;; load line to erase in b
     ld b, #0                            ;; point to the first cell of the line
     call sys_board_get_hl_from_cell
-    ld (erase_line_loop+1), hl          ;; self modifying code to se hl every roud of the loop
+    ld (erase_col_loop+1), hl          ;; self modifying code to se hl every roud of the loop
     ld b, #0
-erase_line_loop:
+erase_col_loop:
     ld hl, #0000
     ld a, b
     add_hl_a
@@ -405,5 +452,5 @@ erase_line_loop:
     inc b
     ld a,b
     cp #BOARD_ROWS
-    jr nz, erase_line_loop
+    jr nz, erase_col_loop
     ret

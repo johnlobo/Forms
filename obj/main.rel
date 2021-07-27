@@ -66,6 +66,7 @@ S _s_score_numbers_03 Ref0000
 S _s_score_numbers_04 Ref0000
 S cpct_isAnyKeyPressed_asm Ref0000
 S _s_score_numbers_05 Ref0000
+S sys_board_erase_row Ref0000
 S _s_press_any_key Ref0000
 S _s_score_numbers_06 Ref0000
 S sys_render_logo_screen Ref0000
@@ -84,7 +85,6 @@ S cpct_disableFirmware_asm Ref0000
 S cpct_getRandom_mxor_u8_asm Ref0000
 S cpct_drawSolidBox_asm Ref0000
 S sys_board_cell_sprite Ref0000
-S sys_board_erase_line Ref0000
 S _s_hi_score Ref0000
 S sys_render_cell Ref0000
 S player1 Ref0000
@@ -97,7 +97,7 @@ A _DATA size 0 flags 0 addr 0
 T 00 00
 R 00 00 00 00
 T 00 00 CD 00 00 CD 00 00 21 00 00
-R 00 00 00 00 02 03 1C 00 02 06 43 00
+R 00 00 00 00 02 03 1C 00 02 06 44 00
 T 09 00
 R 00 00 00 00
 T 09 00 CD 00 00 23 CD 00 00 B7 28 F6 CD 00 00 21
@@ -109,7 +109,7 @@ R 00 00 00 00 02 02 01 00 02 05 0D 00
 T 2A 00
 R 00 00 00 00
 T 2A 00 CD 00 00 CD 00 00
-R 00 00 00 00 02 03 4F 00 00 06 00 00
+R 00 00 00 00 02 03 50 00 00 06 00 00
 T 30 00
 R 00 00 00 00
 T 30 00 06 12 CD 00 00 CD 00 00 18 F6
