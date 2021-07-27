@@ -927,11 +927,7 @@ sys_render_get_hl_from_row::
 ;;  Output: 
 ;;  Modified: af, hl, bc
 ;;
-<<<<<<< HEAD
 sys_render_render_row::
-=======
-sys_render_render_line::
->>>>>>> 0349c117f8ee10cd55bc40acc53b49e070f02c2a
     ld (s_r_render_line_sprite+1), hl   ;;self modifying code to save the sprite pointer
     ld b, #0
     push bc
