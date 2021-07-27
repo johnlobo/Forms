@@ -158,7 +158,7 @@ sys_render_game_screen::
 ;;
 ;; sys_render_cell
 ;;
-;;   Renders a single cell of the board
+;;  Renders a single cell of the board
 ;;  Input:  b: y coord of board to render
 ;;          c: x coord of board to render
 ;;  Output:
@@ -354,10 +354,10 @@ draw_player_tile_add_col:
     ld hl, #board
     add_hl_a                                  ;; Then add the offset
     ld a, (hl)                      ;; load the content of the board in a
-    ld   hl, #_s_balls_big_05
+    ld   hl, #_s_balls_big_05       ;; Load in hl the tile by default
     or a                            ;; check if the content is 0
     jr z, draw_player_tile_draw     ;; if 0 just print the default tile
-    ld hl, #_s_balls_big_08          ;; other wise draw the not valid tile
+    ld hl, #_s_balls_big_08         ;; other wise draw the not valid tile
 draw_player_tile_draw:
     ld c, #S_BALLS_BIG_W            ;; load in c the sprite width 
     ld b, #S_BALLS_BIG_H            ;; load in b sprite height

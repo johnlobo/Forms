@@ -122,6 +122,8 @@ man_game_renew_next_pieces::
 ;;
 man_game_init::
 
+    call sys_board_init
+    
     call man_game_renew_next_pieces
 
     call sys_render_game_screen
