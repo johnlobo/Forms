@@ -358,14 +358,14 @@ partial_board_col_is_complete:
 
 ;;-----------------------------------------------------------------
 ;;
-;; sys_board_erase_line
+;; sys_board_erase_row
 ;;
 ;;  erases a complete line of the board
 ;;  Input:  a: line to erase
 ;;  Output: 
 ;;  Modified: af, hl, bc
 ;;
-sys_board_erase_line::
+sys_board_erase_row::
     ld b, a                             ;; load line to erase in b
     ld c, #0                            ;; point to the first cell of the line
     call sys_board_get_hl_from_cell
@@ -382,4 +382,28 @@ erase_line_loop:
     jr nz, erase_line_loop
     ret
 
-
+;;-----------------------------------------------------------------
+;;
+;; sys_board_erase_col
+;;
+;;  erases a complete line of the board
+;;  Input:  a: line to erase
+;;  Output: 
+;;  Modified: af, hl, bc
+;;
+sys_board_erase_col::
+    ld c, a                             ;; load line to erase in b
+    ld b, #0                            ;; point to the first cell of the line
+    call sys_board_get_hl_from_cell
+    ld (erase_line_loop+1), hl          ;; self modifying code to se hl every roud of the loop
+    ld b, #0
+erase_line_loop:
+    ld hl, #0000
+    ld a, b
+    add_hl_a
+    ld (hl), #0
+    inc b
+    ld a,b
+    cp #BOARD_ROWS
+    jr nz, erase_line_loop
+    ret

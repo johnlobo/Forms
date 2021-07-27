@@ -170,7 +170,7 @@ man_game_erase_current_next_piece::
 ;;
 man_game_erase_row::
     ld (line_to_render),a
-    call sys_board_erase_line
+    call sys_board_erase_row
     ;; first frame of animation
     ld a, (line_to_render)
     ld hl, #_s_balls_big_09

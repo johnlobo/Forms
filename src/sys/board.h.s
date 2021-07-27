@@ -31,4 +31,4 @@
 .globl sys_board_cell_sprite
 .globl sys_board_set_piece
 .globl sys_board_check_partial_rows
-.globl sys_board_erase_line
+.globl sys_board_erase_row
