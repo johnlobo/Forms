@@ -169,7 +169,7 @@ sys_render_cell::
     ;; calculate x coord of screen
     ld e, c
     ld h, #S_BALLS_BIG_W
-    call h_times_e
+    call sys_util_h_times_e
     ld a, #BOARD_X_COORD
     add l
     ld c, a
@@ -177,7 +177,7 @@ sys_render_cell::
     ;; calculate y coord of screen
     ld e, b
     ld h, #S_BALLS_BIG_H + 1
-    call h_times_e
+    call sys_util_h_times_e
     ld a, #BOARD_Y_COORD
     add l
     ld b, a
@@ -216,7 +216,7 @@ _render_board_loop02:
     
     ld h, a                     ;; Move to h
     ld e, #S_BALLS_BIG_H + 1    ;; Cell height + 1
-    call h_times_e              ;; Number of rows drawn x cell height + 1
+    call sys_util_h_times_e              ;; Number of rows drawn x cell height + 1
     ld a, #BOARD_Y_COORD        ;; store in a the initial y coord
     add l                       ;; plus the number of rows x intial y coord 
     ;; Calculate screen address
@@ -236,7 +236,8 @@ _render_board_loop01:
 
 current_row:
     ld b, #00                   ;; load in b current row 
-    call sys_board_cell_sprite  ;; retrieve in hl the addres of the corresponding sprite
+    ;;call sys_board_cell_sprite  ;; retrieve in hl the addres of the corresponding sprite
+    ld hl, #_s_balls_big_07
 
 
     ld c, #S_BALLS_BIG_W        ;; load in c the sprite width 
@@ -269,18 +270,20 @@ sys_render_capture_background::
     push de
     push bc
 
+    ld ix, #player1
+
     ld e_p_screen_p(ix), l
     ld e_p_screen_p+1(ix), h        ;; Screen address to restore
 
     ld h, b                         ;; Height of the piece
     ld e, #S_BALLS_BIG_H + 1        ;; Piece size in bytes + 1 for the separation between blocks
-    call h_times_e                  ;; Calculate offset for piece type in HL
+    call sys_util_h_times_e         ;; Calculate offset for piece type in HL
     ld a, l                         ;; store buffer height in player
     ld e_buffer_height(ix), a       ;; store height in player1
     
     ld h, c                         ;; Width of the piece
     ld e, #S_BALLS_BIG_W            ;; Piece size in bytes
-    call h_times_e                  ;; Calculate offset for piece type in HL
+    call sys_util_h_times_e                  ;; Calculate offset for piece type in HL
     ld a, l                         ;; store buffer width in player
     ld e_buffer_width(ix), a        ;; store width in player1
 
@@ -342,11 +345,13 @@ sys_render_draw_player_tile::
 draw_player_tile_add_row:
     add #00                                 ;; add current row (self modifying code)
     ld b, a                                 ;; and save the same value in b
+    ;; TODO Sustituir por call ten_times_a
     sla a
     sla a
     sla a                                   ;; multiply by 8
     add b
     add b                                   ;; then add 2 times coord y and thats it.
+    ;;
     ld b, e_x(ix)
     add b                                   ;; then add the x coord and we have the offset for the cell
 draw_player_tile_add_col:
@@ -354,8 +359,9 @@ draw_player_tile_add_col:
     ld hl, #board
     add_hl_a                                  ;; Then add the offset
     ld a, (hl)                      ;; load the content of the board in a
-    ld   l, e_sprite_ptr(ix)        ;; Load in hl the tile by default
-    ld   h, e_sprite_ptr+1(ix)                                            ;;
+    ;;ld   hl, #_s_balls_big_05       ;; Load in hl the tile by default
+    ld l, e_sprite_ptr(ix)
+    ld h, e_sprite_ptr+1(ix)
     or a                            ;; check if the content is 0
     jr z, draw_player_tile_draw     ;; if 0 just print the default tile
     ld hl, #_s_balls_big_08         ;; other wise draw the not valid tile
@@ -382,14 +388,14 @@ sys_render_draw_player1::
     ld ix, #player1                 ;; move the address of p1 to ix
     ld e, e_x(ix)                   ;; Calculate x screen position
     ld h, #S_BALLS_BIG_W            ;;
-    call h_times_e                  ;; e_x(ix) x S_BALLS_BIG_W
+    call sys_util_h_times_e                  ;; e_x(ix) x S_BALLS_BIG_W
     ld a,#BOARD_X_COORD             ;; add board x pos to x position
     add l                           ;;
     ld (_piece_x), a                ;;
 
     ld e, e_y(ix)                   ;; Calculate y screen position
     ld h, #S_BALLS_BIG_H + 1        ;;
-    call h_times_e                  ;; e_y(ix) x S_BALLS_BIG_H
+    call sys_util_h_times_e                  ;; e_y(ix) x S_BALLS_BIG_H
     ld a,#BOARD_Y_COORD             ;; add board y pos to x position
     add l                           ;;
     ld (_piece_y), a                ;;
@@ -433,7 +439,7 @@ _render_dp_loop_0:
     sub b        
     ld e, a                         ;; player1.y + tile height - ROWS drawn
     ld h, #S_BALLS_BIG_H + 1 
-    call h_times_e                  ;; hl has PIECE_SIZE x ROWS drawn
+    call sys_util_h_times_e                  ;; hl has PIECE_SIZE x ROWS drawn
     ld a, (_piece_y)                ;; load the initial y coord of player
     add l                           ;; and add PIECE_SIZE x ROWS
     ld b, a
@@ -657,7 +663,7 @@ _render_dp2_loop_0:
     sub b        
     ld e, a                         ;; player1.y + tile height - ROWS drawn
     ld h, #S_BALLS_SMALL_H + 1 
-    call h_times_e                  ;; hl has PIECE_SIZE x ROWS drawn
+    call sys_util_h_times_e                  ;; hl has PIECE_SIZE x ROWS drawn
     ld a, (_piece_y)                ;; load the initial y coord of player
     add l                           ;; and add PIECE_SIZE x ROWS
     ld b, a
@@ -909,7 +915,7 @@ BCD_GetEnd:
 sys_render_get_hl_from_row::
     ld e, a
     ld h, #S_BALLS_BIG_H+1
-    call h_times_e
+    call sys_util_h_times_e
     ld a, #BOARD_Y_COORD             ;; add Y coord of the board to the row 
     add l
     ld b, a                         ;; load sum in b

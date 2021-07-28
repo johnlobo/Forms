@@ -98,7 +98,14 @@ man_game_renew_next_pieces::
     ;; set player1 initial piece to next_piece
     ld ix, #player1
     ld a, (next_pieces)
-    ld e_type(ix), a
+    ld e_type(ix), a  
+    
+    ;; get sprite form the type of piece  
+    call man_entity_get_piece_sprite
+    ld e_sprite_ptr(ix), l
+    ld e_sprite_ptr+1(ix), h
+
+    ld a, e_type(ix)
     ;; get width and height from initial piece
     call man_entity_get_hl_from_piece
     ld a,(hl)
@@ -106,11 +113,6 @@ man_game_renew_next_pieces::
     inc hl
     ld a,(hl)
     ld e_h(ix), a
-    ;; Get sprite corresponding to the piece
-    ld a, e_type(ix)
-    call man_entity_get_piece_sprite
-    ld e_sprite_ptr(ix), l
-    ld e_sprite_ptr+1(ix), h
 
     call sys_render_next_pieces     ;; Render next pieces on screen
 
@@ -267,6 +269,12 @@ _valid_piece:
     
     ld e_p_screen_p(ix), #0             ;; erase previous pointer so that update capture
     ld e_p_screen_p+1(ix), #0           ;; the background
+
+    ;; Get the sprite pointer to render the piece
+    ld a, e_type(ix)
+    call man_entity_get_piece_sprite
+    ld e_sprite_ptr(ix), l
+    ld e_sprite_ptr+1(ix), h
 
     ret
 

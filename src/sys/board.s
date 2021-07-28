@@ -75,7 +75,7 @@ s_b_generate_addresses_loop:
     push bc                         ;; save row and col for latter loop
     ld e, #S_BALLS_BIG_H +1         ;; 
     ld h, b                         ;; calculate row x sprite height
-    call h_times_e                  ;;
+    call sys_util_h_times_e                  ;;
     ld a, l                         ;;
     add #BOARD_Y_COORD              ;; add y coord of the Board
     ld b,a                          ;; load in b the result
@@ -148,7 +148,7 @@ sys_board_cell_content::
 ;;
 ;; sys_board_cell_sprite
 ;;
-;;  Returns the address of the corresponding cell sprite
+;;   Returns the address of the corresponding cell sprite
 ;;  Input:  c: col
 ;;          b: row
 ;;  Output: hl : address fo the corresponding cell sprite
@@ -159,7 +159,10 @@ sys_board_cell_sprite::
     ld   hl, #_s_balls_big_07       ;; load in hl the default sprite
     or a                            ;; check if the content is 0
     ret z                           ;; if 0 just return with hl pointing to the default sprite
-    ld hl, #_s_balls_big_00         ;; otherwise load in hl the occupied sprite
+    ;;ld hl, #_s_balls_big_00         ;; otherwise load in hl the occupied sprite
+    ld ix, #player1                 ;; return the sprite od the color of the player
+    ld l, e_sprite_ptr(ix)          ;; 
+    ld h, e_sprite_ptr+1(ix)
     ret
 
 ;;-----------------------------------------------------------------
@@ -175,11 +178,7 @@ sys_board_cell_sprite::
 sys_board_set_cell::
     push hl
     ld a, b
-    sla a
-    sla a
-    sla a                                   ;; multiply by 8
-    add b                                   ;; multiply by 9    
-    add b                                   ;; multiply by 10
+    call sys_util_ten_times_a                         ;; multiply a by 10
     add c                                   ;; then add the x coord and we have the offset for the cell
     ld hl, #board
     add_hl_a
@@ -203,7 +202,7 @@ sys_board_set_cell::
 ;;
 sys_board_set_piece::
     call man_entity_get_hl_from_piece               ;; get address for a type of piece in hl
-    inc hl                                        ;; skip first byte, don't need width of piece
+    inc hl                                          ;; skip first byte, don't need width of piece
     ld a, (hl)                                      ;; read height
     ld (sb_set_piece_condition_height + 1), a       ;; self modifying code for height condition
     inc hl

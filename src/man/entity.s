@@ -24,6 +24,14 @@
 
 .module entity_manager
 
+;;
+;; Start of _DATA area 
+;;  SDCC requires at least _DATA and _CODE areas to be declared, but you may use
+;;  any one of them for any purpose. Usually, compiler puts _DATA area contents
+;;  right after _CODE area contents.
+;;
+.area _DATA
+
 ;;=================================================================
 ;; Manager Memeber Variables
 ;;=================================================================
@@ -70,12 +78,16 @@ piece_types::
 player_buffer:: .ds 5 * S_BALLS_BIG_W * 5 * S_BALLS_BIG_H ;; Bufer to store background
 
 piece_sprites:: 
-    .dw _s_balls_big_00, _s_balls_big_00, _s_balls_big_00, _s_balls_big_00, _s_balls_big_06
-    .dw _s_balls_big_06, _s_balls_big_06, _s_balls_big_06, _s_balls_big_01, _s_balls_big_01
-    .dw _s_balls_big_01, _s_balls_big_01, _s_balls_big_05, _s_balls_big_05, _s_balls_big_05
-    .dw _s_balls_big_05, _s_balls_big_04, _s_balls_big_03, _s_balls_big_02
-    
-            
+    .dw #_s_balls_big_00, #_s_balls_big_00, #_s_balls_big_00, #_s_balls_big_00, #_s_balls_big_06
+    .dw #_s_balls_big_06, #_s_balls_big_06, #_s_balls_big_06, #_s_balls_big_01, #_s_balls_big_01
+    .dw #_s_balls_big_01, #_s_balls_big_01, #_s_balls_big_05, #_s_balls_big_05, #_s_balls_big_05
+    .dw #_s_balls_big_05, #_s_balls_big_04, #_s_balls_big_03, #_s_balls_big_02
+
+;;
+;; Start of _CODE area
+;; 
+.area _CODE
+      
 
 ;;-----------------------------------------------------------------
 ;;
@@ -89,7 +101,7 @@ piece_sprites::
 man_entity_get_hl_from_piece::
     ld h, a                         ;; Type of piece
     ld e, #PIECE_SIZE               ;; Piece size in bytes
-    call h_times_e                  ;; Calculate offset for piece type in HL
+    call sys_util_h_times_e                  ;; Calculate offset for piece type in HL
     ld de, #piece_types
     add hl,de                       ;; hl points to start of the model of piece of the player
     ret
@@ -112,6 +124,3 @@ man_entity_get_piece_sprite::
     ld d, (hl)
     ex de, hl
     ret
-
-
-
