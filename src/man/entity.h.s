@@ -16,6 +16,7 @@
 ;;  along with this program.  If not, see <http://www.gnu.org/licenses/>.
 ;;-------------------------------------------------------------------------------
 
+.module man_entity
 
 ;;------------------------------------------------------------------------------
 ;; Global constants
@@ -43,6 +44,7 @@ sizeof_e = 14
 .globl player1
 .globl piece_types
 .globl player_buffer
+.globl piece_sprites
 
 ;;------------------------------------------------------------------------------
 ;; Global routines
