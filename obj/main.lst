@@ -2863,22 +2863,24 @@ Hexadecimal [16-Bits]
                      0006    31 e_p_screen_p = 6
                      0008    32 e_buffer_width = 8
                      0009    33 e_buffer_height = 9
-                     000A    34 e_moved = 10
-                     000B    35 e_set = 11
-                             36 
-                     000C    37 sizeof_e = 12
-                             38 
-                             39 ;;------------------------------------------------------------------------------
-                             40 ;; Global variables
-                             41 ;;------------------------------------------------------------------------------
-                             42 .globl player1
-                             43 .globl piece_types
-                             44 .globl player_buffer
-                             45 
-                             46 ;;------------------------------------------------------------------------------
-                             47 ;; Global routines
-                             48 ;;------------------------------------------------------------------------------
-                             49 .globl man_entity_get_hl_from_piece
+                     000A    34 e_sprite_ptr = 10
+                     000C    35 e_moved = 12
+                     000D    36 e_set = 13
+                             37 
+                     000E    38 sizeof_e = 14
+                             39 
+                             40 ;;------------------------------------------------------------------------------
+                             41 ;; Global variables
+                             42 ;;------------------------------------------------------------------------------
+                             43 .globl player1
+                             44 .globl piece_types
+                             45 .globl player_buffer
+                             46 
+                             47 ;;------------------------------------------------------------------------------
+                             48 ;; Global routines
+                             49 ;;------------------------------------------------------------------------------
+                             50 .globl man_entity_get_hl_from_piece
+                             51 .globl man_entity_get_piece_sprite
 ASxxxx Assembler V02.00 + NoICE + SDCC mods  (Zilog Z80 / Hitachi HD64180), page 57.
 Hexadecimal [16-Bits]
 

@@ -106,6 +106,11 @@ man_game_renew_next_pieces::
     inc hl
     ld a,(hl)
     ld e_h(ix), a
+    ;; Get sprite corresponding to the piece
+    ld a, e_type(ix)
+    call man_entity_get_piece_sprite
+    ld e_sprite_ptr(ix), l
+    ld e_sprite_ptr+1(ix), h
 
     call sys_render_next_pieces     ;; Render next pieces on screen
 

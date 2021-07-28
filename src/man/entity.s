@@ -16,7 +16,7 @@
 ;;  along with this program.  If not, see <http://www.gnu.org/licenses/>.
 ;;-------------------------------------------------------------------------------
 
-
+.include "cpctelera.h.s"
 .include "man/entity.h.s"
 .include "../common.h.s"
 .include "sys/util.h.s"
@@ -38,6 +38,7 @@ player1::
     .dw #0x0000                 ;; Previous screen address
     .db #0                      ;; width of background buffer
     .db #0                      ;; height of background buffer
+    .dw #0x0000                 ;; sprite pointer
     .db #0                      ;; moved flag
     .db #0                      ;; set flag
 
@@ -68,6 +69,14 @@ piece_types::
 
 player_buffer:: .ds 5 * S_BALLS_BIG_W * 5 * S_BALLS_BIG_H ;; Bufer to store background
 
+piece_sprites:: 
+    .dw _s_balls_big_00, _s_balls_big_00, _s_balls_big_00, _s_balls_big_00, _s_balls_big_06
+    .dw _s_balls_big_06, _s_balls_big_06, _s_balls_big_06, _s_balls_big_01, _s_balls_big_01
+    .dw _s_balls_big_01, _s_balls_big_01, _s_balls_big_05, _s_balls_big_05, _s_balls_big_05
+    .dw _s_balls_big_05, _s_balls_big_04, _s_balls_big_03, _s_balls_big_02
+    
+            
+
 ;;-----------------------------------------------------------------
 ;;
 ;; man_entity_get_hl_from_piece
@@ -83,6 +92,25 @@ man_entity_get_hl_from_piece::
     call h_times_e                  ;; Calculate offset for piece type in HL
     ld de, #piece_types
     add hl,de                       ;; hl points to start of the model of piece of the player
+    ret
+
+;;-----------------------------------------------------------------
+;;
+;;  get_piece_sprite
+;;
+;;  Get in hl a pointer to the sprite a
+;;  Input: a: number of type
+;;  Output: hl a pointer to the sprite
+;;  Destroyed: af, hl, de
+;;
+man_entity_get_piece_sprite::
+    sla a                   ;; duplicate a in order to offset
+    ld hl, #piece_sprites   ;; load begining of the piece sprite list in hl
+    add_hl_a                ;; add offset
+    ld e, (hl)
+    inc hl
+    ld d, (hl)
+    ex de, hl
     ret
 
 
