@@ -66,9 +66,9 @@ sys_render_init::
     ld de, #16
     call cpct_setPalette_asm
     ;; Set Border
-    cpctm_setBorder_asm HW_WHITE
+    cpctm_setBorder_asm HW_BRIGHT_WHITE
 
-    cpctm_clearScreen_asm 0
+    cpctm_clearScreen_asm 255
 
     ret
 
@@ -83,7 +83,7 @@ sys_render_init::
 ;;
 sys_render_logo_screen::
     
-    cpctm_screenPtr_asm de, CPCT_VMEM_START_ASM, 28, 76  ;; screen address for 30, 76 in de
+    cpctm_screenPtr_asm de, CPCT_VMEM_START_ASM, 24, 76  ;; screen address for 30, 76 in de
     ld hl, #_s_logo_1010
     ld c, #S_LOGO_1010_W
     ld b, #S_LOGO_1010_H
@@ -619,7 +619,7 @@ sys_render_erase_next_piece::
     ex de, hl                       ;; store screen addres in de
     ld c,#NEXT_PIECE_MAX_WIDTH
     ld b,#NEXT_PIECE_MAX_HEIGHT+1
-    ld a,#00                        ;; Patern of solid box
+    ld a,#255                        ;; Patern of solid box
 
     call cpct_drawSolidBox_asm
 
