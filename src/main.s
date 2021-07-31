@@ -64,7 +64,7 @@ _main_init_keypress:
    jr z, _main_init_keypress
    call cpct_setSeed_mxor_asm               ;; change seed
 
-   cpctm_clearScreen_asm 0
+   cpctm_clearScreen_asm 255
    
    call sys_input_init
 

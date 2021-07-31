@@ -3,8 +3,8 @@
 #define _ASSETS_LOGO1010_H_
 
 #include <types.h>
-#define S_LOGO_1010_W 26
+#define S_LOGO_1010_W 32
 #define S_LOGO_1010_H 32
-extern const u8 s_logo_1010[26 * 32];
+extern const u8 s_logo_1010[32 * 32];
 
 #endif
