@@ -328,6 +328,8 @@ row_not_complete:
 ;;  Modified: af, hl, bc
 ;;
 sys_board_check_col::
+    ld c, b                             ;; move col to check to c
+    ld b, #0                            ;; set row to check as 0
     call sys_board_get_hl_from_cell
     ld (check_col_loop+1), hl          ;; self modifying code to se hl every roud of the loop
     ld b, #0
@@ -377,12 +379,12 @@ partial_board_line_is_complete:
 
 ;;-----------------------------------------------------------------
 ;;
-;; sys_board_check_rows
+;; sys_board_check_cols
 ;;
 ;;  Check if there is a complete line on lines specified, and returns inmediatly when find a complete line
-;;  Input:  b: initial line to check
-;;          c: final line to check
-;;  Output: a: 0xff in no line is complete, otherwise the number of the first complete line
+;;  Input:  b: initial col to check
+;;          c: final col to check
+;;  Output: a: 0xff in no col is complete, otherwise the number of the first complete col
 ;;  Modified: af, hl, bc
 ;;
 sys_board_check_partial_cols::
@@ -432,24 +434,20 @@ erase_row_loop:
 ;;
 ;; sys_board_erase_col
 ;;
-;;  erases a complete line of the board
-;;  Input:  a: line to erase
+;;  erases a complete col of the board
+;;  Input:  a: col to erase
 ;;  Output: 
-;;  Modified: af, hl, bc
+;;  Modified: af, hl, bc, de
 ;;
 sys_board_erase_col::
     ld c, a                             ;; load line to erase in b
     ld b, #0                            ;; point to the first cell of the line
-    call sys_board_get_hl_from_cell
-    ld (erase_col_loop+1), hl          ;; self modifying code to se hl every roud of the loop
-    ld b, #0
-erase_col_loop:
-    ld hl, #0000
-    ld a, b
-    add_hl_a
-    ld (hl), #0
-    inc b
-    ld a,b
-    cp #BOARD_ROWS
-    jr nz, erase_col_loop
+    call sys_board_get_hl_from_cell     ;; get a pointer to the first cell of the col in hl
+    ld b, #10
+s_b_erase_col_loop0:
+    xor a
+    ld (hl), a
+    ld de, #10
+    add hl,de
+    djnz s_b_erase_col_loop0
     ret
