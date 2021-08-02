@@ -51,7 +51,7 @@ board::
     .db #0x00, #0x00, #0x00, #0x00, #0x00, #0x00, #0x00, #0x00, #0x00, #0x00
     .db #0x00, #0x00, #0x00, #0x00, #0x00, #0x00, #0x00, #0x00, #0x00, #0x00
 
-board_addresses::
+board_row_addresses::
     .dw #0x0000, #0x0000, #0x0000, #0x0000, #0x0000, #0x0000, #0x0000, #0x0000, #0x00000, #0x0000, #0x0000
 ;;
 ;; Start of _CODE area
@@ -86,7 +86,7 @@ s_b_generate_addresses_loop:
     pop bc                          ;; retrieve row and col
     ld a, b                         ;; copy the row in a
     sla a                           ;; multiply a by 2 two obtain the offset of the address list
-    ld hl, #board_addresses         ;; load in hl the address of the address list
+    ld hl, #board_row_addresses     ;; load in hl the address of the address list
     add l                           ;; add a to l
     ld l, a                         ;; and return the sum to l
     ld (hl), e                      ;; stores the calculated address in the address list
@@ -161,8 +161,8 @@ sys_board_cell_sprite::
     ret z                           ;; if 0 just return with hl pointing to the default sprite
     ;;ld hl, #_s_balls_big_00         ;; otherwise load in hl the occupied sprite
     ld ix, #player1                 ;; return the sprite od the color of the player
-    ld l, e_sprite_ptr(ix)          ;; 
-    ld h, e_sprite_ptr+1(ix)
+    ld l, e_sprite_big_ptr(ix)          ;; 
+    ld h, e_sprite_big_ptr+1(ix)
     ret
 
 ;;-----------------------------------------------------------------
@@ -322,7 +322,7 @@ row_not_complete:
 ;;
 ;; sys_board_check_col
 ;;
-;;  Check if a prticular column is complete
+;;  Check if a particular column is complete
 ;;  Input:  b: col
 ;;  Output: a: 1 if its complete, 0 in other case
 ;;  Modified: af, hl, bc
@@ -331,23 +331,18 @@ sys_board_check_col::
     ld c, b                             ;; move col to check to c
     ld b, #0                            ;; set row to check as 0
     call sys_board_get_hl_from_cell
-    ld (check_col_loop+1), hl          ;; self modifying code to se hl every roud of the loop
-    ld b, #0
-check_col_loop:
-    ld hl, #0000
-    ld a, b
-    add_hl_a
-    ld a,(hl)
+    ld b,#10                            ;; number of cols
+    ld de, #10                          ;; offset between cols
+s_b_check_col_loop0:
+    ld a, (hl)                          ;; check cell board
     or a
-    jr z, col_not_complete
-    inc b
-    ld a,b
-    cp #BOARD_ROWS
-    jr nz, check_col_loop
-    ld a, #1
+    jr z, s_b_check_col_exit
+    add hl, de                          ;; add offset to hl
+    djnz s_b_check_col_loop0
+    ld a, #1                            ;; col totally complete
     ret
-col_not_complete:
-    xor a
+s_b_check_col_exit:
+    xor a                               ;; col not complete
     ret
 
 ;;-----------------------------------------------------------------
@@ -369,7 +364,7 @@ sys_board_check_partial_rows::
     inc b                               ;; inc row
     ld a, b                             ;;
     cp c                                ;; chec if row is last row
-    jr nz, sys_board_check_partial_rows;; back to the beinging of the loop
+    jr nz, sys_board_check_partial_rows ;; back to the beinging of the loop
     ld a, #0xff                         ;; Return if checked boards are complete and no line found
     ret
 partial_board_line_is_complete:
@@ -393,10 +388,10 @@ sys_board_check_partial_cols::
     or a
     jr nz, partial_board_col_is_complete
     pop bc                              ;; Retrieve bc from stack
-    inc b                               ;; inc row
+    inc b                               ;; inc col
     ld a, b                             ;;
-    cp c                                ;; chec if row is last row
-    jr nz, sys_board_check_partial_cols;; back to the beinging of the loop
+    cp c                                ;; chec if col is last col
+    jr nz, sys_board_check_partial_cols ;; back to the beinging of the loop
     ld a, #0xff                         ;; Return if checked boards are complete and no line found
     ret
 partial_board_col_is_complete:
@@ -417,7 +412,7 @@ sys_board_erase_row::
     ld b, a                             ;; load line to erase in b
     ld c, #0                            ;; point to the first cell of the line
     call sys_board_get_hl_from_cell
-    ld (erase_row_loop+1), hl          ;; self modifying code to se hl every roud of the loop
+    ld (erase_row_loop+1), hl           ;; self modifying code to se hl every roud of the loop
     ld b, #0
 erase_row_loop:
     ld hl, #0000

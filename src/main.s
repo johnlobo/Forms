@@ -55,14 +55,22 @@ _main_init::
    call sys_render_logo_screen
 
    ;; set random seed
-   ld hl,#0
+   xor a
+   push af                             ;; store a=0 in the stack
 _main_init_keypress:
+   pop af                              ;; retrive a value form stack
+   inc a                               ;; inc a value
+   push af                             ;; store a value in stack
    call cpct_scanKeyboard_asm          ;; scan keyboard
    inc hl
    call cpct_isAnyKeyPressed_asm
    or a
    jr z, _main_init_keypress
-   call cpct_setSeed_mxor_asm               ;; change seed
+
+   ld hl, #0xbc00
+   ld de, #0xac00
+   pop af                              ;; retrieve last a value to set the seed
+   call cpct_setSeed_xsp40_u8_asm          ;; change seed
 
    cpctm_clearScreen_asm 255
    

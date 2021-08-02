@@ -2753,6 +2753,7 @@ Hexadecimal [16-Bits]
                              35 .globl sys_render_erase_next_piece
                              36 .globl sys_render_logo_screen
                              37 .globl sys_render_render_row
+                             38 .globl sys_render_render_col
 ASxxxx Assembler V02.00 + NoICE + SDCC mods  (Zilog Z80 / Hitachi HD64180), page 54.
 Hexadecimal [16-Bits]
 
@@ -2784,15 +2785,18 @@ Hexadecimal [16-Bits]
                              23 ;; Global variables
                              24 ;;------------------------------------------------------------------------------
                              25 .globl board
-                             26 ;;------------------------------------------------------------------------------
-                             27 ;; Global routines
-                             28 ;;------------------------------------------------------------------------------
-                             29 .globl sys_board_init
-                             30 .globl sys_board_cell_content
-                             31 .globl sys_board_cell_sprite
-                             32 .globl sys_board_set_piece
-                             33 .globl sys_board_check_partial_rows
-                             34 .globl sys_board_erase_row
+                             26 .globl board_row_addresses
+                             27 ;;------------------------------------------------------------------------------
+                             28 ;; Global routines
+                             29 ;;------------------------------------------------------------------------------
+                             30 .globl sys_board_init
+                             31 .globl sys_board_cell_content
+                             32 .globl sys_board_cell_sprite
+                             33 .globl sys_board_set_piece
+                             34 .globl sys_board_check_partial_rows
+                             35 .globl sys_board_erase_row
+                             36 .globl sys_board_check_partial_cols
+                             37 .globl sys_board_erase_col
 ASxxxx Assembler V02.00 + NoICE + SDCC mods  (Zilog Z80 / Hitachi HD64180), page 55.
 Hexadecimal [16-Bits]
 
@@ -2864,26 +2868,34 @@ Hexadecimal [16-Bits]
                      0006    32 e_p_screen_p = 6
                      0008    33 e_buffer_width = 8
                      0009    34 e_buffer_height = 9
-                     000A    35 e_sprite_ptr = 10
-                     000C    36 e_moved = 12
-                     000D    37 e_set = 13
-                             38 
-                     000E    39 sizeof_e = 14
-                             40 
-                             41 ;;------------------------------------------------------------------------------
-                             42 ;; Global variables
-                             43 ;;------------------------------------------------------------------------------
-                             44 .globl player1
-                             45 .globl piece_types
-                             46 .globl player_buffer
-                             47 .globl piece_sprites
-                             48 
-                             49 ;;------------------------------------------------------------------------------
-                             50 ;; Global routines
+                     000A    35 e_sprite_big_ptr = 10
+                     000C    36 e_sprite_small_ptr = 12
+                     000E    37 e_moved = 14
+                     000F    38 e_set = 15
+                             39 
+                     0010    40 sizeof_e = 16
+                             41 
+                             42 ;;------------------------------------------------------------------------------
+                             43 ;; Global variables
+                             44 ;;------------------------------------------------------------------------------
+                             45 .globl player1
+                             46 .globl piece_types
+                             47 .globl player_buffer
+                             48 .globl piece_sprites_big
+                             49 .globl piece_sprites_small
+                             50 
                              51 ;;------------------------------------------------------------------------------
-                             52 .globl man_entity_get_hl_from_piece
-                             53 .globl man_entity_get_piece_sprite
+                             52 ;; Global routines
+                             53 ;;------------------------------------------------------------------------------
+                             54 .globl man_entity_get_hl_from_piece
 ASxxxx Assembler V02.00 + NoICE + SDCC mods  (Zilog Z80 / Hitachi HD64180), page 57.
+Hexadecimal [16-Bits]
+
+
+
+                             55 .globl man_entity_get_piece_sprite_big
+                             56 .globl man_entity_get_piece_sprite_small
+ASxxxx Assembler V02.00 + NoICE + SDCC mods  (Zilog Z80 / Hitachi HD64180), page 58.
 Hexadecimal [16-Bits]
 
 
@@ -2926,7 +2938,7 @@ Hexadecimal [16-Bits]
                              35 ;;------------------------------------------------------------------------------
                              36 .globl man_game_init
                              37 .globl man_game_update
-ASxxxx Assembler V02.00 + NoICE + SDCC mods  (Zilog Z80 / Hitachi HD64180), page 58.
+ASxxxx Assembler V02.00 + NoICE + SDCC mods  (Zilog Z80 / Hitachi HD64180), page 59.
 Hexadecimal [16-Bits]
 
 
@@ -2986,7 +2998,7 @@ Hexadecimal [16-Bits]
                              52 .globl _s_dos
                              53 .globl _s_tres
                              54 .globl _s_score_numbers_00
-ASxxxx Assembler V02.00 + NoICE + SDCC mods  (Zilog Z80 / Hitachi HD64180), page 59.
+ASxxxx Assembler V02.00 + NoICE + SDCC mods  (Zilog Z80 / Hitachi HD64180), page 60.
 Hexadecimal [16-Bits]
 
 
@@ -3020,8 +3032,8 @@ Hexadecimal [16-Bits]
                              81 .globl cpct_isKeyPressed_asm
                              82 .globl cpct_waitHalts_asm
                              83 .globl cpct_drawSolidBox_asm
-                             84 .globl cpct_getRandom_mxor_u8_asm
-                             85 .globl cpct_setSeed_mxor_asm
+                             84 .globl cpct_getRandom_xsp40_u8_asm
+                             85 .globl cpct_setSeed_xsp40_u8_asm
                              86 .globl cpct_isAnyKeyPressed_asm
                              87 
                              88 ;;===============================================================================
@@ -3046,7 +3058,7 @@ Hexadecimal [16-Bits]
                      0003   107 S_TRES_W = 3
                      0010   108 S_TRES_H = 16
                             109 
-ASxxxx Assembler V02.00 + NoICE + SDCC mods  (Zilog Z80 / Hitachi HD64180), page 60.
+ASxxxx Assembler V02.00 + NoICE + SDCC mods  (Zilog Z80 / Hitachi HD64180), page 61.
 Hexadecimal [16-Bits]
 
 
@@ -3106,7 +3118,7 @@ Hexadecimal [16-Bits]
                             162 
                      0012   163 S_PIECES_W = 18
                      0010   164 S_PIECES_H = 16
-ASxxxx Assembler V02.00 + NoICE + SDCC mods  (Zilog Z80 / Hitachi HD64180), page 61.
+ASxxxx Assembler V02.00 + NoICE + SDCC mods  (Zilog Z80 / Hitachi HD64180), page 62.
 Hexadecimal [16-Bits]
 
 
@@ -3116,7 +3128,7 @@ Hexadecimal [16-Bits]
                             167 
                             168 
                             169 
-ASxxxx Assembler V02.00 + NoICE + SDCC mods  (Zilog Z80 / Hitachi HD64180), page 62.
+ASxxxx Assembler V02.00 + NoICE + SDCC mods  (Zilog Z80 / Hitachi HD64180), page 63.
 Hexadecimal [16-Bits]
 
 
@@ -3152,48 +3164,56 @@ Hexadecimal [16-Bits]
    0003 CD 00 00      [17]   55    call sys_render_logo_screen
                              56 
                              57    ;; set random seed
-   0006 21 00 00      [10]   58    ld hl,#0
-   0009                      59 _main_init_keypress:
-   0009 CD 00 00      [17]   60    call cpct_scanKeyboard_asm          ;; scan keyboard
-   000C 23            [ 6]   61    inc hl
-   000D CD 00 00      [17]   62    call cpct_isAnyKeyPressed_asm
-   0010 B7            [ 4]   63    or a
-   0011 28 F6         [12]   64    jr z, _main_init_keypress
-   0013 CD 00 00      [17]   65    call cpct_setSeed_mxor_asm               ;; change seed
-                             66 
-   0016                      67    cpctm_clearScreen_asm 255
-   0016 21 00 C0      [10]    1    ld    hl, #0xC000    ;; [3] HL Points to Start of Video Memory
-   0019 11 01 C0      [10]    2    ld    de, #0xC001    ;; [3] DE Points to the next byte
-   001C 01 00 40      [10]    3    ld    bc, #0x4000    ;; [3] BC = 16384 bytes to be copied
-   001F 36 FF         [10]    4    ld   (hl), #255      ;; [3] First Byte = given Colour
-   0021 ED B0         [21]    5    ldir                 ;; [98297] Perform the copy
-                             68    
-   0023 CD 00 00      [17]   69    call sys_input_init
-                             70 
-   0026 CD 00 00      [17]   71    call man_game_init
-                             72 
-   0029 C9            [10]   73    ret
-                             74 ;;-----------------------------------------------------------------
-                             75 ;;
-                             76 ;; MAIN function. This is the entry point of the application.
-ASxxxx Assembler V02.00 + NoICE + SDCC mods  (Zilog Z80 / Hitachi HD64180), page 63.
+   0006 AF            [ 4]   58    xor a
+   0007 F5            [11]   59    push af                             ;; store a=0 in the stack
+   0008                      60 _main_init_keypress:
+   0008 F1            [10]   61    pop af                              ;; retrive a value form stack
+   0009 3C            [ 4]   62    inc a                               ;; inc a value
+   000A F5            [11]   63    push af                             ;; store a value in stack
+   000B CD 00 00      [17]   64    call cpct_scanKeyboard_asm          ;; scan keyboard
+   000E 23            [ 6]   65    inc hl
+   000F CD 00 00      [17]   66    call cpct_isAnyKeyPressed_asm
+   0012 B7            [ 4]   67    or a
+   0013 28 F3         [12]   68    jr z, _main_init_keypress
+                             69 
+   0015 21 00 BC      [10]   70    ld hl, #0xbc00
+   0018 11 00 AC      [10]   71    ld de, #0xac00
+   001B F1            [10]   72    pop af                              ;; retrieve last a value to set the seed
+   001C CD 00 00      [17]   73    call cpct_setSeed_xsp40_u8_asm          ;; change seed
+                             74 
+   001F                      75    cpctm_clearScreen_asm 255
+   001F 21 00 C0      [10]    1    ld    hl, #0xC000    ;; [3] HL Points to Start of Video Memory
+   0022 11 01 C0      [10]    2    ld    de, #0xC001    ;; [3] DE Points to the next byte
+   0025 01 00 40      [10]    3    ld    bc, #0x4000    ;; [3] BC = 16384 bytes to be copied
+   0028 36 FF         [10]    4    ld   (hl), #255      ;; [3] First Byte = given Colour
+   002A ED B0         [21]    5    ldir                 ;; [98297] Perform the copy
+                             76    
+ASxxxx Assembler V02.00 + NoICE + SDCC mods  (Zilog Z80 / Hitachi HD64180), page 64.
 Hexadecimal [16-Bits]
 
 
 
-                             77 ;;    _main:: global symbol is required for correctly compiling and linking
-                             78 ;;
-   002A                      79 _main::
-                             80    ;; Disable firmware to prevent it from interfering with string drawing
-   002A CD 00 00      [17]   81    call cpct_disableFirmware_asm
-                             82 
-   002D CD 00 00      [17]   83    call _main_init
-                             84 
-                             85    ;; Loop forever
-   0030                      86 loop:
-   0030 06 12         [ 7]   87    ld b,#18
-   0032 CD 00 00      [17]   88    call cpct_waitHalts_asm
-                             89    
-   0035 CD 00 00      [17]   90    call man_game_update
-                             91 
-   0038 18 F6         [12]   92    jr    loop
+   002C CD 00 00      [17]   77    call sys_input_init
+                             78 
+   002F CD 00 00      [17]   79    call man_game_init
+                             80 
+   0032 C9            [10]   81    ret
+                             82 ;;-----------------------------------------------------------------
+                             83 ;;
+                             84 ;; MAIN function. This is the entry point of the application.
+                             85 ;;    _main:: global symbol is required for correctly compiling and linking
+                             86 ;;
+   0033                      87 _main::
+                             88    ;; Disable firmware to prevent it from interfering with string drawing
+   0033 CD 00 00      [17]   89    call cpct_disableFirmware_asm
+                             90 
+   0036 CD 00 00      [17]   91    call _main_init
+                             92 
+                             93    ;; Loop forever
+   0039                      94 loop:
+   0039 06 12         [ 7]   95    ld b,#18
+   003B CD 00 00      [17]   96    call cpct_waitHalts_asm
+                             97    
+   003E CD 00 00      [17]   98    call man_game_update
+                             99 
+   0041 18 F6         [12]  100    jr    loop
