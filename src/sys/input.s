@@ -141,13 +141,14 @@ _move_down:
 ;;  Output:
 ;;  Modified: 
 ;;
-_change_piece:      
+_change_piece::      
     ld a, (selected_piece)              ;; read selected piece
     inc a                               ;; increment piece type
     cp #3       
     jr nz, _valid_piece_0     
     xor a       
 _valid_piece_0:
+    ld (selected_piece), a
     ld hl, #next_pieces
     add_hl_a
     ld a, (hl)
@@ -159,6 +160,7 @@ _valid_piece_0:
 _check_width:
     ld a, (hl)                          ;; read width of piece
     ld e_w(ix), a                       ;; store width of piece in player1 struct
+    dec a                               ;; width minus 1 to add it to the x coord
     ld b, e_x(ix)                       ;; read x position in b
     add b                               ;; add x position and width
     cp #BOARD_COLS - 1                  ;; Compare with number of cols in board
@@ -169,8 +171,9 @@ _check_width:
     ld e_x(ix), a                       ;; load in player struct the new x coord
 _check_height:      
     inc hl                              ;; read next byte of piece
-    ld a, (hl)                          ;; read width of piece
+    ld a, (hl)                          ;; read height of piece
     ld e_h(ix), a                       ;; store height of piece in player1 struct
+    dec a                               ;; height minus 1 to add it to the y coord
     ld b, e_y(ix)                       ;; read y position in b
     add b                               ;; add y position and width
     cp #BOARD_ROWS - 1                  ;; Compare with number of cols in board
@@ -180,6 +183,12 @@ _check_height:
     sub b                               ;; substract the width of the piece as new coord
     ld e_y(ix), a                       ;; load in player struct the new x coord
 _end_check:
+;; Get the sprite pointer to render the piece
+    ld a, e_type(ix)
+    call man_entity_get_piece_sprite_big
+    ld e_sprite_big_ptr(ix), l
+    ld e_sprite_big_ptr+1(ix), h
+
     call _input_update_moved
     jp _end_input_update
 
