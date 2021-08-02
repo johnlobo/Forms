@@ -360,8 +360,8 @@ draw_player_tile_add_col:
     add_hl_a                                  ;; Then add the offset
     ld a, (hl)                      ;; load the content of the board in a
     ;;ld   hl, #_s_balls_big_05       ;; Load in hl the tile by default
-    ld l, e_sprite_ptr(ix)
-    ld h, e_sprite_ptr+1(ix)
+    ld l, e_sprite_big_ptr(ix)
+    ld h, e_sprite_big_ptr+1(ix)
     or a                            ;; check if the content is 0
     jr z, draw_player_tile_draw     ;; if 0 just print the default tile
     ld hl, #_s_balls_big_08         ;; other wise draw the not valid tile
@@ -576,6 +576,7 @@ sys_render_increment_hl_small::
 ;;
 ;;   Draw player tile
 ;;  Input:  de screen address to draw the tile 
+;;          iy pointer to the sprite
 ;;  Output: 
 ;;  Destroyed: AF, BC, DE, HL
 ;;
@@ -584,10 +585,11 @@ sys_render_draw_small_tile::
     push hl
     push de
     push bc
-    ex de, hl
-    ld   hl, #_s_balls_small_0
-    ld c, #S_BALLS_SMALL_W            ;; load in c the sprite width 
-    ld b, #S_BALLS_SMALL_H            ;; load in b sprite height
+    ex de, hl                       ;; save screen address in de
+    push iy                         ;; save sprite pointer in stack
+    pop hl                          ;; retrieve sprite pointer
+    ld c, #S_BALLS_SMALL_W          ;; load in c the sprite width 
+    ld b, #S_BALLS_SMALL_H          ;; load in b sprite height
     call cpct_drawSprite_asm        ;; draw sprite
     pop bc
     pop de
@@ -644,6 +646,12 @@ sys_render_draw_piece_small::
     ld a, c
     ld (_piece_y), a                    ;; save y coord
 
+    ;; Load in iy the sprite to render
+    ld a, (_piece)
+    call man_entity_get_piece_sprite_small
+    push hl
+    pop iy
+
     ld a, (_piece)
     call man_entity_get_hl_from_piece   ;; Get hl form the piece in a
     ld a, (hl)                          ;; read piece width
@@ -653,7 +661,7 @@ sys_render_draw_piece_small::
     ld (_piece_height), a
     inc hl
 
-    ld b, a                   ;; Number of rows to loop (piece_height)
+    ld b, a                             ;; Number of rows to loop (piece_height)
 
 _render_dp2_loop_0:
     push bc                         ;; save number of rows in the stack
@@ -676,10 +684,10 @@ _render_dp2_loop_0:
     call cpct_getScreenPtr_asm      ;; Get Screen Pointer
     ;; Return value: HL = Screen Pointer to (X, Y) byte
 
+    
     ex de, hl                       ;; store screen address in de
 
     pop hl                          ;; retrieve piece address
-
     ld a, (hl)                      ;; load first row (byte) in a
     or a                            ;; check if piece byte is 00
     jr z, _dp2_continue_0            ;; jump to next byte if so
@@ -905,41 +913,55 @@ BCD_GetEnd:
 
 ;;-----------------------------------------------------------------
 ;;
-;; sys_render_get_hl_from_row
+;; sys_render_get_hl_from_cell
 ;;
-;;  return hl pointing to the first byte of the row stored in a
-;;  Input:  a: row
-;;  Output: hl: point to the address of the first element od the a row
-;;  Modified: af, hl 
+;;  return hl pointing to the first byte of the cell row stored in a
+;;  Input:  c: col (x)
+;;          b: row (y)
+;;  Output: hl: point to the address of the first element of the cell
+;;  Modified: af, hl, bc
 ;;
-sys_render_get_hl_from_row::
-    ld e, a
+sys_render_get_hl_from_cell::
+    ld e, b
     ld h, #S_BALLS_BIG_H+1
     call sys_util_h_times_e
-    ld a, #BOARD_Y_COORD             ;; add Y coord of the board to the row 
+    ld a, #BOARD_Y_COORD                ;; add Y coord of the board to the row 
     add l
-    ld b, a                         ;; load sum in b
-    ld c, #BOARD_X_COORD            ;; load X coord of the board in c
-    ld de, #CPCT_VMEM_START_ASM     ;; load screen begin
-    call cpct_getScreenPtr_asm      ;; get string pointer in hl
+    ld (s_r_get_hl_from_cell_y+1), a
+
+    ld e, c
+    ld h, #S_BALLS_BIG_W
+    call sys_util_h_times_e
+    ld a, #BOARD_X_COORD                ;; add X coord of the board to the row 
+    add l
+    ld (s_r_get_hl_from_cell_x+1), a
+
+s_r_get_hl_from_cell_y:
+    ld b, #00                           ;; load sum in b
+s_r_get_hl_from_cell_x:
+    ld c, #00                           ;; load X coord of the board in c
+    ld de, #CPCT_VMEM_START_ASM         ;; load screen begin
+    call cpct_getScreenPtr_asm          ;; get string pointer in hl
     ret
 
 ;;-----------------------------------------------------------------
 ;;
 ;; sys_render_render_row
 ;;
-;;  erases a complete line of the board
-;;  Input:  a: line to erase
+;;  renders a complete line of the board
+;;  Input:  a: row to render
 ;;          hl: sprite to render
 ;;  Output: 
 ;;  Modified: af, hl, bc
 ;;
 sys_render_render_row::
-    ld (s_r_render_line_sprite+1), hl   ;;self modifying code to save the sprite pointer
+    ld (s_r_render_line_sprite+1), hl   ;; self modifying code to save the sprite pointer
+    ld c, #0
+    ld b, a
+    call sys_render_get_hl_from_cell    ;; obtain the origin address of the board row
+    ex de, hl                           ;; keep screen addres in de
     ld b, #0
     push bc
-    call sys_render_get_hl_from_row     ;; obtain the origin address of the board row
-    ex de, hl                           ;; keep screen addres in de
 s_r_render_line_loop:
     push de                             ;; save screen address in the stack
 s_r_render_line_sprite:
@@ -956,7 +978,41 @@ s_r_render_line_sprite:
     push bc
     ld a, b                             ;; check if is the last row
     cp #BOARD_COLS                      ;;
-    jr nz, s_r_render_line_loop          ;;  if not, get back to loop
+    jr nz, s_r_render_line_loop         ;;  if not, get back to loop
     pop bc                              ;; retrive bc form stack to reset the stack
+    ret
+
+;;-----------------------------------------------------------------
+;;
+;; sys_render_render_col
+;;
+;;  renders a complete col of the board
+;;  Input:  a: col to erase
+;;          hl: sprite to render
+;;  Output: 
+;;  Modified: af, hl, bc
+;;
+sys_render_render_col::
+    ld (s_r_render_col_sprite+1), hl    ;;self modifying code to save the sprite pointer
+    ld c, a
+    ld b, #0
+s_r_render_col_loop:
+    push bc
+    call sys_render_get_hl_from_cell    ;; obtain the origin address of the board col
+
+    ex de, hl                           ;; keep screen addres in de to use it drawing the sprite
+s_r_render_col_sprite:
+    ld hl, #0000                        ;; load in hl a pointer to the sprite to draw
+    ld b, #S_BALLS_BIG_H                ;; Height of the sprite
+    ld c, #S_BALLS_BIG_W                ;; Height of the sprite
+    call cpct_drawSprite_asm            ;; draw sprite
+    
+    pop bc                              ;; retrieve bc
+    inc b                               ;; inc row
+    ld a, b
+    cp #BOARD_ROWS                      ;;
+    jr nz, s_r_render_col_loop          ;;  if not, get back to loop
+    
+s_r_render_col_y:    
     ret
 

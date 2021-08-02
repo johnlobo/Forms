@@ -60,8 +60,7 @@ line_to_render: .db 00
 ;;  Modified: AF, BC, DE, HL
 ;;
 man_game_get_random_piece::
-    call cpct_setSeed_mxor_asm
-    call cpct_getRandom_mxor_u8_asm
+    call cpct_getRandom_xsp40_u8_asm
     ld a, l
     srl a
     srl a
@@ -92,18 +91,22 @@ man_game_renew_next_pieces::
     ;; initial number of pieces
     ld a, #3
     ld (next_pieces_count), a
-    ;; Initializate selected piece
-    xor a
-    ld (selected_piece),a
+    
     ;; set player1 initial piece to next_piece
     ld ix, #player1
     ld a, (next_pieces)
     ld e_type(ix), a  
     
-    ;; get sprite form the type of piece  
-    call man_entity_get_piece_sprite
-    ld e_sprite_ptr(ix), l
-    ld e_sprite_ptr+1(ix), h
+    ;; get big sprite form the type of piece  
+    call man_entity_get_piece_sprite_big
+    ld e_sprite_big_ptr(ix), l
+    ld e_sprite_big_ptr+1(ix), h
+
+    ;; get small sprite form the type of piece
+    ld a, e_type(ix)  
+    call man_entity_get_piece_sprite_small
+    ld e_sprite_small_ptr(ix), l
+    ld e_sprite_small_ptr+1(ix), h
 
     ld a, e_type(ix)
     ;; get width and height from initial piece
@@ -168,7 +171,7 @@ man_game_erase_current_next_piece::
 
     ret
 
-;;;-----------------------------------------------------------------
+;;-----------------------------------------------------------------
 ;;
 ;; man_game_erase_row
 ;;
@@ -206,6 +209,42 @@ man_game_erase_row::
 
 ;;-----------------------------------------------------------------
 ;;
+;; man_game_erase_col
+;;
+;;  Erase a complete col of the board
+;;  Input:  a: col to erase
+;;  Output:
+;;  Modified:
+;;
+man_game_erase_col::
+    ld (line_to_render),a
+    call sys_board_erase_col
+    ;; first frame of animation
+    ld a, (line_to_render)
+    ld hl, #_s_balls_big_09
+    call sys_render_render_col
+    ld b, #36
+    call cpct_waitHalts_asm
+    ;; second frame of animation
+    ld a, (line_to_render)
+    ld hl, #_s_balls_big_10
+    call sys_render_render_col
+    ld b, #36
+    call cpct_waitHalts_asm
+    ;; first frame of animation
+    ld a, (line_to_render)
+    ld hl, #_s_balls_big_11
+    call sys_render_render_col
+    ld b, #36
+    call cpct_waitHalts_asm
+    ;; first frame of animation
+    ld a, (line_to_render)
+    ld hl, #_s_balls_big_07
+    call sys_render_render_col
+    ret
+
+;;-----------------------------------------------------------------
+;;
 ;; man_game_set_piece
 ;;
 ;;   set piece in board
@@ -223,16 +262,27 @@ man_game_set_piece::
     ld a, e_type(ix)                            ;; load piece in a
     call sys_board_set_piece                    ;; set piece in board
 
-m_g_set_piece_check_lines:
+m_g_set_piece_check_rows:
     ld b, e_y(ix)                               ;; load in b the initial line to check if it's complete
     ld a, b                                     ;;
     add e_h(ix)                                 ;;
     ld c, a                                     ;; load in c the final line to check
     call sys_board_check_partial_rows          ;; check if the piece set has completed any line
     cp #0xff                                    ;; check if all the lines are incomplete
-    jr z, m_g_set_piece_all_clear               ;;
+    jr z, m_g_set_piece_check_cols               ;;
     call man_game_erase_row                    ;; if one is complete erase line in a
-    jr m_g_set_piece_check_lines                ;; get back to check again
+    jr m_g_set_piece_check_rows                ;; get back to check again
+
+m_g_set_piece_check_cols:
+    ld b, e_x(ix)                               ;; load in b the initial line to check if it's complete
+    ld a, b                                     ;;
+    add e_w(ix)                                 ;;
+    ld c, a                                     ;; load in c the final line to check
+    call sys_board_check_partial_cols           ;; check if the piece set has completed any line
+    cp #0xff                                    ;; check if all the lines are incomplete
+    jr z, m_g_set_piece_all_clear               ;;
+    call man_game_erase_col                     ;; if one is complete erase line in a
+    jr m_g_set_piece_check_cols                 ;; get back to check again
 m_g_set_piece_all_clear:
 
     call man_game_erase_current_next_piece      ;; Erase current next piece from screen
@@ -272,9 +322,14 @@ _valid_piece:
 
     ;; Get the sprite pointer to render the piece
     ld a, e_type(ix)
-    call man_entity_get_piece_sprite
-    ld e_sprite_ptr(ix), l
-    ld e_sprite_ptr+1(ix), h
+    call man_entity_get_piece_sprite_big
+    ld e_sprite_big_ptr(ix), l
+    ld e_sprite_big_ptr+1(ix), h
+    ;; get small sprite form the type of piece
+    ld a, e_type(ix)  
+    call man_entity_get_piece_sprite_small
+    ld e_sprite_small_ptr(ix), l
+    ld e_sprite_small_ptr+1(ix), h
 
     ret
 

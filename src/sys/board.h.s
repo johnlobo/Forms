@@ -23,6 +23,7 @@
 ;; Global variables
 ;;------------------------------------------------------------------------------
 .globl board
+.globl board_row_addresses
 ;;------------------------------------------------------------------------------
 ;; Global routines
 ;;------------------------------------------------------------------------------
@@ -32,3 +33,5 @@
 .globl sys_board_set_piece
 .globl sys_board_check_partial_rows
 .globl sys_board_erase_row
+.globl sys_board_check_partial_cols
+.globl sys_board_erase_col

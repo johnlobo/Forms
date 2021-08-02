@@ -46,7 +46,8 @@ player1::
     .dw #0x0000                 ;; Previous screen address
     .db #0                      ;; width of background buffer
     .db #0                      ;; height of background buffer
-    .dw #0x0000                 ;; sprite pointer
+    .dw #0x0000                 ;; sprite big pointer
+    .dw #0x0000                 ;; sprite small pointer
     .db #0                      ;; moved flag
     .db #0                      ;; set flag
 
@@ -77,11 +78,17 @@ piece_types::
 
 player_buffer:: .ds 5 * S_BALLS_BIG_W * 5 * S_BALLS_BIG_H ;; Bufer to store background
 
-piece_sprites:: 
+piece_sprites_big:: 
     .dw #_s_balls_big_00, #_s_balls_big_00, #_s_balls_big_00, #_s_balls_big_00, #_s_balls_big_06
     .dw #_s_balls_big_06, #_s_balls_big_06, #_s_balls_big_06, #_s_balls_big_01, #_s_balls_big_01
     .dw #_s_balls_big_01, #_s_balls_big_01, #_s_balls_big_05, #_s_balls_big_05, #_s_balls_big_05
     .dw #_s_balls_big_05, #_s_balls_big_04, #_s_balls_big_03, #_s_balls_big_02
+
+piece_sprites_small:: 
+    .dw #_s_balls_small_0, #_s_balls_small_0, #_s_balls_small_0, #_s_balls_small_0, #_s_balls_small_6
+    .dw #_s_balls_small_6, #_s_balls_small_6, #_s_balls_small_6, #_s_balls_small_1, #_s_balls_small_1
+    .dw #_s_balls_small_1, #_s_balls_small_1, #_s_balls_small_5, #_s_balls_small_5, #_s_balls_small_5
+    .dw #_s_balls_small_5, #_s_balls_small_4, #_s_balls_small_3, #_s_balls_small_2
 
 ;;
 ;; Start of _CODE area
@@ -108,17 +115,36 @@ man_entity_get_hl_from_piece::
 
 ;;-----------------------------------------------------------------
 ;;
-;;  get_piece_sprite
+;;  get_piece_sprite_big
 ;;
 ;;  Get in hl a pointer to the sprite a
 ;;  Input: a: number of type
 ;;  Output: hl a pointer to the sprite
 ;;  Destroyed: af, hl, de
 ;;
-man_entity_get_piece_sprite::
+man_entity_get_piece_sprite_big::
     sla a                   ;; duplicate a in order to offset
-    ld hl, #piece_sprites   ;; load begining of the piece sprite list in hl
+    ld hl, #piece_sprites_big   ;; load begining of the piece sprite list in hl
     add_hl_a                ;; add offset
+    ld e, (hl)
+    inc hl
+    ld d, (hl)
+    ex de, hl
+    ret
+
+;;-----------------------------------------------------------------
+;;
+;;  get_piece_sprite_small
+;;
+;;  Get in hl a pointer to the sprite a
+;;  Input: a: number of type
+;;  Output: hl a pointer to the sprite
+;;  Destroyed: af, hl, de
+;;
+man_entity_get_piece_sprite_small::
+    sla a                           ;; duplicate a in order to offset
+    ld hl, #piece_sprites_small     ;; load begining of the piece sprite list in hl
+    add_hl_a                        ;; add offset
     ld e, (hl)
     inc hl
     ld d, (hl)

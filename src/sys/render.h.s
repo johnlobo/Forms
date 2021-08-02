@@ -35,3 +35,4 @@
 .globl sys_render_erase_next_piece
 .globl sys_render_logo_screen
 .globl sys_render_render_row
+.globl sys_render_render_col

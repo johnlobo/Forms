@@ -81,8 +81,8 @@
 .globl cpct_isKeyPressed_asm
 .globl cpct_waitHalts_asm
 .globl cpct_drawSolidBox_asm
-.globl cpct_getRandom_mxor_u8_asm
-.globl cpct_setSeed_mxor_asm
+.globl cpct_getRandom_xsp40_u8_asm
+.globl cpct_setSeed_xsp40_u8_asm
 .globl cpct_isAnyKeyPressed_asm
 
 ;;===============================================================================
@@ -150,7 +150,7 @@ NEXT_PIECE_2_X = 59
 NEXT_PIECE_2_Y = 150
 NEXT_PIECE_3_X = 70
 NEXT_PIECE_3_Y = 150
-NEXT_PIECE_MAX_HEIGHT = 25
+NEXT_PIECE_MAX_HEIGHT = 30
 NEXT_PIECE_MAX_WIDTH = 10
 
 SCORE_NUM_BYTES = 4
