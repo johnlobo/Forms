@@ -64,7 +64,7 @@ Hexadecimal [16-Bits]
 Symbol Table
 
     NEXT_PIE=  0096     |     NEXT_PIE=  0046     |     NEXT_PIE=  0096 
-    NEXT_PIE=  0019     |     NEXT_PIE=  000A     |     NEXT_TIT=  002D 
+    NEXT_PIE=  001E     |     NEXT_PIE=  000A     |     NEXT_TIT=  002D 
     NEXT_TIT=  0078     |     PAL_INKR=  0040     |     PAL_PENR=  0000 
     PIECES_T=  003C     |     PIECES_T=  0078     |     PIECE_HO=  0005 
     PIECE_SI=  0007     |     PIECE_VE=  0005     |     PPI_PORT=  00F5 
