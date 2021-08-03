@@ -131,6 +131,7 @@ sys_board_init::
 ;;  Modified: af, hl, de, bc
 ;;
 sys_board_cell_content::
+    push hl
     ;; check if cell board is empty
     ld a, b
     sla a
@@ -142,6 +143,7 @@ sys_board_cell_content::
     ld hl, #board
     add_hl_a
     ld a, (hl)                      ;; load the content of the board in a
+    pop hl
     ret
 
 ;;-----------------------------------------------------------------
@@ -156,7 +158,7 @@ sys_board_cell_content::
 ;;
 sys_board_cell_sprite::
     call sys_board_cell_content     ;; retrieve the content of the cell
-    ld   hl, #_s_balls_big_07       ;; load in hl the default sprite
+    ld   hl, #_s_sprites_0       ;; load in hl the default sprite
     or a                            ;; check if the content is 0
     ret z                           ;; if 0 just return with hl pointing to the default sprite
     ;;ld hl, #_s_balls_big_00         ;; otherwise load in hl the occupied sprite
@@ -193,7 +195,7 @@ sys_board_set_cell::
 ;;
 ;; sys_board_set_piece
 ;;
-;;   Renders board
+;;  Renders board
 ;;  Input:  c: col
 ;;          b: row
 ;;          a: piece
@@ -445,4 +447,100 @@ s_b_erase_col_loop0:
     ld de, #10
     add hl,de
     djnz s_b_erase_col_loop0
+    ret
+
+;;-----------------------------------------------------------------
+;;
+;; sys_board_valid_place
+;;
+;;   Renders board
+;;  Input:  c: col
+;;          b: row
+;;          a: piece
+;;  Output: 
+;;  Modified: af, hl, de, bc
+;;
+sys_board_valid_place::
+    call man_entity_get_hl_from_piece               ;; get address for a type of piece in hl
+    inc hl                                          ;; skip first byte, don't need width of piece
+    ld a, (hl)                                      ;; read height
+    ld (sb_b_v_p_condition_height + 1), a       ;; self modifying code for height condition
+    inc hl
+
+    ld bc, #00                                      ;; reset counters
+
+sb_b_v_p_loop0:
+    push bc
+    ;; add x coord of piece
+    ld a, e_x(ix)
+    add c
+    ld c, a
+    ;; add y coord of piece
+    ld a, e_y(ix)
+    add b
+    ld b, a
+    ;; check if piece byte is #0 to skip processing
+    ld a, (hl)                      ;; load first row (byte) in a
+    or a                            ;; check if piece byte is 00
+    jr z, sb_b_v_p_continue_0            ;; jump to next byte if so
+
+ sb_b_v_p_first_bit:
+    ld (_piece_byte),a
+    bit 4,a                         ;; first bit
+    jr z, sb_b_v_p_second_bit
+    call sys_board_cell_content
+    dec a
+    jr z, sb_b_v_p_not_valid
+
+ sb_b_v_p_second_bit:
+    inc c
+    ld a, (_piece_byte)
+    bit 3,a                         ;; second bit
+    jr z, sb_b_v_p_third_bit
+    call sys_board_cell_content
+    dec a
+    jr z, sb_b_v_p_not_valid
+ 
+ sb_b_v_p_third_bit:
+    inc c
+    ld a, (_piece_byte)
+    bit 2,a                         ;; third bit
+    jr z, sb_b_v_p_forth_bit
+    call sys_board_cell_content
+    dec a
+    jr z, sb_b_v_p_not_valid
+    
+ sb_b_v_p_forth_bit:
+    inc c
+    ld a, (_piece_byte)
+    bit 1,a                         ;; forth bit
+    jr z, sb_b_v_p_fifth_bit
+    call sys_board_cell_content
+    dec a
+    jr z, sb_b_v_p_not_valid
+    
+ sb_b_v_p_fifth_bit:
+    inc c
+    ld a, (_piece_byte)
+    bit 0,a                         ;; first bit
+    jr z, sb_b_v_p_continue_0
+    call sys_board_cell_content
+    dec a
+    jr z, sb_b_v_p_not_valid
+    
+sb_b_v_p_continue_0:
+    inc hl                          ;; and go to th6e next byte of the piece
+    pop bc                          ;; retrive number of rows
+    inc b
+    ld a, b
+sb_b_v_p_condition_height:
+    cp #00
+    jr c, sb_b_v_p_loop0
+
+sb_b_v_p_valid:
+    ld a, #1
+    ret
+sb_b_v_p_not_valid:
+    pop bc
+    xor a
     ret

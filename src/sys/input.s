@@ -223,7 +223,6 @@ _set_piece:
 ;;
 sys_input_update::
     ld ix, #player1                     ;; get player1 struct
-    call cpct_scanKeyboard_asm          ;; scan keyboard
 
     ld hl, #Key_O                       ;; check key O   
     call cpct_isKeyPressed_asm          ;; 

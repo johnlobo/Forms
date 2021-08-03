@@ -1,13 +1,13 @@
 XL2
-H 2 areas 63 global symbols
+H 2 areas 6E global symbols
 M cpct_keyboard
+S cpct_setInterruptHandler_asm Ref0000
 S next_pieces_coords Ref0000
 S piece_sprites_big Ref0000
 S sys_input_init Ref0000
 S man_entity_get_hl_from_piece Ref0000
 S cpct_getScreenToSprite_asm Ref0000
 S _s_logo_1010 Ref0000
-S _s_uno Ref0000
 S man_entity_get_piece_sprite_big Ref0000
 S cpct_isKeyPressed_asm Ref0000
 S cpct_setPalette_asm Ref0000
@@ -19,32 +19,28 @@ S _s_balls_small_2 Ref0000
 S man_game_init Ref0000
 S board Ref0000
 S _s_balls_small_3 Ref0000
+S _s_sprites_0 Ref0000
 S _s_balls_small_4 Ref0000
+S _s_sprites_1 Ref0000
 S _s_balls_small_5 Ref0000
+S _s_sprites_2 Ref0000
 S _s_balls_small_6 Ref0000
 S hi_score Ref0000
 S _s_score Ref0000
+S _s_sprites_3 Ref0000
+S _s_balls_small_7 Ref0000
 S cpct_drawSprite_asm Ref0000
-S _s_balls_big_00 Ref0000
-S _s_balls_big_10 Ref0000
-S _s_balls_big_01 Ref0000
+S _s_sprites_4 Ref0000
+S _s_balls_small_8 Ref0000
 S sys_input_update Ref0000
-S _s_balls_big_11 Ref0000
-S _s_balls_big_02 Ref0000
 S sys_render_init Ref0000
-S _s_balls_big_03 Ref0000
 S sys_board_erase_col Ref0000
-S _s_balls_big_04 Ref0000
-S _s_balls_big_05 Ref0000
 S sys_render_render_row Ref0000
-S _s_balls_big_06 Ref0000
-S _s_balls_big_07 Ref0000
 S sys_board_set_piece Ref0000
 S sys_render_game_screen Ref0000
-S _s_balls_big_08 Ref0000
 S man_game_update Ref0000
 S next_pieces Ref0000
-S _s_balls_big_09 Ref0000
+S sys_board_valid_place Ref0000
 S sys_board_check_partial_rows Ref0000
 S sys_board_init Ref0000
 S sys_render_erase_player Ref0000
@@ -53,13 +49,22 @@ S piece_types Ref0000
 S score Ref0000
 S board_row_addresses Ref0000
 S .__.ABS. Def0000
+S _s_balls_big_0 Ref0000
 S next_pieces_count Ref0000
 S sys_board_cell_content Ref0000
 S cpct_setSeed_xsp40_u8_asm Ref0000
+S _s_balls_big_1 Ref0000
 S sys_render_update Ref0000
+S _s_balls_big_2 Ref0000
+S _s_balls_big_3 Ref0000
+S _s_balls_big_4 Ref0000
+S _s_balls_big_5 Ref0000
+S _s_balls_big_6 Ref0000
 S sys_render_board Ref0000
+S _s_balls_big_7 Ref0000
 S player_buffer Ref0000
 S _s_score_numbers_00 Ref0000
+S _s_balls_big_8 Ref0000
 S piece_sprites_small Ref0000
 S _s_score_numbers_01 Ref0000
 S sys_render_draw_piece_small Ref0000
@@ -73,20 +78,20 @@ S _s_score_numbers_04 Ref0000
 S cpct_isAnyKeyPressed_asm Ref0000
 S _s_score_numbers_05 Ref0000
 S sys_board_erase_row Ref0000
+S cpct_scanKeyboard_if_asm Ref0000
 S _s_press_any_key Ref0000
 S _s_score_numbers_06 Ref0000
 S sys_render_logo_screen Ref0000
 S _s_score_numbers_07 Ref0000
 S selected_piece Ref0000
 S _s_score_numbers_08 Ref0000
-S _s_tres Ref0000
 S _s_next Ref0000
 S sys_render_erase_next_piece Ref0000
+S cpct_waitVSYNC_asm Ref0000
 S cpct_setVideoMode_asm Ref0000
 S cpct_getRandom_xsp40_u8_asm Ref0000
 S cpct_memset_asm Ref0000
 S sys_render_next_pieces Ref0000
-S _s_dos Ref0000
 S sys_render_score Ref0000
 S cpct_disableFirmware_asm Ref0000
 S sys_render_render_col Ref0000
@@ -98,29 +103,65 @@ S player1 Ref0000
 S cpct_scanKeyboard_asm Ref0000
 S cpct_getScreenPtr_asm Ref0000
 S sys_board_check_partial_cols Ref0000
-A _CODE size 43 flags 0 addr 0
-S _main Def0033
-S _main_init Def0000
+A _CODE size 8A flags 0 addr 0
+S _main Def006C
+S _main_init Def003C
+S int_handler1 Def000F
+S int_handler2 Def0016
+S int_handler3 Def0020
+S int_handler4 Def0027
+S int_handler5 Def002E
+S int_handler6 Def0035
 A _DATA size 0 flags 0 addr 0
 T 00 00
 R 00 00 00 00
-T 00 00 CD 00 00 CD 00 00 AF F5
-R 00 00 00 00 02 03 1E 00 02 06 4A 00
-T 08 00
+T 00 00 21 38 00 36 C3 23 36 0F 00 23 36 0F 00 23
+R 00 00 00 00 09 09 00 00 89 0D 00 00
+T 0C 00 36 C9 C9
 R 00 00 00 00
-T 08 00 F1 3C F5 CD 00 00 23 CD 00 00 B7 28 F3 21
-R 00 00 00 00 02 06 5E 00 02 0A 45 00
-T 16 00 00 BC 11 00 AC F1 CD 00 00 21 00 C0 11
-R 00 00 00 00 02 09 36 00
-T 23 00 01 C0 01 00 40 36 FF ED B0 CD 00 00 CD
-R 00 00 00 00 02 0C 02 00
-T 30 00 00 00 C9
-R 00 00 00 00 02 02 0F 00
-T 33 00
+T 0F 00
 R 00 00 00 00
-T 33 00 CD 00 00 CD 00 00
-R 00 00 00 00 02 03 57 00 00 06 00 00
-T 39 00
+T 0F 00 21 16 00 CD 00 00 C9
+R 00 00 00 00 00 03 00 00 02 06 00 00
+T 16 00
 R 00 00 00 00
-T 39 00 06 12 CD 00 00 CD 00 00 18 F6
-R 00 00 00 00 02 05 2F 00 02 08 29 00
+T 16 00 CD 00 00 21 20 00 CD 00 00 C9
+R 00 00 00 00 02 03 4D 00 00 06 00 00 02 09 00 00
+T 20 00
+R 00 00 00 00
+T 20 00 21 27 00 CD 00 00 C9
+R 00 00 00 00 00 03 00 00 02 06 00 00
+T 27 00
+R 00 00 00 00
+T 27 00 21 2E 00 CD 00 00 C9
+R 00 00 00 00 00 03 00 00 02 06 00 00
+T 2E 00
+R 00 00 00 00
+T 2E 00 21 35 00 CD 00 00 C9
+R 00 00 00 00 00 03 00 00 02 06 00 00
+T 35 00
+R 00 00 00 00
+T 35 00 21 0F 00 CD 00 00 C9
+R 00 00 00 00 00 03 00 00 02 06 00 00
+T 3C 00
+R 00 00 00 00
+T 3C 00 CD 00 00 CD 00 00 AF F5
+R 00 00 00 00 02 03 20 00 02 06 50 00
+T 44 00
+R 00 00 00 00
+T 44 00 F1 3C F5 23 CD 00 00 B7 28 F6 21 00 BC 11
+R 00 00 00 00 02 07 4A 00
+T 52 00 00 AC F1 CD 00 00 21 00 C0 11 01 C0 01
+R 00 00 00 00 02 06 33 00
+T 5F 00 00 40 36 FF ED B0 CD 00 00 CD 00 00 C9
+R 00 00 00 00 02 09 03 00 02 0C 0F 00
+T 6C 00
+R 00 00 00 00
+T 6C 00 CD 00 00 21 0F 00 CD 00 00 76 76 CD
+R 00 00 00 00 02 03 5C 00 00 06 00 00 02 09 56 00
+T 78 00 00 00 CD 00 00 CD 3C 00
+R 00 00 00 00 02 02 56 00 02 05 00 00 00 08 00 00
+T 80 00
+R 00 00 00 00
+T 80 00 06 12 CD 00 00 CD 00 00 18 F6
+R 00 00 00 00 02 05 2B 00 02 08 25 00

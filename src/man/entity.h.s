@@ -33,11 +33,10 @@ e_p_screen_p = 6
 e_buffer_width = 8
 e_buffer_height = 9
 e_sprite_big_ptr = 10
-e_sprite_small_ptr = 12
-e_moved = 14
-e_set = 15
+e_moved = 12
+e_set = 13
 
-sizeof_e = 16
+sizeof_e = 14
 
 ;;------------------------------------------------------------------------------
 ;; Global variables

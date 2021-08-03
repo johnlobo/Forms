@@ -102,11 +102,6 @@ man_game_renew_next_pieces::
     ld e_sprite_big_ptr(ix), l
     ld e_sprite_big_ptr+1(ix), h
 
-    ;; get small sprite form the type of piece
-    ld a, e_type(ix)  
-    call man_entity_get_piece_sprite_small
-    ld e_sprite_small_ptr(ix), l
-    ld e_sprite_small_ptr+1(ix), h
 
     ld a, e_type(ix)
     ;; get width and height from initial piece
@@ -185,25 +180,25 @@ man_game_erase_row::
     call sys_board_erase_row
     ;; first frame of animation
     ld a, (line_to_render)
-    ld hl, #_s_balls_big_09
+    ld hl, #_s_sprites_2
     call sys_render_render_row
     ld b, #36
     call cpct_waitHalts_asm
     ;; second frame of animation
     ld a, (line_to_render)
-    ld hl, #_s_balls_big_10
+    ld hl, #_s_sprites_3
     call sys_render_render_row
     ld b, #36
     call cpct_waitHalts_asm
     ;; first frame of animation
     ld a, (line_to_render)
-    ld hl, #_s_balls_big_11
+    ld hl, #_s_sprites_4
     call sys_render_render_row
     ld b, #36
     call cpct_waitHalts_asm
     ;; first frame of animation
     ld a, (line_to_render)
-    ld hl, #_s_balls_big_07
+    ld hl, #_s_sprites_0
     call sys_render_render_row
     ret
 
@@ -221,25 +216,25 @@ man_game_erase_col::
     call sys_board_erase_col
     ;; first frame of animation
     ld a, (line_to_render)
-    ld hl, #_s_balls_big_09
+    ld hl, #_s_sprites_2
     call sys_render_render_col
     ld b, #36
     call cpct_waitHalts_asm
     ;; second frame of animation
     ld a, (line_to_render)
-    ld hl, #_s_balls_big_10
+    ld hl, #_s_sprites_3
     call sys_render_render_col
     ld b, #36
     call cpct_waitHalts_asm
     ;; first frame of animation
     ld a, (line_to_render)
-    ld hl, #_s_balls_big_11
+    ld hl, #_s_sprites_4
     call sys_render_render_col
     ld b, #36
     call cpct_waitHalts_asm
     ;; first frame of animation
     ld a, (line_to_render)
-    ld hl, #_s_balls_big_07
+    ld hl, #_s_sprites_0
     call sys_render_render_col
     ret
 
@@ -254,6 +249,14 @@ man_game_erase_col::
 ;;
 man_game_set_piece::
     ld ix, #player1                             ;; load player struct in ix
+
+    ;; check if piece can be set in that place
+    ld c, e_x(ix)
+    ld b, e_y(ix)
+    ld a, e_type(ix)
+    call sys_board_valid_place
+    or a
+    jp z, m_g_set_piece_not_valid               ;; if not valid ret
 
     call sys_render_erase_player                ;; erase current piece
 
@@ -291,6 +294,7 @@ m_g_set_piece_all_clear:
     or a        
     call z, man_game_renew_next_pieces          ;; If not renew the pieces
 
+_change_piece:
     ld a, (selected_piece)              ;; read selected piece
     inc a                               ;; increment piece type
     cp #3       
@@ -301,8 +305,11 @@ _valid_piece:
     ld hl, #next_pieces
     add_hl_a
     ld a, (hl)
-    ld e_type(ix), a                    ;; Update piece in Player1 struct
+    cp #0xff
+    jr z, _change_piece
+    ;; New piece ok    
 
+    ld e_type(ix), a                    ;; Update piece in Player1 struct
     call man_entity_get_hl_from_piece   ;; get address of the new piece
     ld a,(hl)                           ;; get piece width
     ld e_w(ix),a
@@ -325,13 +332,12 @@ _valid_piece:
     call man_entity_get_piece_sprite_big
     ld e_sprite_big_ptr(ix), l
     ld e_sprite_big_ptr+1(ix), h
-    ;; get small sprite form the type of piece
-    ld a, e_type(ix)  
-    call man_entity_get_piece_sprite_small
-    ld e_sprite_small_ptr(ix), l
-    ld e_sprite_small_ptr+1(ix), h
-
     ret
+m_g_set_piece_not_valid:
+    ld e_set(ix), #0
+    ret
+
+
 
 ;;-----------------------------------------------------------------
 ;;

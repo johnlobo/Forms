@@ -26,18 +26,15 @@
 ;; symbols for functions you do not use.
 ;;
 
-.globl _s_balls_big_00
-.globl _s_balls_big_01
-.globl _s_balls_big_02
-.globl _s_balls_big_03
-.globl _s_balls_big_04
-.globl _s_balls_big_05
-.globl _s_balls_big_06
-.globl _s_balls_big_07
-.globl _s_balls_big_08
-.globl _s_balls_big_09
-.globl _s_balls_big_10
-.globl _s_balls_big_11
+.globl _s_balls_big_0
+.globl _s_balls_big_1
+.globl _s_balls_big_2
+.globl _s_balls_big_3
+.globl _s_balls_big_4
+.globl _s_balls_big_5
+.globl _s_balls_big_6
+.globl _s_balls_big_7
+.globl _s_balls_big_8
 .globl _s_balls_small_0
 .globl _s_balls_small_1
 .globl _s_balls_small_2
@@ -45,12 +42,16 @@
 .globl _s_balls_small_4
 .globl _s_balls_small_5
 .globl _s_balls_small_6
+.globl _s_balls_small_7
+.globl _s_balls_small_8
+.globl _s_sprites_0
+.globl _s_sprites_1
+.globl _s_sprites_2
+.globl _s_sprites_3
+.globl _s_sprites_4
 .globl _g_palette0
 .globl _s_hi_score
 .globl _s_score
-.globl _s_uno
-.globl _s_dos
-.globl _s_tres
 .globl _s_score_numbers_00
 .globl _s_score_numbers_01
 .globl _s_score_numbers_02
@@ -78,12 +79,15 @@
 .globl cpct_memset_asm
 .globl cpct_getScreenToSprite_asm
 .globl cpct_scanKeyboard_asm
+.globl cpct_scanKeyboard_if_asm
 .globl cpct_isKeyPressed_asm
 .globl cpct_waitHalts_asm
 .globl cpct_drawSolidBox_asm
 .globl cpct_getRandom_xsp40_u8_asm
 .globl cpct_setSeed_xsp40_u8_asm
 .globl cpct_isAnyKeyPressed_asm
+.globl cpct_setInterruptHandler_asm
+.globl cpct_waitVSYNC_asm
 
 ;;===============================================================================
 ;; DEFINED CONSTANTS
@@ -100,12 +104,6 @@ S_HI_SCORE_H = 7
 S_SCORE_W = 10
 S_SCORE_H = 7
 
-S_UNO_W = 2
-S_UNO_H = 16
-S_DOS_W = 3
-S_DOS_H = 16
-S_TRES_W = 3
-S_TRES_H = 16
 
 S_SCORE_NUMBERS_W = 4
 S_SCORE_NUMBERS_H = 15
