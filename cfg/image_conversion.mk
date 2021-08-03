@@ -41,7 +41,7 @@
 #$(eval $(call IMG2SP, CONVERT_PALETTE , $(PALETTE), g_palette ))
 #$(eval $(call IMG2SP, CONVERT         , img.png , w, h, array, palette, tileset))
 
-PALETTE0=0 2 3 6 9 11 12 5 15 13 18 24 4 20 14 26
+PALETTE0=0 7 8 15 16 11 10 20 18 5 6 13 24 2 9 26
 
 $(eval $(call IMG2SP, SET_MODE        , 0                  ))
 $(eval $(call IMG2SP, SET_FOLDER      , src/sprites               ))
@@ -50,6 +50,7 @@ $(eval $(call IMG2SP, SET_OUTPUT      , c                  ))
 $(eval $(call IMG2SP, SET_PALETTE_FW  , $(PALETTE0)         ))
 $(eval $(call IMG2SP, CONVERT_PALETTE , $(PALETTE0), g_palette0 ))
 $(eval $(call IMG2SP, CONVERT         , assets/balls-big.png, 8, 11, s_balls_big, ,))
+$(eval $(call IMG2SP, CONVERT         , assets/sprites.png, 8, 11, s_sprites, ,))
 $(eval $(call IMG2SP, CONVERT         , assets/balls-small.png, 4, 5, s_balls_small, ,))
 $(eval $(call IMG2SP, CONVERT         , assets/score-numbers.png, 8, 15, s_score_numbers, ,))
 $(eval $(call IMG2SP, CONVERT         , assets/next.png, 24, 16, s_next, ,))
@@ -58,9 +59,6 @@ $(eval $(call IMG2SP, CONVERT         , assets/press.png, 50, 8, s_press_any_key
 $(eval $(call IMG2SP, CONVERT         , assets/logo1010.png, 64, 32, s_logo_1010, ,))
 $(eval $(call IMG2SP, CONVERT         , assets/hi-score.png, 30, 7, s_hi_score, ,))
 $(eval $(call IMG2SP, CONVERT         , assets/score.png, 20, 7, s_score, ,))
-$(eval $(call IMG2SP, CONVERT         , assets/uno.png, 4, 16, s_uno, ,))
-$(eval $(call IMG2SP, CONVERT         , assets/dos.png, 6, 16, s_dos, ,))
-$(eval $(call IMG2SP, CONVERT         , assets/tres.png, 6, 16, s_tres, ,))
 
 ##
 ## OLD MACROS (For compatibility)

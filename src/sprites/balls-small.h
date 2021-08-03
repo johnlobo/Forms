@@ -24,5 +24,11 @@ extern const u8 s_balls_small_5[2 * 5];
 #define S_BALLS_SMALL_6_W 2
 #define S_BALLS_SMALL_6_H 5
 extern const u8 s_balls_small_6[2 * 5];
+#define S_BALLS_SMALL_7_W 2
+#define S_BALLS_SMALL_7_H 5
+extern const u8 s_balls_small_7[2 * 5];
+#define S_BALLS_SMALL_8_W 2
+#define S_BALLS_SMALL_8_H 5
+extern const u8 s_balls_small_8[2 * 5];
 
 #endif

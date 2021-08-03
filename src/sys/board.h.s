@@ -35,3 +35,4 @@
 .globl sys_board_erase_row
 .globl sys_board_check_partial_cols
 .globl sys_board_erase_col
+.globl sys_board_valid_place

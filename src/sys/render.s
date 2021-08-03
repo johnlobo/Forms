@@ -237,7 +237,7 @@ _render_board_loop01:
 current_row:
     ld b, #00                   ;; load in b current row 
     ;;call sys_board_cell_sprite  ;; retrieve in hl the addres of the corresponding sprite
-    ld hl, #_s_balls_big_07
+    ld hl, #_s_sprites_0
 
 
     ld c, #S_BALLS_BIG_W        ;; load in c the sprite width 
@@ -364,7 +364,7 @@ draw_player_tile_add_col:
     ld h, e_sprite_big_ptr+1(ix)
     or a                            ;; check if the content is 0
     jr z, draw_player_tile_draw     ;; if 0 just print the default tile
-    ld hl, #_s_balls_big_08         ;; other wise draw the not valid tile
+    ld hl, #_s_sprites_1         ;; other wise draw the not valid tile
 draw_player_tile_draw:
     ld c, #S_BALLS_BIG_W            ;; load in c the sprite width 
     ld b, #S_BALLS_BIG_H            ;; load in b sprite height

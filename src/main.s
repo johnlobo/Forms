@@ -41,6 +41,160 @@
 ;; 
 .area _CODE
 
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;DESCRIPTION
+;; Called every interruption
+;;
+;;DESTROYS: AF, BC, DE
+;;
+set_int_handler:
+	ld hl, #0x38
+	ld (hl), #0xc3
+	inc hl
+	ld (hl), #<int_handler1
+	inc hl
+	ld (hl), #>int_handler1
+	inc hl
+	ld (hl), #0xc9
+	ret
+
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;DESCRIPTION
+;; Called on the first interruption
+;;
+;;DESTROYS: AF, BC, DE
+;;
+int_handler1::
+
+; 	ld a, (uncontador)
+; 	xor #1
+; 	ld (uncontador), a
+
+; 	ld h, #0
+; 	ld l, #16
+; 	call cpct_setPALColour_asm
+
+; 	ld h, #6
+; 	ld l, #16
+; 	call cpct_setPALColour_asm
+	
+;;	ld a, (song_playing)
+;;	or a
+;;	call nz, cpct_akp_musicPlay_asm
+;;
+;;	ld a, #01
+;;	ld (render_interrupt), a
+;;
+	ld hl, #int_handler2
+ 	call cpct_setInterruptHandler_asm	
+	ret
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;DESCRIPTION
+;; Called every interruption
+;;
+;;DESTROYS: AF, BC, DE
+;;
+int_handler2::
+; 	ld a, (uncontador)
+; 	xor #1
+; 	ld (uncontador), a
+
+; 	ld h, #1
+; 	ld l, #16
+; 	call cpct_setPALColour_asm
+	call cpct_scanKeyboard_if_asm
+
+	;;ld a, #00
+	;;ld (render_interrupt), a
+
+	ld hl, #int_handler3
+   call cpct_setInterruptHandler_asm
+	ret
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;DESCRIPTION
+;; Called every interruption
+;;
+;;DESTROYS: AF, BC, DE
+;;
+int_handler3::
+; 	ld a, (uncontador)
+; 	xor #2
+; 	ld (uncontador), a
+
+; 	ld h, #2
+; 	ld l, #16
+; 	call cpct_setPALColour_asm
+	
+
+	ld hl, #int_handler4
+   call cpct_setInterruptHandler_asm
+	ret
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;DESCRIPTION
+;; Called every interruption
+;;
+;;DESTROYS: AF, BC, DE
+;;
+int_handler4::
+; 	ld a, (uncontador)
+; 	xor #1
+; 	ld (uncontador), a
+
+; 	ld h, #3
+; 	ld l, #16
+; 	call cpct_setPALColour_asm
+
+; 	ld a, (starscreen_bool)
+; 	ld b, a
+; 	ld a, (gameoverscreen_bool)
+; 	or b
+; 	call z, rendersys_drawintfc
+	
+	ld hl, #int_handler5
+   call cpct_setInterruptHandler_asm
+	ret
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;DESCRIPTION
+;; Called every interruption
+;;
+;;DESTROYS: AF, BC, DE
+;;
+int_handler5::
+; 	ld a, (uncontador)
+; 	xor #1
+; 	ld (uncontador), a
+
+; 	ld h, #4
+; 	ld l, #16
+; 	call cpct_setPALColour_asm
+	ld hl, #int_handler6
+   call cpct_setInterruptHandler_asm
+	ret
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;DESCRIPTION
+;; Called every interruption
+;;
+;;DESTROYS: AF, BC, DE
+;;
+int_handler6::
+; 	ld a, (uncontador)
+; 	xor #1
+; 	ld (uncontador), a
+
+; 	ld h, #5
+; 	ld l, #16
+; 	call cpct_setPALColour_asm
+	ld hl, #int_handler1
+   call cpct_setInterruptHandler_asm
+	ret
+
+
 ;;-----------------------------------------------------------------
 ;;
 ;; main_init
@@ -61,7 +215,7 @@ _main_init_keypress:
    pop af                              ;; retrive a value form stack
    inc a                               ;; inc a value
    push af                             ;; store a value in stack
-   call cpct_scanKeyboard_asm          ;; scan keyboard
+   
    inc hl
    call cpct_isAnyKeyPressed_asm
    or a
@@ -85,8 +239,13 @@ _main_init_keypress:
 ;;    _main:: global symbol is required for correctly compiling and linking
 ;;
 _main::
-   ;; Disable firmware to prevent it from interfering with string drawing
    call cpct_disableFirmware_asm
+   ld hl, #int_handler1
+   call cpct_waitVSYNC_asm
+   halt
+   halt
+   call cpct_waitVSYNC_asm
+   call cpct_setInterruptHandler_asm
 
    call _main_init
 
