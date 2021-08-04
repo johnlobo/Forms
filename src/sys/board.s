@@ -38,6 +38,7 @@ _piece_w: .db #00
 _piece_h: .db #00
 _current_row: .db #00
 _piece_byte: .db #00
+_current_piece: .db #00
 
 board::
     .db #0x00, #0x00, #0x00, #0x00, #0x00, #0x00, #0x00, #0x00, #0x00, #0x00
@@ -464,19 +465,25 @@ sys_board_valid_place::
     call man_entity_get_hl_from_piece               ;; get address for a type of piece in hl
     inc hl                                          ;; skip first byte, don't need width of piece
     ld a, (hl)                                      ;; read height
-    ld (sb_b_v_p_condition_height + 1), a       ;; self modifying code for height condition
+    ld (sb_b_v_p_condition_height + 1), a           ;; self modifying code for height condition
     inc hl
+    ld a, c                                         ;; self modifying code for x coord
+    ld (sb_b_v_p_x_coord + 1), a                    ;;
+    ld a, b                                         ;; self modifying code for x coord
+    ld (sb_b_v_p_y_coord + 1), a                    ;;
 
     ld bc, #00                                      ;; reset counters
 
 sb_b_v_p_loop0:
     push bc
     ;; add x coord of piece
-    ld a, e_x(ix)
+sb_b_v_p_x_coord:
+    ld a, #00
     add c
     ld c, a
     ;; add y coord of piece
-    ld a, e_y(ix)
+sb_b_v_p_y_coord:
+    ld a, #00
     add b
     ld b, a
     ;; check if piece byte is #0 to skip processing
@@ -484,7 +491,7 @@ sb_b_v_p_loop0:
     or a                            ;; check if piece byte is 00
     jr z, sb_b_v_p_continue_0            ;; jump to next byte if so
 
- sb_b_v_p_first_bit:
+sb_b_v_p_first_bit:
     ld (_piece_byte),a
     bit 4,a                         ;; first bit
     jr z, sb_b_v_p_second_bit
@@ -492,7 +499,7 @@ sb_b_v_p_loop0:
     dec a
     jr z, sb_b_v_p_not_valid
 
- sb_b_v_p_second_bit:
+sb_b_v_p_second_bit:
     inc c
     ld a, (_piece_byte)
     bit 3,a                         ;; second bit
@@ -501,7 +508,7 @@ sb_b_v_p_loop0:
     dec a
     jr z, sb_b_v_p_not_valid
  
- sb_b_v_p_third_bit:
+sb_b_v_p_third_bit:
     inc c
     ld a, (_piece_byte)
     bit 2,a                         ;; third bit
@@ -510,7 +517,7 @@ sb_b_v_p_loop0:
     dec a
     jr z, sb_b_v_p_not_valid
     
- sb_b_v_p_forth_bit:
+sb_b_v_p_forth_bit:
     inc c
     ld a, (_piece_byte)
     bit 1,a                         ;; forth bit
@@ -519,7 +526,7 @@ sb_b_v_p_loop0:
     dec a
     jr z, sb_b_v_p_not_valid
     
- sb_b_v_p_fifth_bit:
+sb_b_v_p_fifth_bit:
     inc c
     ld a, (_piece_byte)
     bit 0,a                         ;; first bit
@@ -543,4 +550,53 @@ sb_b_v_p_valid:
 sb_b_v_p_not_valid:
     pop bc
     xor a
+    ret
+
+;;-----------------------------------------------------------------
+;;
+;; sys_board_any_space
+;;
+;;   Renders board
+;;  Input: a: piece
+;;  Output: a is 1 if there is space, 0 in other case
+;;  Modified: af, hl, de, bc
+;;
+sys_board_any_space::
+    ld (_current_piece), a
+    call man_entity_get_hl_from_piece               ;; get address for a type of piece in hl
+
+    ld a, (hl)                                      ;; get piece width
+    ld d, a                                         ;;
+    ld a, #BOARD_COLS                               ;;
+    sub d                                           ;; self modifying code to set the max x coord
+    ld (s_b_any_space_compare_with + 1), a              ;;
+
+    inc hl                                          ;; 
+    ld a, (hl)                                      ;; get piece height
+    ld d, a                                         ;;
+    ld a, #BOARD_COLS                               ;;
+    sub d                                           ;; self modifying code to set the max y coord
+    ld (s_b_any_space_compare_height + 1), a              ;;
+
+    ld bc, #00
+s_b_any_space_loop0:
+    push bc
+    ld a, (_current_piece)
+    call sys_board_valid_place                      ;; check if current bc position is valid
+    or a                                            ;;
+    jr nz, s_b_any_space_exit_ok                    ;; if it's valid return
+    pop bc                                          ;; retrieve bc
+    inc c                                           ;; increment x    
+s_b_any_space_compare_with:
+    cp #00
+    jr nz, s_b_any_space_loop0                      ;; if we are not in the limit get back to the loop
+    inc b
+s_b_any_space_compare_height:
+    cp #00
+    jr nz, s_b_any_space_loop0                      ;; if we are not in the limit get back to the loop   
+    xor a                                           ;; if we reach this there is no space for the piece 
+    ret
+s_b_any_space_exit_ok:
+    pop bc
+    ld a, #1
     ret
