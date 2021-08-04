@@ -41,7 +41,8 @@ next_pieces_coords:: .db #46, #150, #59, #150, #70, #150
 selected_piece:: .db #00
 score:: .db #0x01, #0x23, #0x45, #0x67
 hi_score:: .db #0x01, #0x23, #0x45, #0x67
-line_to_render: .db 00
+line_to_render: .db #00
+no_more_moves: .db #00
 
 
 ;;
@@ -332,7 +333,32 @@ _valid_piece:
     call man_entity_get_piece_sprite_big
     ld e_sprite_big_ptr(ix), l
     ld e_sprite_big_ptr+1(ix), h
-    ret
+
+    ;; Check if are there more movements
+    ld b,#3
+    ld hl, #next_pieces
+m_g_set_piece_check_next_pieces_loop:
+    push hl
+    push bc
+    ld a, (hl)                                      ;; read next next_piece
+    cp #0xff                                        ;; is it a valid piece??
+    jr z, m_g_set_piece_next_space_check            ;; if not valid check next
+    call sys_board_any_space                        ;; if valid check if there is any space for it
+    jr nz, m_g_set_piece_return                     ;; if there is space just ret
+m_g_set_piece_next_space_check:
+    pop bc                                          ;; retrieve index
+    pop hl                                          ;; retrieve pointer to current next_piece
+    inc hl                                          ;; advance to next next_piece
+    djnz m_g_set_piece_check_next_pieces_loop
+
+    ld a, #1                                        ;; if loop finish -> no more moves
+    ld (no_more_moves), a                           ;; set no more moves and return
+    jr m_g_set_piece_not_valid                      ;; jump and return
+
+m_g_set_piece_return:
+    pop bc
+    pop hl
+
 m_g_set_piece_not_valid:
     ld e_set(ix), #0
     ret
