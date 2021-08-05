@@ -255,5 +255,12 @@ loop:
    call cpct_waitHalts_asm
    
    call man_game_update
+   ;; check if are ther more moves
+   ld a, (no_more_moves)
+   or a
+   jr nz, end_of_game
 
    jr    loop
+
+end_of_game:
+   jr end_of_game

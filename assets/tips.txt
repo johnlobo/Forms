@@ -1,0 +1,46 @@
+1. Focus on creating lines, not blocks.
+
+You'll be tempted to just fill space with blocks, but mere blocks will hurt you — you need to clear lines, not blocks of space.
+2. You're trying to clear rows AND columns.
+
+Another "Duh!" moment for new players: This isn't Tetris — you can go up and down as well as side-to-side to clear lines.
+1010!
+GramGames
+3. Do rows and columns at the same time.
+
+Think both ways at once, even though it's easier to get into an all-horizontal or all-vertical strategy.
+4. Consider all three options before moving.
+
+When you've got lots of space, it's tempting to just dump the pieces into the game to get things moving. Don't do this. Every block counts.
+5. Consider the *order* of all three options before moving.
+
+The game won't deliver new blocks until you've used a set of three. And many a promising game has ended by accident because you forgot to use that awkward L-shape first.
+6. Always remove a line if you can.
+
+Space is key. Don't leave an unfilled line because you think you can get it later — the game is working against you.
+7. Work from the corners.
+
+This will give you both vertical and horizontal options on any given move.
+8. The 2x2 square is your best friend.
+
+You can clear a lot of lines by stacking these next to one another.
+9. The little L-shapes fit together to form 2x3 rectangles.
+
+So you can add them to columns and bars formed by 2x2 squares.
+10. The big L-shape can be awkward.
+Consider that piece first before slotting in the straights and squares.
+1010!
+GramGames
+11. Always leave a hole for the big 3x3 squares.
+
+The sudden appearance of a giant 3x3 block is almost always a game-killer. These things are now your most hated nemesis. Remember — you're creating space, not filling space. So always leave a nine-square hole for them.
+12. Ones, or single squares, are rare.
+
+Use them to complete "impossible" lines.
+13. If you can handle the corners first, do so.
+
+Use the L-shapes for corners whenever you can.
+14. Avoid leaving single spaces and single unconnected blocks.
+
+Single blocks are rare, and an unconnected single block will require two more pieces on either side before it can make a line.
+15. Good luck!

@@ -103,26 +103,27 @@ Symbol Table
     e_h     =  0005     |     e_moved =  000C     |     e_p_scre=  0006 
     e_set   =  000D     |     e_sprite=  000A     |     e_status=  0000 
     e_type  =  0003     |     e_w     =  0004     |     e_x     =  0001 
-    e_y     =  0002     |     hi_score   **** GX  |   0 int_hand   000F GR
-  0 int_hand   0016 GR  |   0 int_hand   0020 GR  |   0 int_hand   0027 GR
-  0 int_hand   002E GR  |   0 int_hand   0035 GR  |   0 loop       0080 R
-    man_enti   **** GX  |     man_enti   **** GX  |     man_enti   **** GX
-    man_game   **** GX  |     man_game   **** GX  |     next_pie   **** GX
-    next_pie   **** GX  |     next_pie   **** GX  |     opc_DI  =  00F3 
-    opc_EI  =  00FB     |     opc_JR  =  0018     |     opc_LD_D=  0016 
-    piece_sp   **** GX  |     piece_sp   **** GX  |     piece_ty   **** GX
-    player1    **** GX  |     player_b   **** GX  |     score      **** GX
-    selected   **** GX  |   0 set_int_   0000 R   |     sizeof_e=  000E 
+    e_y     =  0002     |   0 end_of_g   0090 R   |     hi_score   **** GX
+  0 int_hand   000F GR  |   0 int_hand   0016 GR  |   0 int_hand   0020 GR
+  0 int_hand   0027 GR  |   0 int_hand   002E GR  |   0 int_hand   0035 GR
+  0 loop       0080 R   |     man_enti   **** GX  |     man_enti   **** GX
+    man_enti   **** GX  |     man_game   **** GX  |     man_game   **** GX
+    next_pie   **** GX  |     next_pie   **** GX  |     next_pie   **** GX
+    no_more_   **** GX  |     opc_DI  =  00F3     |     opc_EI  =  00FB 
+    opc_JR  =  0018     |     opc_LD_D=  0016     |     piece_sp   **** GX
+    piece_sp   **** GX  |     piece_ty   **** GX  |     player1    **** GX
+    player_b   **** GX  |     score      **** GX  |     selected   **** GX
+  0 set_int_   0000 R   |     sizeof_e=  000E     |     sys_boar   **** GX
     sys_boar   **** GX  |     sys_boar   **** GX  |     sys_boar   **** GX
     sys_boar   **** GX  |     sys_boar   **** GX  |     sys_boar   **** GX
     sys_boar   **** GX  |     sys_boar   **** GX  |     sys_boar   **** GX
     sys_inpu   **** GX  |     sys_inpu   **** GX  |     sys_rend   **** GX
-    sys_rend   **** GX  |     sys_rend   **** GX  |     sys_rend   **** GX
 ASxxxx Assembler V02.00 + NoICE + SDCC mods  (Zilog Z80 / Hitachi HD64180), page 3.
 Hexadecimal [16-Bits]
 
 Symbol Table
 
+    sys_rend   **** GX  |     sys_rend   **** GX  |     sys_rend   **** GX
     sys_rend   **** GX  |     sys_rend   **** GX  |     sys_rend   **** GX
     sys_rend   **** GX  |     sys_rend   **** GX  |     sys_rend   **** GX
     sys_rend   **** GX  |     sys_rend   **** GX  |     sys_rend   **** GX
@@ -133,6 +134,6 @@ Hexadecimal [16-Bits]
 
 Area Table
 
-   0 _CODE      size   8A   flags    0
+   0 _CODE      size   92   flags    0
    1 _DATA      size    0   flags    0
 

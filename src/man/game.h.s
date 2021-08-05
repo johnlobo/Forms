@@ -29,6 +29,7 @@
 .globl next_pieces_coords
 .globl score
 .globl hi_score
+.globl no_more_moves
 
 ;;------------------------------------------------------------------------------
 ;; Global routines

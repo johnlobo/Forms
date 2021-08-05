@@ -567,16 +567,16 @@ sys_board_any_space::
 
     ld a, (hl)                                      ;; get piece width
     ld d, a                                         ;;
-    ld a, #BOARD_COLS                               ;;
+    ld a, #BOARD_COLS + 1                           ;;
     sub d                                           ;; self modifying code to set the max x coord
-    ld (s_b_any_space_compare_with + 1), a              ;;
+    ld (s_b_any_space_compare_with + 1), a          ;;
 
     inc hl                                          ;; 
     ld a, (hl)                                      ;; get piece height
     ld d, a                                         ;;
-    ld a, #BOARD_COLS                               ;;
+    ld a, #BOARD_ROWS + 1                           ;;
     sub d                                           ;; self modifying code to set the max y coord
-    ld (s_b_any_space_compare_height + 1), a              ;;
+    ld (s_b_any_space_compare_height + 1), a        ;;
 
     ld bc, #00
 s_b_any_space_loop0:
@@ -587,10 +587,13 @@ s_b_any_space_loop0:
     jr nz, s_b_any_space_exit_ok                    ;; if it's valid return
     pop bc                                          ;; retrieve bc
     inc c                                           ;; increment x    
+    ld a, c                                         ;; move c to a to compare
 s_b_any_space_compare_with:
     cp #00
     jr nz, s_b_any_space_loop0                      ;; if we are not in the limit get back to the loop
+    ld c, #0
     inc b
+    ld a, b                                         ;; move b to a to compare
 s_b_any_space_compare_height:
     cp #00
     jr nz, s_b_any_space_loop0                      ;; if we are not in the limit get back to the loop   
