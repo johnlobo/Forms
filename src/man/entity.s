@@ -47,6 +47,7 @@ player1::
     .db #0                      ;; width of background buffer
     .db #0                      ;; height of background buffer
     .dw #0x0000                 ;; sprite big pointer
+    .dw #0x0000                 ;; sprite player pointer
     .db #0                      ;; moved flag
     .db #0                      ;; set flag
 
@@ -82,6 +83,12 @@ piece_sprites_big::
     .dw #_s_balls_big_1, #_s_balls_big_2, #_s_balls_big_3, #_s_balls_big_4, #_s_balls_big_4
     .dw #_s_balls_big_4, #_s_balls_big_4, #_s_balls_big_5, #_s_balls_big_5, #_s_balls_big_5
     .dw #_s_balls_big_5, #_s_balls_big_6, #_s_balls_big_7, #_s_balls_big_8
+
+piece_sprites_player:: 
+    .dw #_s_balls_player_0, #_s_balls_player_1, #_s_balls_player_2, #_s_balls_player_3, #_s_balls_player_0
+    .dw #_s_balls_player_1, #_s_balls_player_2, #_s_balls_player_3, #_s_balls_player_4, #_s_balls_player_4
+    .dw #_s_balls_player_4, #_s_balls_player_4, #_s_balls_player_5, #_s_balls_player_5, #_s_balls_player_5
+    .dw #_s_balls_player_5, #_s_balls_player_6, #_s_balls_player_7, #_s_balls_player_8
 
 piece_sprites_small:: 
     .dw #_s_balls_small_0, #_s_balls_small_1, #_s_balls_small_2, #_s_balls_small_3, #_s_balls_small_0
@@ -124,6 +131,25 @@ man_entity_get_hl_from_piece::
 man_entity_get_piece_sprite_big::
     sla a                   ;; duplicate a in order to offset
     ld hl, #piece_sprites_big   ;; load begining of the piece sprite list in hl
+    add_hl_a                ;; add offset
+    ld e, (hl)
+    inc hl
+    ld d, (hl)
+    ex de, hl
+    ret
+
+    ;;-----------------------------------------------------------------
+;;
+;;  get_piece_sprite_player
+;;
+;;  Get in hl a pointer to the sprite a
+;;  Input: a: number of type
+;;  Output: hl a pointer to the sprite
+;;  Destroyed: af, hl, de
+;;
+man_entity_get_piece_sprite_player::
+    sla a                   ;; duplicate a in order to offset
+    ld hl, #piece_sprites_player   ;; load begining of the piece sprite list in hl
     add_hl_a                ;; add offset
     ld e, (hl)
     inc hl

@@ -18,5 +18,8 @@ extern const u8 s_sprites_3[4 * 11];
 #define S_SPRITES_4_W 4
 #define S_SPRITES_4_H 11
 extern const u8 s_sprites_4[4 * 11];
+#define S_SPRITES_5_W 4
+#define S_SPRITES_5_H 11
+extern const u8 s_sprites_5[4 * 11];
 
 #endif

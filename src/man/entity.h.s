@@ -33,10 +33,11 @@ e_p_screen_p = 6
 e_buffer_width = 8
 e_buffer_height = 9
 e_sprite_big_ptr = 10
-e_moved = 12
-e_set = 13
+e_sprite_player_ptr = 12
+e_moved = 14
+e_set = 15
 
-sizeof_e = 14
+sizeof_e = 16
 
 ;;------------------------------------------------------------------------------
 ;; Global variables
@@ -45,6 +46,7 @@ sizeof_e = 14
 .globl piece_types
 .globl player_buffer
 .globl piece_sprites_big
+.globl piece_sprites_player
 .globl piece_sprites_small
 
 ;;------------------------------------------------------------------------------
@@ -52,4 +54,5 @@ sizeof_e = 14
 ;;------------------------------------------------------------------------------
 .globl man_entity_get_hl_from_piece
 .globl man_entity_get_piece_sprite_big
+.globl man_entity_get_piece_sprite_player
 .globl man_entity_get_piece_sprite_small

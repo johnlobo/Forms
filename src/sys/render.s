@@ -360,8 +360,8 @@ draw_player_tile_add_col:
     add_hl_a                                  ;; Then add the offset
     ld a, (hl)                      ;; load the content of the board in a
     ;;ld   hl, #_s_balls_big_05       ;; Load in hl the tile by default
-    ld l, e_sprite_big_ptr(ix)
-    ld h, e_sprite_big_ptr+1(ix)
+    ld l, e_sprite_player_ptr(ix)
+    ld h, e_sprite_player_ptr+1(ix)
     or a                            ;; check if the content is 0
     jr z, draw_player_tile_draw     ;; if 0 just print the default tile
     ld hl, #_s_sprites_1         ;; other wise draw the not valid tile
