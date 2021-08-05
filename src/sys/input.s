@@ -185,6 +185,12 @@ _check_height:
 _end_check:
 ;; Get the sprite pointer to render the piece
     ld a, e_type(ix)
+    call man_entity_get_piece_sprite_player
+    ld e_sprite_player_ptr(ix), l
+    ld e_sprite_player_ptr+1(ix), h
+
+;; Get the sprite pointer to render the piece
+    ld a, e_type(ix)
     call man_entity_get_piece_sprite_big
     ld e_sprite_big_ptr(ix), l
     ld e_sprite_big_ptr+1(ix), h

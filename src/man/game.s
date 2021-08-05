@@ -99,6 +99,12 @@ man_game_renew_next_pieces::
     ld e_type(ix), a  
     
     ;; get big sprite form the type of piece  
+    call man_entity_get_piece_sprite_player
+    ld e_sprite_player_ptr(ix), l
+    ld e_sprite_player_ptr+1(ix), h
+
+    ;; get big sprite form the type of piece  
+    ld a, e_type(ix)
     call man_entity_get_piece_sprite_big
     ld e_sprite_big_ptr(ix), l
     ld e_sprite_big_ptr+1(ix), h
@@ -327,6 +333,12 @@ _valid_piece:
     
     ld e_p_screen_p(ix), #0             ;; erase previous pointer so that update capture
     ld e_p_screen_p+1(ix), #0           ;; the background
+
+    ;; Get the sprite pointer to render the piece
+    ld a, e_type(ix)
+    call man_entity_get_piece_sprite_player
+    ld e_sprite_player_ptr(ix), l
+    ld e_sprite_player_ptr+1(ix), h
 
     ;; Get the sprite pointer to render the piece
     ld a, e_type(ix)

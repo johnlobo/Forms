@@ -35,6 +35,15 @@
 .globl _s_balls_big_6
 .globl _s_balls_big_7
 .globl _s_balls_big_8
+.globl _s_balls_player_0
+.globl _s_balls_player_1
+.globl _s_balls_player_2
+.globl _s_balls_player_3
+.globl _s_balls_player_4
+.globl _s_balls_player_5
+.globl _s_balls_player_6
+.globl _s_balls_player_7
+.globl _s_balls_player_8
 .globl _s_balls_small_0
 .globl _s_balls_small_1
 .globl _s_balls_small_2
