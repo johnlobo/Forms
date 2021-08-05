@@ -41,8 +41,8 @@ next_pieces_coords:: .db #46, #150, #59, #150, #70, #150
 selected_piece:: .db #00
 score:: .db #0x01, #0x23, #0x45, #0x67
 hi_score:: .db #0x01, #0x23, #0x45, #0x67
-line_to_render: .db #00
-no_more_moves: .db #00
+line_to_render:: .db #00
+no_more_moves:: .db #00
 
 
 ;;
@@ -344,6 +344,7 @@ m_g_set_piece_check_next_pieces_loop:
     cp #0xff                                        ;; is it a valid piece??
     jr z, m_g_set_piece_next_space_check            ;; if not valid check next
     call sys_board_any_space                        ;; if valid check if there is any space for it
+    or a
     jr nz, m_g_set_piece_return                     ;; if there is space just ret
 m_g_set_piece_next_space_check:
     pop bc                                          ;; retrieve index

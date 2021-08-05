@@ -2635,7 +2635,7 @@ Hexadecimal [16-Bits]
                               5 ;;  This program is free software: you can redistribute it and/or modify
                               6 ;;  it under the terms of the GNU Lesser General Public License as published by
                               7 ;;  the Free Software Foundation, either version 3 of the License, or
-                              8 ;;  (at your option) any later version.
+                              8 ;;  (at your option) any later version
                               9 ;;
                              10 ;;  This program is distributed in the hope that it will be useful,
                              11 ;;  but WITHOUT ANY WARRANTY; without even the implied warranty of
@@ -2658,7 +2658,7 @@ Hexadecimal [16-Bits]
                              28 ;; Macro: cpctm_ld_spbloff
                              29 ;;
                              30 ;;    Macro that calculates the offset to add to a sprite pointer to point 
-                             31 ;; to its bottom left pixel.
+                             31 ;; to it sbottom left pixel.
                              32 ;;
                              33 ;; ASM Definition:
                              34 ;;    .macro <cpctm_ld_spbloff> *REG*, *W*, *H*
@@ -2695,7 +2695,7 @@ Hexadecimal [16-Bits]
                              60 ;; of a given sprite (i.e. its bottom-left byte), with respect to its first
                              61 ;; byte (top-left corner). This value can easily be added to any sprite 
                              62 ;; pointer to get a pointer to the bottom-left byte. This pointer is required
-                             63 ;; byte many flipping functions (like <cpct_vflipSprite>). Values for width
+                             63 ;; byte many flipping functions (like <cpct_vflipSpriteM0>). Values for width
                              64 ;; and height of the sprite must be constant immediate values. Otherwise, this
                              65 ;; macro will generate incorrect code that will fail to compile. 
                              66 ;;    The macro calculates *W* * (*H*-1) at compile-time and loads it into
@@ -2798,6 +2798,7 @@ Hexadecimal [16-Bits]
                              36 .globl sys_board_check_partial_cols
                              37 .globl sys_board_erase_col
                              38 .globl sys_board_valid_place
+                             39 .globl sys_board_any_space
 ASxxxx Assembler V02.00 + NoICE + SDCC mods  (Zilog Z80 / Hitachi HD64180), page 55.
 Hexadecimal [16-Bits]
 
@@ -2932,12 +2933,13 @@ Hexadecimal [16-Bits]
                              29 .globl next_pieces_coords
                              30 .globl score
                              31 .globl hi_score
-                             32 
-                             33 ;;------------------------------------------------------------------------------
-                             34 ;; Global routines
-                             35 ;;------------------------------------------------------------------------------
-                             36 .globl man_game_init
-                             37 .globl man_game_update
+                             32 .globl no_more_moves
+                             33 
+                             34 ;;------------------------------------------------------------------------------
+                             35 ;; Global routines
+                             36 ;;------------------------------------------------------------------------------
+                             37 .globl man_game_init
+                             38 .globl man_game_update
 ASxxxx Assembler V02.00 + NoICE + SDCC mods  (Zilog Z80 / Hitachi HD64180), page 59.
 Hexadecimal [16-Bits]
 
@@ -3387,5 +3389,12 @@ Hexadecimal [16-Bits]
    0082 CD 00 00      [17]  255    call cpct_waitHalts_asm
                             256    
    0085 CD 00 00      [17]  257    call man_game_update
-                            258 
-   0088 18 F6         [12]  259    jr    loop
+                            258    ;; check if are ther more moves
+   0088 3A 00 00      [13]  259    ld a, (no_more_moves)
+   008B B7            [ 4]  260    or a
+   008C 20 02         [12]  261    jr nz, end_of_game
+                            262 
+   008E 18 F0         [12]  263    jr    loop
+                            264 
+   0090                     265 end_of_game:
+   0090 18 FE         [12]  266    jr end_of_game
