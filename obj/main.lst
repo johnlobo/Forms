@@ -2925,10 +2925,11 @@ Hexadecimal [16-Bits]
 
 
                              55 ;;------------------------------------------------------------------------------
-                             56 .globl man_entity_get_hl_from_piece
-                             57 .globl man_entity_get_piece_sprite_big
-                             58 .globl man_entity_get_piece_sprite_player
-                             59 .globl man_entity_get_piece_sprite_small
+                             56 .globl man_entity_init
+                             57 .globl man_entity_get_hl_from_piece
+                             58 .globl man_entity_get_piece_sprite_big
+                             59 .globl man_entity_get_piece_sprite_player
+                             60 .globl man_entity_get_piece_sprite_small
 ASxxxx Assembler V02.00 + NoICE + SDCC mods  (Zilog Z80 / Hitachi HD64180), page 59.
 Hexadecimal [16-Bits]
 
@@ -3488,4 +3489,8 @@ Hexadecimal [16-Bits]
                             298    
    00BE CD 00 00      [17]  299    call sys_input_wait4anykey
                             300 
-   00C1 18 BA         [12]  301    jr start
+                            301    ;; Reset no more moves flag
+   00C1 AF            [ 4]  302    xor a
+   00C2 32 00 00      [13]  303    ld (no_more_moves), a
+                            304    ;; Jump to restart
+   00C5 18 B6         [12]  305    jr start

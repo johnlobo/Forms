@@ -53,6 +53,7 @@ sizeof_e = 16
 ;;------------------------------------------------------------------------------
 ;; Global routines
 ;;------------------------------------------------------------------------------
+.globl man_entity_init
 .globl man_entity_get_hl_from_piece
 .globl man_entity_get_piece_sprite_big
 .globl man_entity_get_piece_sprite_player

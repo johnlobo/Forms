@@ -103,7 +103,7 @@ s_b_generate_addresses_loop:
 
 ;;-----------------------------------------------------------------
 ;;
-;; sys_render_board
+;; sys_board_init
 ;;
 ;;   Renders board
 ;;  Input: 
@@ -114,7 +114,7 @@ sys_board_init::
     
     ld de, #board       ;; Set the board address
     ld a, #0x00         ;; Set the initilization value, 0
-    ld bc, # (BOARD_ROWS * BOARD_COLS)         ;; Set the size to set 10x10
+    ld bc, #(BOARD_ROWS * BOARD_COLS)         ;; Set the size to set 10x10
     call cpct_memset_asm
 
     call sys_board_generate_addresses        ;; Generate the address list with the first cell of each row

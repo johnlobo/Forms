@@ -106,6 +106,24 @@ piece_scoring::
 .area _CODE
       
 
+
+
+;;-----------------------------------------------------------------
+;;
+;; man_entity_get_hl_from_piece
+;;
+;;   Draw player1
+;;  Input: a: piece
+;;  Output: 
+;;  Destroyed: af, hl, de
+;;
+man_entity_init::
+    ld ix, #player1
+    ld e_p_screen_p(ix), #0
+    ld e_p_screen_p+1(ix), #0
+    ret
+
+
 ;;-----------------------------------------------------------------
 ;;
 ;; man_entity_get_hl_from_piece

@@ -298,4 +298,8 @@ end_of_game:
    
    call sys_input_wait4anykey
 
+   ;; Reset no more moves flag
+   xor a
+   ld (no_more_moves), a
+   ;; Jump to restart
    jr start
