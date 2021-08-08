@@ -114,35 +114,36 @@ Symbol Table
   0 int_hand   0020 GR  |   0 int_hand   0027 GR  |   0 int_hand   002E GR
   0 int_hand   0035 GR  |   0 loop       0080 R   |     man_enti   **** GX
     man_enti   **** GX  |     man_enti   **** GX  |     man_enti   **** GX
-    man_game   **** GX  |     man_game   **** GX  |     next_pie   **** GX
-    next_pie   **** GX  |     next_pie   **** GX  |     no_more_   **** GX
-    opc_DI  =  00F3     |     opc_EI  =  00FB     |     opc_JR  =  0018 
-    opc_LD_D=  0016     |     piece_sc   **** GX  |     piece_sp   **** GX
+    man_enti   **** GX  |     man_game   **** GX  |     man_game   **** GX
+    next_pie   **** GX  |     next_pie   **** GX  |     next_pie   **** GX
+    no_more_   **** GX  |     opc_DI  =  00F3     |     opc_EI  =  00FB 
+    opc_JR  =  0018     |     opc_LD_D=  0016     |     piece_sc   **** GX
 ASxxxx Assembler V02.00 + NoICE + SDCC mods  (Zilog Z80 / Hitachi HD64180), page 3.
 Hexadecimal [16-Bits]
 
 Symbol Table
 
-    piece_sp   **** GX  |     piece_sp   **** GX  |     piece_ty   **** GX
-    player1    **** GX  |     player_b   **** GX  |     score      **** GX
-    selected   **** GX  |   0 set_int_   0000 R   |     sizeof_e=  0010 
-  0 start      007D R   |     sys_boar   **** GX  |     sys_boar   **** GX
+    piece_sp   **** GX  |     piece_sp   **** GX  |     piece_sp   **** GX
+    piece_ty   **** GX  |     player1    **** GX  |     player_b   **** GX
+    score      **** GX  |     selected   **** GX  |   0 set_int_   0000 R
+    sizeof_e=  0010     |   0 start      007D R   |     sys_boar   **** GX
     sys_boar   **** GX  |     sys_boar   **** GX  |     sys_boar   **** GX
     sys_boar   **** GX  |     sys_boar   **** GX  |     sys_boar   **** GX
-    sys_boar   **** GX  |     sys_boar   **** GX  |     sys_inpu   **** GX
-    sys_inpu   **** GX  |     sys_inpu   **** GX  |     sys_rend   **** GX
+    sys_boar   **** GX  |     sys_boar   **** GX  |     sys_boar   **** GX
+    sys_inpu   **** GX  |     sys_inpu   **** GX  |     sys_inpu   **** GX
     sys_rend   **** GX  |     sys_rend   **** GX  |     sys_rend   **** GX
     sys_rend   **** GX  |     sys_rend   **** GX  |     sys_rend   **** GX
     sys_rend   **** GX  |     sys_rend   **** GX  |     sys_rend   **** GX
     sys_rend   **** GX  |     sys_rend   **** GX  |     sys_rend   **** GX
-    sys_rend   **** GX  |     sys_rend   **** GX  |     sys_text   **** GX
+    sys_rend   **** GX  |     sys_rend   **** GX  |     sys_rend   **** GX
     sys_text   **** GX  |     sys_text   **** GX  |     sys_text   **** GX
+    sys_text   **** GX
 
 ASxxxx Assembler V02.00 + NoICE + SDCC mods  (Zilog Z80 / Hitachi HD64180), page 4.
 Hexadecimal [16-Bits]
 
 Area Table
 
-   0 _CODE      size   C3   flags    0
+   0 _CODE      size   C7   flags    0
    1 _DATA      size   18   flags    0
 

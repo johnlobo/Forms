@@ -228,7 +228,7 @@ _render_board_loop02:
     
     ld h, a                     ;; Move to h
     ld e, #S_BALLS_BIG_H + 1    ;; Cell height + 1
-    call sys_util_h_times_e              ;; Number of rows drawn x cell height + 1
+    call sys_util_h_times_e     ;; Number of rows drawn x cell height + 1
     ld a, #BOARD_Y_COORD        ;; store in a the initial y coord
     add l                       ;; plus the number of rows x intial y coord 
     ;; Calculate screen address
@@ -248,9 +248,8 @@ _render_board_loop01:
 
 current_row:
     ld b, #00                   ;; load in b current row 
-    ;;call sys_board_cell_sprite  ;; retrieve in hl the addres of the corresponding sprite
-    ld hl, #_s_sprites_0
 
+    ld hl, #_s_sprites_0
 
     ld c, #S_BALLS_BIG_W        ;; load in c the sprite width 
     ld b, #S_BALLS_BIG_H        ;; load in b sprite height
@@ -829,6 +828,7 @@ sys_render_hi_score::
 sys_render_BCD_show::
     ld b, #SCORE_NUM_BYTES
     ld c, #0
+    call sys_util_BCD_GetEnd
 _BCD_show_direct:
 	ld a,(de)
 	and #0b11110000		;Use the high nibble
@@ -838,7 +838,7 @@ _BCD_show_direct:
 	rrca
 	call sys_render_print_score_char
 	ld a,(de)	
-	inc de
+	dec de
     inc c
 	and #0b00001111		;Now the Low nibble
 	call sys_render_print_score_char
@@ -870,6 +870,7 @@ sys_render_print_score_char::
     ld b, a                                     ;; store digit to draw in b
     ld a, c                                     ;; load digit positio in a
     ld (_retrive_digit_position+1),a            ;; self modifying code to load digit position without the stack
+    ld a, b
     or a
     jr z, _print_score_draw_number              ;; if number to show is 0 offset = 0
     ld de, #(S_SCORE_NUMBERS_W * S_SCORE_NUMBERS_H)

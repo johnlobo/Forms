@@ -40,7 +40,7 @@ next_pieces_count:: .db #00
 next_pieces_coords:: .db #46, #150, #59, #150, #70, #150
 selected_piece:: .db #00
 score:: .db #0x00, #0x00, #0x00, #0x00
-hi_score:: .db #0x01, #0x23, #0x45, #0x67
+hi_score:: .db #0x01, #0x23, #0x45, #0x00
 score_buffer:: .db #0x00, #0x00, #0x00, #0x00
 line_to_render:: .db #00
 no_more_moves:: .db #00
@@ -125,6 +125,26 @@ man_game_renew_next_pieces::
     ret
 
 ;;-----------------------------------------------------------------
+;; man_game_clean_number
+;;
+;;  Initializes number
+;;  Input: hl number to be initialzed
+;;  Output:
+;;  Modified: af, hl
+;;
+man_game_clean_number::
+    xor a
+    ld (hl), a
+    inc hl
+    ld (hl), a
+    inc hl
+    ld (hl), a
+    inc hl
+    ld (hl), a
+    ret
+
+
+;;-----------------------------------------------------------------
 ;;
 ;; man_game_init
 ;;
@@ -136,13 +156,19 @@ man_game_renew_next_pieces::
 man_game_init::
 
     call sys_board_init
+
+    call man_entity_init
     
     call man_game_renew_next_pieces
 
     call sys_render_game_screen
 
+    ld hl, #hi_score
+    call man_game_clean_number
     call sys_render_hi_score
     
+    ld hl, #score
+    call man_game_clean_number
     call sys_render_score
 
     call sys_render_next_pieces     ;; Render next pieces on screen
@@ -261,8 +287,9 @@ man_game_add_score_4piece::
     ld a, e_type(ix)                            ;; read type in a to set offset
     add_hl_a                                    ;; add ofset to pointer
     ld a, (hl)                                  ;; read score to add in a
-    ld hl, #score_buffer+3
+    ld hl, #score_buffer
     ld (hl),a                                   ;; store the score in score buffer
+    ld hl, #score_buffer
     ld de, #score                               ;; point de to the current score
     ld b, #SCORE_NUM_BYTES                      ;; store in b the number of bytes of the numbers add 
     call sys_util_BCD_Add

@@ -87,7 +87,7 @@ sys_util_10_times_a_10:
 ;;
 ;; sys_util_BCD_GetEnd
 ;;
-;;   Draw socre
+;;  
 ;;  Input:  b: number of bytes of the bcd number
 ;;          de: source for the first bcd bnumber
 ;;          hl: source for the second bcd number
