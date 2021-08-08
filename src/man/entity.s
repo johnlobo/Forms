@@ -96,6 +96,10 @@ piece_sprites_small::
     .dw #_s_balls_small_4, #_s_balls_small_4, #_s_balls_small_5, #_s_balls_small_5, #_s_balls_small_5
     .dw #_s_balls_small_5, #_s_balls_small_6, #_s_balls_small_7, #_s_balls_small_8
 
+piece_scoring::
+    .db #0x05, #0x04, #0x03, #0x02, #0x05, #0x04, #0x03, #0x02, #0x05, #0x05
+    .db #0x05, #0x05, #0x03, #0x03, #0x03, #0x03, #0x09, #0x04, #0x01
+
 ;;
 ;; Start of _CODE area
 ;; 

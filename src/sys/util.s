@@ -82,3 +82,54 @@ sys_util_10_times_a_9:
 sys_util_10_times_a_10:  
   add #00         ;; a by 9
   ret
+
+;;-----------------------------------------------------------------
+;;
+;; sys_util_BCD_GetEnd
+;;
+;;   Draw socre
+;;  Input:  b: number of bytes of the bcd number
+;;          de: source for the first bcd bnumber
+;;          hl: source for the second bcd number
+;;  Output: 
+;;  Destroyed: af, bc,de, hl
+;;
+;;  Chibi Akumas BCD code (https://www.chibiakumas.com/z80/advanced.php#LessonA1)
+;;
+sys_util_BCD_GetEnd::
+;Some of our commands need to start from the most significant byte
+;This will shift HL and DE along b bytes
+	push bc
+	ld c,b	;We want to add BC, but we need to add one less than the number of bytes
+	dec c
+	ld b,#0
+	add hl,bc
+	ex de, hl	;We've done HL, but we also want to do DE
+	add hl,bc
+	ex de, hl
+	pop bc
+	ret
+
+;;-----------------------------------------------------------------
+;;
+;; BCD_Add
+;;
+;;   Add two BCD numbers
+;;  Input:  hl: Number to add to de
+;;          de: Number to store the sum 
+;;  Output: 
+;;  Destroyed: af, bc,de, hl
+;;
+;;  Chibi Akumas BCD code (https://www.chibiakumas.com/z80/advanced.php#LessonA1)
+;;
+sys_util_BCD_Add::
+    or a
+BCD_Add_Again:
+    ld a, (de)
+    adc (hl)
+    daa
+    ld (de), a
+    inc de
+    inc hl
+    djnz BCD_Add_Again
+    ret
