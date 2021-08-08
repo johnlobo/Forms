@@ -2635,7 +2635,7 @@ Hexadecimal [16-Bits]
                               5 ;;  This program is free software: you can redistribute it and/or modify
                               6 ;;  it under the terms of the GNU Lesser General Public License as published by
                               7 ;;  the Free Software Foundation, either version 3 of the License, or
-                              8 ;;  (at your option) any later version
+                              8 ;;  (at your option) any later version.
                               9 ;;
                              10 ;;  This program is distributed in the hope that it will be useful,
                              11 ;;  but WITHOUT ANY WARRANTY; without even the implied warranty of
@@ -2658,7 +2658,7 @@ Hexadecimal [16-Bits]
                              28 ;; Macro: cpctm_ld_spbloff
                              29 ;;
                              30 ;;    Macro that calculates the offset to add to a sprite pointer to point 
-                             31 ;; to it sbottom left pixel.
+                             31 ;; to its bottom left pixel.
                              32 ;;
                              33 ;; ASM Definition:
                              34 ;;    .macro <cpctm_ld_spbloff> *REG*, *W*, *H*
@@ -2695,7 +2695,7 @@ Hexadecimal [16-Bits]
                              60 ;; of a given sprite (i.e. its bottom-left byte), with respect to its first
                              61 ;; byte (top-left corner). This value can easily be added to any sprite 
                              62 ;; pointer to get a pointer to the bottom-left byte. This pointer is required
-                             63 ;; byte many flipping functions (like <cpct_vflipSpriteM0>). Values for width
+                             63 ;; byte many flipping functions (like <cpct_vflipSprite>). Values for width
                              64 ;; and height of the sprite must be constant immediate values. Otherwise, this
                              65 ;; macro will generate incorrect code that will fail to compile. 
                              66 ;;    The macro calculates *W* * (*H*-1) at compile-time and loads it into
@@ -2915,19 +2915,20 @@ Hexadecimal [16-Bits]
                              48 .globl piece_sprites_big
                              49 .globl piece_sprites_player
                              50 .globl piece_sprites_small
-                             51 
-                             52 ;;------------------------------------------------------------------------------
-                             53 ;; Global routines
-                             54 ;;------------------------------------------------------------------------------
+                             51 .globl piece_scoring
+                             52 
+                             53 ;;------------------------------------------------------------------------------
+                             54 ;; Global routines
 ASxxxx Assembler V02.00 + NoICE + SDCC mods  (Zilog Z80 / Hitachi HD64180), page 58.
 Hexadecimal [16-Bits]
 
 
 
-                             55 .globl man_entity_get_hl_from_piece
-                             56 .globl man_entity_get_piece_sprite_big
-                             57 .globl man_entity_get_piece_sprite_player
-                             58 .globl man_entity_get_piece_sprite_small
+                             55 ;;------------------------------------------------------------------------------
+                             56 .globl man_entity_get_hl_from_piece
+                             57 .globl man_entity_get_piece_sprite_big
+                             58 .globl man_entity_get_piece_sprite_player
+                             59 .globl man_entity_get_piece_sprite_small
 ASxxxx Assembler V02.00 + NoICE + SDCC mods  (Zilog Z80 / Hitachi HD64180), page 59.
 Hexadecimal [16-Bits]
 

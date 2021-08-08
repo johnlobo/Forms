@@ -39,8 +39,9 @@ next_pieces:: .db #00, #00, #00
 next_pieces_count:: .db #00
 next_pieces_coords:: .db #46, #150, #59, #150, #70, #150
 selected_piece:: .db #00
-score:: .db #0x01, #0x23, #0x45, #0x67
+score:: .db #0x00, #0x00, #0x00, #0x00
 hi_score:: .db #0x01, #0x23, #0x45, #0x67
+score_buffer:: .db #0x00, #0x00, #0x00, #0x00
 line_to_render:: .db #00
 no_more_moves:: .db #00
 
@@ -247,6 +248,29 @@ man_game_erase_col::
 
 ;;-----------------------------------------------------------------
 ;;
+;; man_game_add_score_4piece
+;;
+;;  set piece in board
+;;  Input: 
+;;  Output:
+;;  Modified:
+;;
+man_game_add_score_4piece::
+    ;; Add score
+    ld hl, #piece_scoring                       ;; set hl to point the list of scoring                       
+    ld a, e_type(ix)                            ;; read type in a to set offset
+    add_hl_a                                    ;; add ofset to pointer
+    ld a, (hl)                                  ;; read score to add in a
+    ld hl, #score_buffer+3
+    ld (hl),a                                   ;; store the score in score buffer
+    ld de, #score                               ;; point de to the current score
+    ld b, #SCORE_NUM_BYTES                      ;; store in b the number of bytes of the numbers add 
+    call sys_util_BCD_Add
+    call sys_render_score
+    ret
+
+;;-----------------------------------------------------------------
+;;
 ;; man_game_set_piece
 ;;
 ;;   set piece in board
@@ -272,18 +296,20 @@ man_game_set_piece::
     ld a, e_type(ix)                            ;; load piece in a
     call sys_board_set_piece                    ;; set piece in board
 
-m_g_set_piece_check_rows:
+    call man_game_add_score_4piece              ;; add the score corresponfing to the piece set
+
+m_g_set_piece_check_rows:                       ;; Check if the set piece has filled a line
     ld b, e_y(ix)                               ;; load in b the initial line to check if it's complete
     ld a, b                                     ;;
     add e_h(ix)                                 ;;
     ld c, a                                     ;; load in c the final line to check
-    call sys_board_check_partial_rows          ;; check if the piece set has completed any line
+    call sys_board_check_partial_rows           ;; check if the piece set has completed any line
     cp #0xff                                    ;; check if all the lines are incomplete
-    jr z, m_g_set_piece_check_cols               ;;
-    call man_game_erase_row                    ;; if one is complete erase line in a
-    jr m_g_set_piece_check_rows                ;; get back to check again
+    jr z, m_g_set_piece_check_cols              ;;
+    call man_game_erase_row                     ;; if one is complete erase line in a
+    jr m_g_set_piece_check_rows                 ;; get back to check again
 
-m_g_set_piece_check_cols:
+m_g_set_piece_check_cols:                       ;; Check if the set piece has filled a col
     ld b, e_x(ix)                               ;; load in b the initial line to check if it's complete
     ld a, b                                     ;;
     add e_w(ix)                                 ;;
