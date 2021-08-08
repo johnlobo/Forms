@@ -21,6 +21,7 @@
 .include "sys/render.h.s"
 .include "sys/board.h.s"
 .include "sys/input.h.s"
+.include "sys/text.h.s"
 .include "man/entity.h.s"
 .include "man/game.h.s"
 .include "common.h.s"
@@ -35,6 +36,9 @@
 ;;  right after _CODE area contents.
 ;;
 .area _DATA
+
+_no_more_moves: .asciz "NO MORE MOVES"
+_game_over: .asciz "GAME OVER"
 
 ;;
 ;; Start of _CODE area
@@ -247,6 +251,7 @@ _main::
    call cpct_waitVSYNC_asm
    call cpct_setInterruptHandler_asm
 
+start:
    call _main_init
 
    ;; Loop forever
@@ -263,4 +268,34 @@ loop:
    jr    loop
 
 end_of_game:
-   jr end_of_game
+
+   _window_x = 24
+   _window_y = 78
+   _window_w = 32
+   _window_h = 44
+
+   cpctm_screenPtr_asm de, CPCT_VMEM_START_ASM, _window_x, _window_y  ;; screen address for 26, 100 in de
+   ld c,#_window_w
+   ld b,#_window_h
+   ld a,#0                                             ;; Patern of solid box
+   call cpct_drawSolidBox_asm
+
+   cpctm_screenPtr_asm de, CPCT_VMEM_START_ASM, (_window_x+1) , (_window_y+2)  ;; screen address for 26, 100 in de
+   ld c,#(_window_w-2)
+   ld b,#(_window_h-4)
+   ld a,#255                                             ;; Patern of solid box
+   call cpct_drawSolidBox_asm
+
+   ld c, #0
+   cpctm_screenPtr_asm de, CPCT_VMEM_START_ASM, (_window_x+3) , (_window_y+10)  ;; screen address for 30, 120 in de
+   ld hl, #_no_more_moves
+   call sys_text_draw_string
+
+   ld c, #0
+   cpctm_screenPtr_asm de, CPCT_VMEM_START_ASM, (_window_x+6) , (_window_y+26)  ;; screen address for 30, 120 in de
+   ld hl, #_game_over
+   call sys_text_draw_string
+   
+   call sys_input_wait4anykey
+
+   jr start

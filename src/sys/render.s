@@ -21,6 +21,7 @@
 .include "man/entity.h.s"
 .include "man/game.h.s"
 .include "sys/board.h.s"
+.include "sys/text.h.s"
 .include "util.h.s"
 
 .module render_system
@@ -42,6 +43,9 @@ _piece_height:: .db #00
 _piece::        .db #00
 _score_digit:   .db #00
 _fila:          .db #00
+_press_any_key: .asciz "PRESS ANY KEY"
+_to_change_piece: .asciz "I-CHANGE PIECE"
+
 
 ;;
 ;; Start of _CODE area
@@ -66,7 +70,8 @@ sys_render_init::
     ld de, #16
     call cpct_setPalette_asm
     ;; Set Border
-    cpctm_setBorder_asm HW_BRIGHT_WHITE
+    ;;cpctm_setBorder_asm HW_BRIGHT_WHITE
+    cpctm_setBorder_asm HW_BLACK
 
     cpctm_clearScreen_asm 255
 
@@ -89,11 +94,13 @@ sys_render_logo_screen::
     ld b, #S_LOGO_1010_H
     call cpct_drawSprite_asm
 
-    cpctm_screenPtr_asm de, CPCT_VMEM_START_ASM, 29, 120  ;; screen address for 30, 120 in de
-    ld hl, #_s_press_any_key
-    ld c, #S_PRESS_ANY_KEY_W
-    ld b, #S_PRESS_ANY_KEY_H
-    call cpct_drawSprite_asm
+
+
+    ld c, #0
+    cpctm_screenPtr_asm de, CPCT_VMEM_START_ASM, 28, 120  ;; screen address for 30, 120 in de
+    ld hl, #_press_any_key
+    call sys_text_draw_string
+
     ret
 
 ;-----------------------------------------------------------------
@@ -151,6 +158,11 @@ sys_render_game_screen::
     ld c, #S_PIECES_W       ;; load in c the sprite width 
     ld b, #S_PIECES_H       ;; load in b sprite height
     call cpct_drawSprite_asm        ;; draw sprite
+
+    ld c, #0
+    cpctm_screenPtr_asm de, CPCT_VMEM_START_ASM, 47, 184  ;; screen address for 30, 120 in de
+    ld hl, #_to_change_piece
+    call sys_text_draw_string
 
     ret
 
