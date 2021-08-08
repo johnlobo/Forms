@@ -260,3 +260,17 @@ sys_input_actions_check:
     
 _end_input_update:
     ret
+;;-----------------------------------------------------------------
+;;
+;; sys_input_wait4anykey
+;;
+;;   Reads input and wait for any key press
+;;  Input: 
+;;  Output:
+;;  Modified: 
+;;
+sys_input_wait4anykey::
+    call cpct_isAnyKeyPressed_asm
+    or a
+    jr z, sys_input_wait4anykey
+    ret

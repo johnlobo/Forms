@@ -74,6 +74,9 @@
 .globl _s_pieces
 .globl _s_logo_1010
 .globl _s_press_any_key
+.globl _g_font_chars
+.globl _s_high_score_icon
+.globl _s_star_icon
 
 
 ;;===============================================================================
