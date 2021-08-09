@@ -22,6 +22,7 @@
 .include "sys/board.h.s"
 .include "sys/input.h.s"
 .include "sys/text.h.s"
+.include "sys/messages.h.s"
 .include "man/entity.h.s"
 .include "man/game.h.s"
 .include "common.h.s"
@@ -37,8 +38,9 @@
 ;;
 .area _DATA
 
-_no_more_moves: .asciz "NO MORE MOVES"
-_game_over: .asciz "GAME OVER"
+_no_more_moves_string: .asciz "NO MORE MOVES"
+_game_cancelled_string: .asciz "GAME CANCELLED"
+_game_over_sring: .asciz "GAME OVER"
 
 ;;
 ;; Start of _CODE area
@@ -260,10 +262,16 @@ loop:
    call cpct_waitHalts_asm
    
    call man_game_update
+
    ;; check if are ther more moves
-   ld a, (no_more_moves)
+   ld a, (man_game_no_more_moves)
    or a
    jr nz, end_of_game
+
+   ;; check if the game has been cancelled
+   ld a, (man_game_cancelled_game)
+   or a
+   jr nz, _game_cancelled
 
    jr    loop
 
@@ -288,14 +296,23 @@ end_of_game:
 
    ld c, #0
    cpctm_screenPtr_asm de, CPCT_VMEM_START_ASM, (_window_x+3) , (_window_y+10)  ;; screen address for 30, 120 in de
-   ld hl, #_no_more_moves
+   ld hl, #_no_more_moves_string
    call sys_text_draw_string
 
    ld c, #0
    cpctm_screenPtr_asm de, CPCT_VMEM_START_ASM, (_window_x+6) , (_window_y+26)  ;; screen address for 30, 120 in de
-   ld hl, #_game_over
+   ld hl, #_game_over_sring
    call sys_text_draw_string
    
    call sys_input_wait4anykey
 
+   jr start
+
+_game_cancelled:
+   ld e, #24                           ;; x
+   ld d, #78                           ;; y
+   ld b, #44                           ;; h
+   ld c, #34                           ;; w
+   ld hl, #_game_cancelled_string      ;; message
+   call sys_messagees_show
    jr start

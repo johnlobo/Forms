@@ -78,8 +78,9 @@ Symbol Table
     S_SCORE_=  000F     |     S_SCORE_=  0004     |     S_SCORE_=  000A 
     TRES_TIT=  0047     |     TRES_TIT=  0050     |     UNO_TITL=  002F 
     UNO_TITL=  0050     |     _g_font_   **** GX  |     _g_palet   **** GX
-  1 _game_ov   000E R   |   0 _main      006C GR  |   0 _main_in   003C GR
-  0 _main_in   0044 R   |   1 _no_more   0000 R   |     _s_balls   **** GX
+  0 _game_ca   00C9 R   |   1 _game_ca   000E R   |   1 _game_ov   001D R
+  0 _main      006C GR  |   0 _main_in   003C GR  |   0 _main_in   0044 R
+  1 _no_more   0000 R   |     _s_balls   **** GX  |     _s_balls   **** GX
     _s_balls   **** GX  |     _s_balls   **** GX  |     _s_balls   **** GX
     _s_balls   **** GX  |     _s_balls   **** GX  |     _s_balls   **** GX
     _s_balls   **** GX  |     _s_balls   **** GX  |     _s_balls   **** GX
@@ -88,61 +89,62 @@ Symbol Table
     _s_balls   **** GX  |     _s_balls   **** GX  |     _s_balls   **** GX
     _s_balls   **** GX  |     _s_balls   **** GX  |     _s_balls   **** GX
     _s_balls   **** GX  |     _s_balls   **** GX  |     _s_balls   **** GX
-    _s_balls   **** GX  |     _s_balls   **** GX  |     _s_hi_sc   **** GX
-    _s_high_   **** GX  |     _s_logo_   **** GX  |     _s_next    **** GX
-    _s_piece   **** GX  |     _s_press   **** GX  |     _s_score   **** GX
+    _s_balls   **** GX  |     _s_hi_sc   **** GX  |     _s_high_   **** GX
+    _s_logo_   **** GX  |     _s_next    **** GX  |     _s_piece   **** GX
+    _s_press   **** GX  |     _s_score   **** GX  |     _s_score   **** GX
     _s_score   **** GX  |     _s_score   **** GX  |     _s_score   **** GX
     _s_score   **** GX  |     _s_score   **** GX  |     _s_score   **** GX
-    _s_score   **** GX  |     _s_score   **** GX  |     _s_score   **** GX
+    _s_score   **** GX  |     _s_score   **** GX  |     _s_sprit   **** GX
     _s_sprit   **** GX  |     _s_sprit   **** GX  |     _s_sprit   **** GX
-    _s_sprit   **** GX  |     _s_sprit   **** GX  |     _s_star_   **** GX
-    _window_=  002C     |     _window_=  0020     |     _window_=  0018 
-    _window_=  004E     |     board      **** GX  |     board_ro   **** GX
-    cpct_dis   **** GX  |     cpct_dra   **** GX  |     cpct_dra   **** GX
-    cpct_get   **** GX  |     cpct_get   **** GX  |     cpct_get   **** GX
-    cpct_isA   **** GX  |     cpct_isK   **** GX  |     cpct_mem   **** GX
-    cpct_pag=  0000     |     cpct_pag=  0010     |     cpct_pag=  0020 
-    cpct_pag=  0030     |     cpct_sca   **** GX  |     cpct_sca   **** GX
+    _s_sprit   **** GX  |     _s_star_   **** GX  |     _window_=  002C 
+    _window_=  0020     |     _window_=  0018     |     _window_=  004E 
+    board      **** GX  |     board_ro   **** GX  |     cpct_dis   **** GX
+    cpct_dra   **** GX  |     cpct_dra   **** GX  |     cpct_get   **** GX
+    cpct_get   **** GX  |     cpct_get   **** GX  |     cpct_isA   **** GX
+    cpct_isK   **** GX  |     cpct_mem   **** GX  |     cpct_pag=  0000 
+    cpct_pag=  0010     |     cpct_pag=  0020     |     cpct_pag=  0030 
+    cpct_sca   **** GX  |     cpct_sca   **** GX  |     cpct_set   **** GX
     cpct_set   **** GX  |     cpct_set   **** GX  |     cpct_set   **** GX
-    cpct_set   **** GX  |     cpct_set   **** GX  |     cpct_wai   **** GX
-    cpct_wai   **** GX  |     e_buffer=  0009     |     e_buffer=  0008 
+    cpct_set   **** GX  |     cpct_wai   **** GX  |     cpct_wai   **** GX
+    e_buffer=  0009     |     e_buffer=  0008     |     e_cancel=  0010 
     e_h     =  0005     |     e_moved =  000E     |     e_p_scre=  0006 
     e_set   =  000F     |     e_sprite=  000A     |     e_sprite=  000C 
     e_status=  0000     |     e_type  =  0003     |     e_w     =  0004 
-    e_x     =  0001     |     e_y     =  0002     |   0 end_of_g   0090 R
+    e_x     =  0001     |     e_y     =  0002     |   0 end_of_g   0096 R
     hi_score   **** GX  |   0 int_hand   000F GR  |   0 int_hand   0016 GR
   0 int_hand   0020 GR  |   0 int_hand   0027 GR  |   0 int_hand   002E GR
   0 int_hand   0035 GR  |   0 loop       0080 R   |     man_enti   **** GX
     man_enti   **** GX  |     man_enti   **** GX  |     man_enti   **** GX
-    man_game   **** GX  |     man_game   **** GX  |     next_pie   **** GX
-    next_pie   **** GX  |     next_pie   **** GX  |     no_more_   **** GX
-    opc_DI  =  00F3     |     opc_EI  =  00FB     |     opc_JR  =  0018 
-    opc_LD_D=  0016     |     piece_sc   **** GX  |     piece_sp   **** GX
+    man_game   **** GX  |     man_game   **** GX  |     man_game   **** GX
+    man_game   **** GX  |     next_pie   **** GX  |     next_pie   **** GX
+    next_pie   **** GX  |     opc_DI  =  00F3     |     opc_EI  =  00FB 
 ASxxxx Assembler V02.00 + NoICE + SDCC mods  (Zilog Z80 / Hitachi HD64180), page 3.
 Hexadecimal [16-Bits]
 
 Symbol Table
 
-    piece_sp   **** GX  |     piece_sp   **** GX  |     piece_ty   **** GX
-    player1    **** GX  |     player_b   **** GX  |     score      **** GX
-    selected   **** GX  |   0 set_int_   0000 R   |     sizeof_e=  0010 
-  0 start      007D R   |     sys_boar   **** GX  |     sys_boar   **** GX
+    opc_JR  =  0018     |     opc_LD_D=  0016     |     piece_sc   **** GX
+    piece_sp   **** GX  |     piece_sp   **** GX  |     piece_sp   **** GX
+    piece_ty   **** GX  |     player1    **** GX  |     player_b   **** GX
+    score      **** GX  |     selected   **** GX  |   0 set_int_   0000 R
+    sizeof_e=  0011     |   0 start      007D R   |     sys_boar   **** GX
     sys_boar   **** GX  |     sys_boar   **** GX  |     sys_boar   **** GX
     sys_boar   **** GX  |     sys_boar   **** GX  |     sys_boar   **** GX
-    sys_boar   **** GX  |     sys_boar   **** GX  |     sys_inpu   **** GX
-    sys_inpu   **** GX  |     sys_inpu   **** GX  |     sys_rend   **** GX
+    sys_boar   **** GX  |     sys_boar   **** GX  |     sys_boar   **** GX
+    sys_inpu   **** GX  |     sys_inpu   **** GX  |     sys_inpu   **** GX
+    sys_mess   **** GX  |     sys_rend   **** GX  |     sys_rend   **** GX
     sys_rend   **** GX  |     sys_rend   **** GX  |     sys_rend   **** GX
     sys_rend   **** GX  |     sys_rend   **** GX  |     sys_rend   **** GX
     sys_rend   **** GX  |     sys_rend   **** GX  |     sys_rend   **** GX
     sys_rend   **** GX  |     sys_rend   **** GX  |     sys_rend   **** GX
-    sys_rend   **** GX  |     sys_rend   **** GX  |     sys_text   **** GX
-    sys_text   **** GX  |     sys_text   **** GX  |     sys_text   **** GX
+    sys_rend   **** GX  |     sys_text   **** GX  |     sys_text   **** GX
+    sys_text   **** GX  |     sys_text   **** GX
 
 ASxxxx Assembler V02.00 + NoICE + SDCC mods  (Zilog Z80 / Hitachi HD64180), page 4.
 Hexadecimal [16-Bits]
 
 Area Table
 
-   0 _CODE      size   C3   flags    0
-   1 _DATA      size   18   flags    0
+   0 _CODE      size   D9   flags    0
+   1 _DATA      size   27   flags    0
 
