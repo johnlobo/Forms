@@ -50,6 +50,7 @@ player1::
     .dw #0x0000                 ;; sprite player pointer
     .db #0                      ;; moved flag
     .db #0                      ;; set flag
+    .db #0                      ;; cancel flag
 
 
 ;;-----------------------------------------------------------------
@@ -99,7 +100,8 @@ piece_sprites_small::
 piece_scoring::
     .db #0x05, #0x04, #0x03, #0x02, #0x05, #0x04, #0x03, #0x02, #0x05, #0x05
     .db #0x05, #0x05, #0x03, #0x03, #0x03, #0x03, #0x09, #0x04, #0x01
-
+line_scoring:: 
+    .db #0x01, #0x00
 ;;
 ;; Start of _CODE area
 ;; 
@@ -119,6 +121,8 @@ piece_scoring::
 ;;
 man_entity_init::
     ld ix, #player1
+    ld e_x(ix),#3
+    ld e_y(ix),#3
     ld e_p_screen_p(ix), #0
     ld e_p_screen_p+1(ix), #0
     ret

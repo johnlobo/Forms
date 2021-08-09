@@ -36,8 +36,9 @@ e_sprite_big_ptr = 10
 e_sprite_player_ptr = 12
 e_moved = 14
 e_set = 15
+e_cancel = 16
 
-sizeof_e = 16
+sizeof_e = 17
 
 ;;------------------------------------------------------------------------------
 ;; Global variables
