@@ -25,6 +25,21 @@
 
 .module input_system
 
+
+;;-----------------------------------------------------------------
+;;
+;; sys_input_clean_buffer
+;;
+;;  Waits until de key buffer is clean
+;;  Input: 
+;;  Output:
+;;  Modified: 
+;;
+sys_input_clean_buffer::
+    call cpct_isAnyKeyPressed_asm
+    jr nz, sys_input_clean_buffer
+    ret
+
 ;;-----------------------------------------------------------------
 ;;
 ;; sys_input_init
@@ -49,6 +64,21 @@ sys_input_init::
 _input_update_moved:
     ld a, #1
     ld e_moved(ix), a
+    ret
+
+;;-----------------------------------------------------------------
+;;
+;; _cancel_game
+;;
+;;   Initializes input
+;;  Input: 
+;;  Output:
+;;  Modified: 
+;;
+_cancel_game:
+    ld a, #1
+    ld (man_game_cancelled_game), a
+    call sys_input_clean_buffer
     ret
 
 ;;-----------------------------------------------------------------
@@ -196,6 +226,9 @@ _end_check:
     ld e_sprite_big_ptr+1(ix), h
 
     call _input_update_moved
+    
+    call sys_input_clean_buffer         ;; wait until keyboard buffer is empty
+    
     jp _end_input_update
 
 ;;-----------------------------------------------------------------
@@ -256,8 +289,12 @@ sys_input_actions_check:
 
     ld hl, #Key_Space                   ;; check key Space
     call cpct_isKeyPressed_asm          ;;
-    call nz, _set_piece                ;; if press Space set piece in board
-    
+    call nz, _set_piece                 ;; if press Space set piece in board
+
+    ld hl, #Key_Esc                     ;; check key Space
+    call cpct_isKeyPressed_asm          ;;
+    call nz, _cancel_game               ;; if press Space set piece in board
+
 _end_input_update:
     ret
 ;;-----------------------------------------------------------------

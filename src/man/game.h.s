@@ -17,7 +17,6 @@
 ;;-------------------------------------------------------------------------------
 
 
-.module game_manager
 
 ;;------------------------------------------------------------------------------
 ;; Global variables
@@ -29,7 +28,8 @@
 .globl next_pieces_coords
 .globl score
 .globl hi_score
-.globl no_more_moves
+.globl man_game_no_more_moves
+.globl man_game_cancelled_game
 
 ;;------------------------------------------------------------------------------
 ;; Global routines
