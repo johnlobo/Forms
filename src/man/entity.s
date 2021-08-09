@@ -50,6 +50,7 @@ player1::
     .dw #0x0000                 ;; sprite player pointer
     .db #0                      ;; moved flag
     .db #0                      ;; set flag
+    .db #0                      ;; cancel flag
 
 
 ;;-----------------------------------------------------------------

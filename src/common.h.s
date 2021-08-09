@@ -17,7 +17,6 @@
 ;;-------------------------------------------------------------------------------
 
 
-.module common
 
 ;; 
 ;; Declare all function entry points as global symbols for the compiler.

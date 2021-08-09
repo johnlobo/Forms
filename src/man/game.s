@@ -35,15 +35,16 @@
 ;;
 .area _DATA
 
-next_pieces:: .db #00, #00, #00
-next_pieces_count:: .db #00
-next_pieces_coords:: .db #46, #150, #59, #150, #70, #150
-selected_piece:: .db #00
-score:: .db #0x00, #0x00, #0x00, #0x00
-hi_score:: .db #0x01, #0x23, #0x45, #0x67
-score_buffer:: .db #0x00, #0x00, #0x00, #0x00
-line_to_render:: .db #00
-no_more_moves:: .db #00
+next_pieces::               .db #00, #00, #00
+next_pieces_count::         .db #00
+next_pieces_coords::        .db #46, #150, #59, #150, #70, #150
+selected_piece::            .db #00
+score::                     .db #0x00, #0x00, #0x00, #0x00
+hi_score::                  .db #0x01, #0x23, #0x45, #0x67
+score_buffer::              .db #0x00, #0x00, #0x00, #0x00
+line_to_render::            .db #00
+man_game_no_more_moves::    .db #00
+man_game_cancelled_game::   .db #00
 
 
 ;;
@@ -134,6 +135,11 @@ man_game_renew_next_pieces::
 ;;  Modified:
 ;;
 man_game_init::
+    ;; reset game flags
+    xor a
+    ld (man_game_no_more_moves), a
+    ld (man_game_cancelled_game), a
+
 
     call sys_board_init
     
@@ -391,7 +397,7 @@ m_g_set_piece_next_space_check:
     djnz m_g_set_piece_check_next_pieces_loop
 
     ld a, #1                                        ;; if loop finish -> no more moves
-    ld (no_more_moves), a                           ;; set no more moves and return
+    ld (man_game_no_more_moves), a                           ;; set no more moves and return
     jr m_g_set_piece_not_valid                      ;; jump and return
 
 m_g_set_piece_return:
@@ -420,7 +426,7 @@ man_game_update::
     call cpct_waitHalts_asm
 
     call sys_input_update           ;; call input system update
-    
+
     ld a, e_set(ix)                 ;; check if piece has been set
     or a                            ;;
     call nz, man_game_set_piece     ;; if so manage set piece
