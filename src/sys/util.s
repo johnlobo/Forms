@@ -16,8 +16,11 @@
 ;;  along with this program.  If not, see <http://www.gnu.org/licenses/>.
 ;;-------------------------------------------------------------------------------
 
+.include "../common.h.s"
+
 
 .module sys_util
+
 
 ;;-----------------------------------------------------------------;; 
 ;; Inputs:
@@ -133,3 +136,29 @@ BCD_Add_Again:
     inc hl
     djnz BCD_Add_Again
     ret
+  
+;;-----------------------------------------------------------------
+;;
+;; sys_util_BCD_Compare
+;;
+;;  Compare two BCD numbers
+;;  Input:  hl: BCD Number 1
+;;          de: BCD Number 2
+;;  Output: 
+;;  Destroyed: af, bc,de, hl
+;;
+;;  Chibi Akumas BCD code (https://www.chibiakumas.com/z80/advanced.php#LessonA1)
+;;
+sys_util_BCD_Compare::
+  ld b, #SCORE_NUM_BYTES
+  call sys_util_BCD_GetEnd
+BCD_cp_direct:
+  ld a, (de)
+  cp (hl)
+  ret c
+  ret nz
+  dec de
+  dec hl
+  djnz BCD_cp_direct
+  or a                    ;; Clear carry
+  ret
