@@ -168,14 +168,12 @@ man_game_init::
     call man_game_renew_next_pieces
 
     call sys_render_game_screen
-
-    ld hl, #hi_score
-    call man_game_clean_number
-    call sys_render_hi_score
     
     ld hl, #score
     call man_game_clean_number
     call sys_render_score
+    call sys_render_hi_score            ;; render hiscore
+
 
     call sys_render_next_pieces     ;; Render next pieces on screen
 
@@ -280,6 +278,49 @@ man_game_erase_col::
 
 ;;-----------------------------------------------------------------
 ;;
+;;  man_game_clean_score_buffer
+;;
+;;  set piece in board
+;;  Input: 
+;;  Output:
+;;  Modified:
+;;
+man_game_clean_score_buffer::
+    ld hl, #score_buffer
+    xor a
+    ld (hl), a
+    inc hl
+    ld (hl), a
+    inc hl
+    ld (hl), a
+    inc hl
+    ld (hl), a
+    ret
+
+;-----------------------------------------------------------------
+;;
+;;  man_game_copy_score_2_hiscore
+;;
+;;  set piece in board
+;;  Input: 
+;;  Output:
+;;  Modified:
+;;
+man_game_copy_score_2_hiscore::
+    ld hl, #score
+    ld de, #hi_score
+    ld b, #4
+m_g_copy_score_loop:
+    ld a, (hl)
+    ld (de), a
+    inc hl
+    inc de
+    djnz m_g_copy_score_loop
+    call sys_render_hi_score
+    ret
+
+;;-----------------------------------------------------------------
+;;
 ;; man_game_add_score_4piece
 ;;
 ;;  set piece in board
@@ -289,6 +330,7 @@ man_game_erase_col::
 ;;
 man_game_add_score_4piece::
     ;; Add score
+    call man_game_clean_score_buffer
     ld hl, #piece_scoring                       ;; set hl to point the list of scoring                       
     ld a, e_type(ix)                            ;; read type in a to set offset
     add_hl_a                                    ;; add ofset to pointer
@@ -300,6 +342,41 @@ man_game_add_score_4piece::
     ld b, #SCORE_NUM_BYTES                      ;; store in b the number of bytes of the numbers add 
     call sys_util_BCD_Add
     call sys_render_score
+    ld hl, #score
+    ld de, #hi_score
+    call sys_util_BCD_Compare
+    call c, man_game_copy_score_2_hiscore
+    ret
+
+;;-----------------------------------------------------------------
+;;
+;; man_game_add_score4line
+;;
+;;  set piece in board
+;;  Input: 
+;;  Output:
+;;  Modified:
+;;
+man_game_add_score_4line::
+    ;; Add score
+    call man_game_clean_score_buffer
+    ld hl, #line_scoring                       ;; set hl to point the list of scoring                       
+    ld de, #score_buffer                        ;;
+    ld a, (hl)                                  ;;
+    ld (de), a                                  ;;
+    inc hl                                      ;;
+    inc de                                      ;;    
+    ld a, (hl)                                  ;;
+    ld (de), a                                  ;; store the score in score buffer
+    ld hl, #score_buffer
+    ld de, #score                               ;; point de to the current score
+    ld b, #SCORE_NUM_BYTES                      ;; store in b the number of bytes of the numbers add 
+    call sys_util_BCD_Add
+    call sys_render_score                       ;; re-render score
+    ld hl, #score                               ;;
+    ld de, #hi_score                            ;;  compare score with hiscore
+    call sys_util_BCD_Compare                   ;;
+    call c, man_game_copy_score_2_hiscore       ;; if score higher then copy score to hiscore
     ret
 
 ;;-----------------------------------------------------------------
@@ -340,6 +417,7 @@ m_g_set_piece_check_rows:                       ;; Check if the set piece has fi
     cp #0xff                                    ;; check if all the lines are incomplete
     jr z, m_g_set_piece_check_cols              ;;
     call man_game_erase_row                     ;; if one is complete erase line in a
+    call man_game_add_score_4line
     jr m_g_set_piece_check_rows                 ;; get back to check again
 
 m_g_set_piece_check_cols:                       ;; Check if the set piece has filled a col
@@ -351,6 +429,7 @@ m_g_set_piece_check_cols:                       ;; Check if the set piece has fi
     cp #0xff                                    ;; check if all the lines are incomplete
     jr z, m_g_set_piece_all_clear               ;;
     call man_game_erase_col                     ;; if one is complete erase line in a
+    call man_game_add_score_4line
     jr m_g_set_piece_check_cols                 ;; get back to check again
 m_g_set_piece_all_clear:
 

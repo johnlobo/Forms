@@ -253,12 +253,15 @@ _main::
    call cpct_waitVSYNC_asm
    call cpct_setInterruptHandler_asm
 
+   ld hl, #hi_score                    ;; Init hiscore
+   call man_game_clean_number          ;; clean number
+
 start:
    call _main_init
 
    ;; Loop forever
 loop:
-   ld b,#18
+   ld b,#12
    call cpct_waitHalts_asm
    
    call man_game_update

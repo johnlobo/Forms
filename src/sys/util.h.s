@@ -23,3 +23,4 @@
 .globl sys_util_ten_times_a
 .globl sys_util_BCD_GetEnd
 .globl sys_util_BCD_Add
+.globl sys_util_BCD_Compare

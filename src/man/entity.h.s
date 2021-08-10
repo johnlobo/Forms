@@ -50,6 +50,7 @@ sizeof_e = 17
 .globl piece_sprites_player
 .globl piece_sprites_small
 .globl piece_scoring
+.globl line_scoring
 
 ;;------------------------------------------------------------------------------
 ;; Global routines
