@@ -25,6 +25,7 @@
 .include "sys/messages.h.s"
 .include "man/entity.h.s"
 .include "man/game.h.s"
+.include "audio/audio.h.s"
 .include "common.h.s"
 
 .module main
@@ -72,26 +73,6 @@ set_int_handler:
 ;;DESTROYS: AF, BC, DE
 ;;
 int_handler1::
-
-; 	ld a, (uncontador)
-; 	xor #1
-; 	ld (uncontador), a
-
-; 	ld h, #0
-; 	ld l, #16
-; 	call cpct_setPALColour_asm
-
-; 	ld h, #6
-; 	ld l, #16
-; 	call cpct_setPALColour_asm
-	
-;;	ld a, (song_playing)
-;;	or a
-;;	call nz, cpct_akp_musicPlay_asm
-;;
-;;	ld a, #01
-;;	ld (render_interrupt), a
-;;
 	ld hl, #int_handler2
  	call cpct_setInterruptHandler_asm	
 	ret
@@ -103,17 +84,8 @@ int_handler1::
 ;;DESTROYS: AF, BC, DE
 ;;
 int_handler2::
-; 	ld a, (uncontador)
-; 	xor #1
-; 	ld (uncontador), a
-
-; 	ld h, #1
-; 	ld l, #16
-; 	call cpct_setPALColour_asm
 	call cpct_scanKeyboard_if_asm
 
-	;;ld a, #00
-	;;ld (render_interrupt), a
 
 	ld hl, #int_handler3
    call cpct_setInterruptHandler_asm
@@ -126,15 +98,6 @@ int_handler2::
 ;;DESTROYS: AF, BC, DE
 ;;
 int_handler3::
-; 	ld a, (uncontador)
-; 	xor #2
-; 	ld (uncontador), a
-
-; 	ld h, #2
-; 	ld l, #16
-; 	call cpct_setPALColour_asm
-	
-
 	ld hl, #int_handler4
    call cpct_setInterruptHandler_asm
 	ret
@@ -145,21 +108,7 @@ int_handler3::
 ;;
 ;;DESTROYS: AF, BC, DE
 ;;
-int_handler4::
-; 	ld a, (uncontador)
-; 	xor #1
-; 	ld (uncontador), a
-
-; 	ld h, #3
-; 	ld l, #16
-; 	call cpct_setPALColour_asm
-
-; 	ld a, (starscreen_bool)
-; 	ld b, a
-; 	ld a, (gameoverscreen_bool)
-; 	or b
-; 	call z, rendersys_drawintfc
-	
+int_handler4::	
 	ld hl, #int_handler5
    call cpct_setInterruptHandler_asm
 	ret
@@ -171,13 +120,20 @@ int_handler4::
 ;;DESTROYS: AF, BC, DE
 ;;
 int_handler5::
-; 	ld a, (uncontador)
-; 	xor #1
-; 	ld (uncontador), a
+   exx
+   ex af', af  
+   push af
+   push bc
+   push de
+   push hl
+   call PLY_AKG_PLAY
+   pop hl
+   pop de
+   pop bc
+   pop af
+   ex af', af  
+   exx
 
-; 	ld h, #4
-; 	ld l, #16
-; 	call cpct_setPALColour_asm
 	ld hl, #int_handler6
    call cpct_setInterruptHandler_asm
 	ret
@@ -189,17 +145,26 @@ int_handler5::
 ;;DESTROYS: AF, BC, DE
 ;;
 int_handler6::
-; 	ld a, (uncontador)
-; 	xor #1
-; 	ld (uncontador), a
-
-; 	ld h, #5
-; 	ld l, #16
-; 	call cpct_setPALColour_asm
 	ld hl, #int_handler1
    call cpct_setInterruptHandler_asm
 	ret
 
+;;-----------------------------------------------------------------
+;;
+;; main_audio_init
+;;   Draw player1
+;;  Input:  
+;;  Output: 
+;;  Destroyed: af, bc,de, hl
+;;
+main_audio_init::
+
+   ld a, #FEVER_MIX
+   call sys_audio_init_song
+
+   call sys_audio_init_soundEffects
+
+   ret
 
 ;;-----------------------------------------------------------------
 ;;
@@ -210,6 +175,9 @@ int_handler6::
 ;;  Destroyed: af, bc,de, hl
 ;;
 _main_init::
+
+   call main_audio_init
+
    call sys_render_init
 
    call sys_render_logo_screen
@@ -280,38 +248,21 @@ loop:
 
 end_of_game:
 
-   _window_x = 24
-   _window_y = 78
-   _window_w = 32
-   _window_h = 44
+   ld a, #LOSE_SONG                 ;The Subsong to play (&gt;=0).
+   call sys_audio_init_song
 
-   cpctm_screenPtr_asm de, CPCT_VMEM_START_ASM, _window_x, _window_y  ;; screen address for 26, 100 in de
-   ld c,#_window_w
-   ld b,#_window_h
-   ld a,#0                                             ;; Patern of solid box
-   call cpct_drawSolidBox_asm
-
-   cpctm_screenPtr_asm de, CPCT_VMEM_START_ASM, (_window_x+1) , (_window_y+2)  ;; screen address for 26, 100 in de
-   ld c,#(_window_w-2)
-   ld b,#(_window_h-4)
-   ld a,#255                                             ;; Patern of solid box
-   call cpct_drawSolidBox_asm
-
-   ld c, #0
-   cpctm_screenPtr_asm de, CPCT_VMEM_START_ASM, (_window_x+3) , (_window_y+10)  ;; screen address for 30, 120 in de
-   ld hl, #_no_more_moves_string
-   call sys_text_draw_string
-
-   ld c, #0
-   cpctm_screenPtr_asm de, CPCT_VMEM_START_ASM, (_window_x+6) , (_window_y+26)  ;; screen address for 30, 120 in de
-   ld hl, #_game_over_sring
-   call sys_text_draw_string
-   
-   call sys_input_wait4anykey
-
+   ld e, #24                           ;; x
+   ld d, #78                           ;; y
+   ld b, #44                           ;; h
+   ld c, #32                           ;; w
+   ld hl, #_no_more_moves_string      ;; message
+   call sys_messagees_show
    jr start
 
 _game_cancelled:
+   ld a, #LOSE_SONG                 ;The Subsong to play (&gt;=0).
+   call sys_audio_init_song
+
    ld e, #24                           ;; x
    ld d, #78                           ;; y
    ld b, #44                           ;; h

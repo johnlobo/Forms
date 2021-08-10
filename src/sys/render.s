@@ -88,7 +88,7 @@ sys_render_init::
 ;;
 sys_render_logo_screen::
     
-    cpctm_screenPtr_asm de, CPCT_VMEM_START_ASM, 24, 76  ;; screen address for 30, 76 in de
+    cpctm_screenPtr_asm de, CPCT_VMEM_START_ASM, 24, 45  ;; screen address for 30, 76 in de
     ld hl, #_s_logo_1010
     ld c, #S_LOGO_1010_W
     ld b, #S_LOGO_1010_H
@@ -97,7 +97,7 @@ sys_render_logo_screen::
 
 
     ld c, #0
-    cpctm_screenPtr_asm de, CPCT_VMEM_START_ASM, 28, 120  ;; screen address for 30, 120 in de
+    cpctm_screenPtr_asm de, CPCT_VMEM_START_ASM, 26, 145  ;; screen address for 30, 120 in de
     ld hl, #_press_any_key
     call sys_text_draw_string
 
@@ -114,53 +114,44 @@ sys_render_logo_screen::
 ;;
 sys_render_game_screen::
     ;; Draw Hi Score Title
-    ld de, #CPCT_VMEM_START_ASM     ;; DE = Pointer to start of the screen
-    ld b, #HIGH_SCORE_TITLE_Y_COORD ;; B = y coordinate (24 = 0x18)
-    ld c, #HIGH_SCORE_TITLE_X_COORD ;; C = x coordinate (16 = 0x10)
-    call cpct_getScreenPtr_asm      ;; Calculate video memory location and return it in HL
-    ex de, hl                       ;; move screen address to de
-    ld hl, #_s_hi_score             ;; load in HL the address of the sprite
-    ld c, #S_HI_SCORE_W             ;; load in c the sprite width 
-    ld b, #S_HI_SCORE_H             ;; load in b sprite height
+    cpctm_screenPtr_asm de, CPCT_VMEM_START_ASM, 18, 1       ;; screen address for 4, 6 in de
+    ;;ld hl, #_s_hi_score             ;; load in HL the address of the sprite
+    ;;ld c, #S_HI_SCORE_W             ;; load in c the sprite width 
+    ;;ld b, #S_HI_SCORE_H             ;; load in b sprite height
+
+    ld hl, #_s_high_score_icon             ;; load in HL the address of the sprite
+    ld c, #S_HI_SCORE_ICON_W             ;; load in c the sprite width 
+    ld b, #S_HI_SCORE_ICON_H             ;; load in b sprite height
     call cpct_drawSprite_asm        ;; draw sprite
 
     ;; Draw Score Title
-    ld de, #CPCT_VMEM_START_ASM     ;; DE = Pointer to start of the screen
-    ld b, #SCORE_TITLE_Y_COORD      ;; B = y coordinate (24 = 0x18)
-    ld c, #SCORE_TITLE_X_COORD      ;; C = x coordinate (16 = 0x10)
-    call cpct_getScreenPtr_asm      ;; Calculate video memory location and return it in HL
-    ex de, hl                       ;; move screen address to de
-    ld hl, #_s_score                ;; load in HL the address of the sprite
-    ld c, #S_SCORE_W                ;; load in c the sprite width 
-    ld b, #S_SCORE_H                ;; load in b sprite height
+    cpctm_screenPtr_asm de, CPCT_VMEM_START_ASM, 60, 4       ;; screen address for 57, 6 in de
+    ;;ld hl, #_s_score                ;; load in HL the address of the sprite
+    ;;ld c, #S_SCORE_W                ;; load in c the sprite width 
+    ;;ld b, #S_SCORE_H                ;; load in b sprite height
+    ld hl, #_s_star_icon                ;; load in HL the address of the sprite
+    ld c, #S_STAR_ICON_W                ;; load in c the sprite width 
+    ld b, #S_STAR_ICON_H                ;; load in b sprite height
     call cpct_drawSprite_asm        ;; draw sprite
 
     call sys_render_board
 
-    ;; Draw Next
-    ld de, #CPCT_VMEM_START_ASM     ;; DE = Pointer to start of the screen
-    ld b, #NEXT_TITLE_Y_COORD        ;; B = y coordinate (24 = 0x18)
-    ld c, #NEXT_TITLE_X_COORD        ;; C = x coordinate (16 = 0x10)
-    call cpct_getScreenPtr_asm      ;; Calculate video memory location and return it in HL
-    ex de, hl                       ;; move screen address to de
+    ;; Draw "Next"
+    cpctm_screenPtr_asm de, CPCT_VMEM_START_ASM, 46, 74       ;; screen address for 57, 6 in de
     ld hl, #_s_next     ;; load in HL the address of the sprite
     ld c, #S_NEXT_W       ;; load in c the sprite width 
     ld b, #S_NEXT_H       ;; load in b sprite height
     call cpct_drawSprite_asm        ;; draw sprite
 
-    ;; Draw Pieces
-    ld de, #CPCT_VMEM_START_ASM     ;; DE = Pointer to start of the screen
-    ld b, #PIECES_TITLE_Y_COORD        ;; B = y coordinate (24 = 0x18)
-    ld c, #PIECES_TITLE_X_COORD        ;; C = x coordinate (16 = 0x10)
-    call cpct_getScreenPtr_asm      ;; Calculate video memory location and return it in HL
-    ex de, hl                       ;; move screen address to de
+    ;; Draw "Pieces"
+    cpctm_screenPtr_asm de, CPCT_VMEM_START_ASM, 58, 74       ;; screen address for 57, 6 in de
     ld hl, #_s_pieces     ;; load in HL the address of the sprite
     ld c, #S_PIECES_W       ;; load in c the sprite width 
     ld b, #S_PIECES_H       ;; load in b sprite height
     call cpct_drawSprite_asm        ;; draw sprite
-
+    ;; Text to remember I Key change pieces
     ld c, #0
-    cpctm_screenPtr_asm de, CPCT_VMEM_START_ASM, 47, 184  ;; screen address for 30, 120 in de
+    cpctm_screenPtr_asm de, CPCT_VMEM_START_ASM, 47, 138  ;; screen address for 30, 120 in de
     ld hl, #_to_change_piece
     call sys_text_draw_string
 
@@ -785,16 +776,17 @@ sys_render_next_pieces::
 
 ;-----------------------------------------------------------------
 ;;
-;; sys_render_score
+;; sys_render_hi_score
 ;;
 ;;   Draw socre
 ;;  Input: 
 ;;  Output: 
 ;;  Destroyed: af, bc,de, hl
 ;;
-sys_render_score::
-    ld de,#score
-    ld hl, #SCORE_SCREEN_ADDRESS
+sys_render_hi_score::
+    ld de,#hi_score
+    ;;ld hl, #HIGH_SCORE_SCREEN_ADDRESS
+    cpctm_screenPtr_asm hl, CPCT_VMEM_START_ASM, 9, 23  ;; screen address for 1, 20 in de
     call sys_render_BCD_show
     ret
 
@@ -807,11 +799,13 @@ sys_render_score::
 ;;  Output: 
 ;;  Destroyed: af, bc,de, hl
 ;;
-sys_render_hi_score::
-    ld de,#hi_score
-    ld hl, #HIGH_SCORE_SCREEN_ADDRESS
+sys_render_score::
+    ld de,#score
+    ;;ld hl, #SCORE_SCREEN_ADDRESS
+    cpctm_screenPtr_asm hl, CPCT_VMEM_START_ASM, 49, 23  ;; screen address for 30, 120 in de
     call sys_render_BCD_show
     ret
+
 
 ;-----------------------------------------------------------------
 ;;
@@ -826,9 +820,11 @@ sys_render_hi_score::
 ;;  Chibi Akumas BCD code (https://www.chibiakumas.com/z80/advanced.php#LessonA1)
 ;;
 sys_render_BCD_show::
+    push hl
     ld b, #SCORE_NUM_BYTES
     ld c, #0
     call sys_util_BCD_GetEnd
+    pop hl
 _BCD_show_direct:
 	ld a,(de)
 	and #0b11110000		;Use the high nibble
@@ -883,8 +879,10 @@ _print_score_draw_number:                       ;; draw sprite
     push de                                     ;; restore the stack
 _retrive_digit_position:
     ld c, #00                                   ;; load digit position in c (self modifying code)
-    sla c
-    sla c                                       ;; multiply digit position by 4 wich is the width of the number sprite (hard coded) to get the screen offset
+    ld a, c
+    sla a
+    add c                                       ;; multiply digit position by 4 wich is the width of the number sprite (hard coded) to get the screen offset
+    ld c, a 
     ld a, e                                     ;;
     add c                                       ;; add the offset to the screen address
     ld e, a                                     ;;

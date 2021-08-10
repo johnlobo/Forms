@@ -3,35 +3,35 @@
 #define _ASSETS_SCORE_NUMBERS_H_
 
 #include <types.h>
-#define S_SCORE_NUMBERS_00_W 4
+#define S_SCORE_NUMBERS_00_W 3
 #define S_SCORE_NUMBERS_00_H 15
-extern const u8 s_score_numbers_00[4 * 15];
-#define S_SCORE_NUMBERS_01_W 4
+extern const u8 s_score_numbers_00[3 * 15];
+#define S_SCORE_NUMBERS_01_W 3
 #define S_SCORE_NUMBERS_01_H 15
-extern const u8 s_score_numbers_01[4 * 15];
-#define S_SCORE_NUMBERS_02_W 4
+extern const u8 s_score_numbers_01[3 * 15];
+#define S_SCORE_NUMBERS_02_W 3
 #define S_SCORE_NUMBERS_02_H 15
-extern const u8 s_score_numbers_02[4 * 15];
-#define S_SCORE_NUMBERS_03_W 4
+extern const u8 s_score_numbers_02[3 * 15];
+#define S_SCORE_NUMBERS_03_W 3
 #define S_SCORE_NUMBERS_03_H 15
-extern const u8 s_score_numbers_03[4 * 15];
-#define S_SCORE_NUMBERS_04_W 4
+extern const u8 s_score_numbers_03[3 * 15];
+#define S_SCORE_NUMBERS_04_W 3
 #define S_SCORE_NUMBERS_04_H 15
-extern const u8 s_score_numbers_04[4 * 15];
-#define S_SCORE_NUMBERS_05_W 4
+extern const u8 s_score_numbers_04[3 * 15];
+#define S_SCORE_NUMBERS_05_W 3
 #define S_SCORE_NUMBERS_05_H 15
-extern const u8 s_score_numbers_05[4 * 15];
-#define S_SCORE_NUMBERS_06_W 4
+extern const u8 s_score_numbers_05[3 * 15];
+#define S_SCORE_NUMBERS_06_W 3
 #define S_SCORE_NUMBERS_06_H 15
-extern const u8 s_score_numbers_06[4 * 15];
-#define S_SCORE_NUMBERS_07_W 4
+extern const u8 s_score_numbers_06[3 * 15];
+#define S_SCORE_NUMBERS_07_W 3
 #define S_SCORE_NUMBERS_07_H 15
-extern const u8 s_score_numbers_07[4 * 15];
-#define S_SCORE_NUMBERS_08_W 4
+extern const u8 s_score_numbers_07[3 * 15];
+#define S_SCORE_NUMBERS_08_W 3
 #define S_SCORE_NUMBERS_08_H 15
-extern const u8 s_score_numbers_08[4 * 15];
-#define S_SCORE_NUMBERS_09_W 4
+extern const u8 s_score_numbers_08[3 * 15];
+#define S_SCORE_NUMBERS_09_W 3
 #define S_SCORE_NUMBERS_09_H 15
-extern const u8 s_score_numbers_09[4 * 15];
+extern const u8 s_score_numbers_09[3 * 15];
 
 #endif

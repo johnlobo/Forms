@@ -23,6 +23,7 @@
 .include "sys/board.h.s"
 .include "sys/render.h.s"
 .include "sys/input.h.s"
+.include "audio/audio.h.s"
 
 
 .module game_manager
@@ -37,7 +38,7 @@
 
 next_pieces::               .db #00, #00, #00
 next_pieces_count::         .db #00
-next_pieces_coords::        .db #46, #150, #59, #150, #70, #150
+next_pieces_coords::        .db #46, #104, #59, #104, #70, #104
 selected_piece::            .db #00
 score::                     .db #0x00, #0x00, #0x00, #0x00
 hi_score::                  .db #0x01, #0x23, #0x45, #0x67
@@ -405,7 +406,12 @@ man_game_set_piece::
     ld b, e_y(ix)                               ;; load y coord in b
     ld a, e_type(ix)                            ;; load piece in a
     call sys_board_set_piece                    ;; set piece in board
-
+    ;; Audio effect
+    push af
+    ld a,#SOUND_HIT                             ;; Sound effect to play
+    call sys_audio_play_soundEffect
+    pop af
+    ;; Add score
     call man_game_add_score_4piece              ;; add the score corresponfing to the piece set
 
 m_g_set_piece_check_rows:                       ;; Check if the set piece has filled a line
@@ -416,7 +422,14 @@ m_g_set_piece_check_rows:                       ;; Check if the set piece has fi
     call sys_board_check_partial_rows           ;; check if the piece set has completed any line
     cp #0xff                                    ;; check if all the lines are incomplete
     jr z, m_g_set_piece_check_cols              ;;
+    ;; Audio effect
+    push af
+    ld a,#SOUND_LINE                             ;; Sound effect to play
+    call sys_audio_play_soundEffect
+    pop af
+    
     call man_game_erase_row                     ;; if one is complete erase line in a
+    ;; Add score
     call man_game_add_score_4line
     jr m_g_set_piece_check_rows                 ;; get back to check again
 
@@ -428,7 +441,16 @@ m_g_set_piece_check_cols:                       ;; Check if the set piece has fi
     call sys_board_check_partial_cols           ;; check if the piece set has completed any line
     cp #0xff                                    ;; check if all the lines are incomplete
     jr z, m_g_set_piece_all_clear               ;;
+    
+    ;; Audio effect
+    push af
+    ld a,#SOUND_LINE                             ;; Sound effect to play
+    call sys_audio_play_soundEffect
+    pop af
+
     call man_game_erase_col                     ;; if one is complete erase line in a
+    
+    ;; Add score
     call man_game_add_score_4line
     jr m_g_set_piece_check_cols                 ;; get back to check again
 m_g_set_piece_all_clear:
@@ -509,8 +531,15 @@ m_g_set_piece_next_space_check:
 m_g_set_piece_return:
     pop bc
     pop hl
+    ld e_set(ix), #0
+    ret
 
 m_g_set_piece_not_valid:
+    ;; Audio effect
+    push af
+    ld a,#SOUND_VIRUS                             ;; Sound effect to play
+    call sys_audio_play_soundEffect
+    pop af
     ld e_set(ix), #0
     ret
 
