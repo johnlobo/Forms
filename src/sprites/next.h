@@ -3,8 +3,8 @@
 #define _ASSETS_NEXT_H_
 
 #include <types.h>
-#define S_NEXT_W 12
+#define S_NEXT_W 10
 #define S_NEXT_H 16
-extern const u8 s_next[12 * 16];
+extern const u8 s_next[10 * 16];
 
 #endif

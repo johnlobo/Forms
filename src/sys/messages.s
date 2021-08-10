@@ -32,7 +32,7 @@
 ;;
 .area _DATA
 
-_window_data:
+_window_data::
 _window_x: .db #00
 _window_y: .db #00
 _window_w: .db #00
@@ -68,7 +68,7 @@ w_message = 4
 
 sys_messagees_show::
 
-    ld (iy), #_window_data
+    ld iy, #_window_data
     ld w_w(iy), c
     ld w_h(iy), b
     ld w_x(iy), e
