@@ -23,7 +23,7 @@
 .include "sys/board.h.s"
 .include "sys/render.h.s"
 .include "sys/input.h.s"
-.include "audio/audio.h.s"
+.include "sys/audio.h.s"
 
 
 .module game_manager
@@ -38,7 +38,7 @@
 
 next_pieces::               .db #00, #00, #00
 next_pieces_count::         .db #00
-next_pieces_coords::        .db #46, #104, #59, #104, #70, #104
+next_pieces_coords::        .db #45, #104, #57, #104, #69, #104
 selected_piece::            .db #00
 score::                     .db #0x00, #0x00, #0x00, #0x00
 hi_score::                  .db #0x01, #0x23, #0x45, #0x67
@@ -167,6 +167,8 @@ man_game_init::
     call man_entity_init
     
     call man_game_renew_next_pieces
+    ld a, (selected_piece)
+    call sys_render_draw_next_frame
 
     call sys_render_game_screen
     
@@ -462,21 +464,32 @@ m_g_set_piece_all_clear:
     call z, man_game_renew_next_pieces          ;; If not renew the pieces
 
 _change_piece:
-    ld a, (selected_piece)              ;; read selected piece
-    inc a                               ;; increment piece type
+    ld a, (selected_piece)                      ;; read selected piece
+    ld (_set_piece_erase_previous_piece+1), a   ;; keep current selected piece frame for erase later
+_set_piece_renew_piece:
+    ld a, (selected_piece)                      ;; read selected piece
+    inc a                                       ;; increment piece type
     cp #3       
     jr nz, _valid_piece     
     xor a       
 _valid_piece:       
-    ld (selected_piece), a              ;; Update selected piece 
+    ld (selected_piece), a                      ;; Update selected piece 
     ld hl, #next_pieces
     add_hl_a
     ld a, (hl)
     cp #0xff
-    jr z, _change_piece
+    jr z, _set_piece_renew_piece
     ;; New piece ok    
 
     ld e_type(ix), a                    ;; Update piece in Player1 struct
+
+_set_piece_erase_previous_piece:
+    ld a, #00
+    call sys_render_draw_next_frame     ;; erase previous selected piece frame
+    ld a, (selected_piece)              ;; select current selected piece
+    call sys_render_draw_next_frame     ;; draw current selected piece frame
+    
+    ld a, e_type(ix)
     call man_entity_get_hl_from_piece   ;; get address of the new piece
     ld a,(hl)                           ;; get piece width
     ld e_w(ix),a

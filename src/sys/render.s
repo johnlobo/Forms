@@ -44,7 +44,8 @@ _piece::        .db #00
 _score_digit:   .db #00
 _fila:          .db #00
 _press_any_key: .asciz "PRESS ANY KEY"
-_to_change_piece: .asciz "I-CHANGE PIECE"
+_next_blocks_string: .asciz "NEXT BLOCKS"
+_to_change_block_string: .asciz "[I]-CHANGE"
 
 
 ;;
@@ -136,23 +137,16 @@ sys_render_game_screen::
 
     call sys_render_board
 
-    ;; Draw "Next"
-    cpctm_screenPtr_asm de, CPCT_VMEM_START_ASM, 46, 74       ;; screen address for 57, 6 in de
-    ld hl, #_s_next     ;; load in HL the address of the sprite
-    ld c, #S_NEXT_W       ;; load in c the sprite width 
-    ld b, #S_NEXT_H       ;; load in b sprite height
-    call cpct_drawSprite_asm        ;; draw sprite
-
-    ;; Draw "Pieces"
-    cpctm_screenPtr_asm de, CPCT_VMEM_START_ASM, 58, 74       ;; screen address for 57, 6 in de
-    ld hl, #_s_pieces     ;; load in HL the address of the sprite
-    ld c, #S_PIECES_W       ;; load in c the sprite width 
-    ld b, #S_PIECES_H       ;; load in b sprite height
-    call cpct_drawSprite_asm        ;; draw sprite
     ;; Text to remember I Key change pieces
     ld c, #0
-    cpctm_screenPtr_asm de, CPCT_VMEM_START_ASM, 47, 138  ;; screen address for 30, 120 in de
-    ld hl, #_to_change_piece
+    cpctm_screenPtr_asm de, CPCT_VMEM_START_ASM, 48, 74  ;; screen address for 30, 120 in de
+    ld hl, #_next_blocks_string
+    call sys_text_draw_string
+
+    ;; Text to remember I Key change pieces
+    ld c, #0
+    cpctm_screenPtr_asm de, CPCT_VMEM_START_ASM, 49, 138  ;; screen address for 30, 120 in de
+    ld hl, #_to_change_block_string
     call sys_text_draw_string
 
     ret
@@ -622,7 +616,7 @@ sys_render_erase_next_piece::
 
     ex de, hl                       ;; store screen addres in de
     ld c,#NEXT_PIECE_MAX_WIDTH
-    ld b,#NEXT_PIECE_MAX_HEIGHT+1
+    ld b,#NEXT_PIECE_MAX_HEIGHT
     ld a,#255                        ;; Patern of solid box
 
     call cpct_drawSolidBox_asm
@@ -734,7 +728,7 @@ _dp2_continue_0:
     
     ret
 
-;-----------------------------------------------------------------
+;;-----------------------------------------------------------------
 ;;
 ;; sys_render_next_pieces
 ;;
@@ -772,6 +766,36 @@ sys_render_next_pieces::
     ld c, a
     ld a, (next_pieces + 2)
     call sys_render_draw_piece_small
+    ret
+
+;;-----------------------------------------------------------------
+;;
+;; sys_render_next_pieces
+;;
+;;   Draw player1
+;;  Input:  b : x position
+;;          c : y position
+;;          a ; piece
+;;  Output: 
+;;  Destroyed: af, bc,de, hl
+;;
+sys_render_draw_next_frame::
+    ld hl, #next_pieces_coords
+    sla a                               ;; duplicate a to calculate offset
+    add_hl_a
+    ld c, (hl)                          ;; load x coord in c
+    dec c
+    inc hl                              ;; inc pointer
+    ld b, (hl)                          ;; load y coord in b
+    dec b
+    dec b
+    ld de, #CPCT_VMEM_START_ASM         ;; load screen begin
+    call cpct_getScreenPtr_asm          ;; get string pointer in hl
+    ex de, hl
+    ld hl, #_s_next_frame
+    ld c, #S_NEXT_FRAME_H
+    ld b, #S_NEXT_FRAME_W
+    call cpct_drawSpriteBlended_asm
     ret
 
 ;-----------------------------------------------------------------

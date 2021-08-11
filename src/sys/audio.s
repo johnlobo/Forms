@@ -16,7 +16,7 @@
 ;;  along with this program.  If not, see <http://www.gnu.org/licenses/>.
 ;;-------------------------------------------------------------------------------
 
-.include "audio/audio.h.s"
+.include "sys/audio.h.s"
 
 ;;-----------------------------------------------------------------
 ;;
