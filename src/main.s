@@ -25,7 +25,7 @@
 .include "sys/messages.h.s"
 .include "man/entity.h.s"
 .include "man/game.h.s"
-.include "audio/audio.h.s"
+.include "sys/audio.h.s"
 .include "common.h.s"
 
 .module main

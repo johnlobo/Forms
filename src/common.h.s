@@ -58,8 +58,6 @@
 .globl _s_sprites_3
 .globl _s_sprites_4
 .globl _g_palette0
-.globl _s_hi_score
-.globl _s_score
 .globl _s_score_numbers_00
 .globl _s_score_numbers_01
 .globl _s_score_numbers_02
@@ -69,13 +67,11 @@
 .globl _s_score_numbers_06
 .globl _s_score_numbers_07
 .globl _s_score_numbers_08
-.globl _s_next
-.globl _s_pieces
 .globl _s_logo_1010
-.globl _s_press_any_key
 .globl _g_font_chars
 .globl _s_high_score_icon
 .globl _s_star_icon
+.globl _s_next_frame
 
 
 ;;===============================================================================
@@ -99,6 +95,7 @@
 .globl cpct_isAnyKeyPressed_asm
 .globl cpct_setInterruptHandler_asm
 .globl cpct_waitVSYNC_asm
+.globl cpct_drawSpriteBlended_asm
 
 ;;===============================================================================
 ;; DEFINED CONSTANTS
@@ -121,53 +118,28 @@ S_HI_SCORE_ICON_H = 19
 S_STAR_ICON_W = 5
 S_STAR_ICON_H = 14
 
-
 S_SCORE_NUMBERS_W = 3
 S_SCORE_NUMBERS_H = 15
 
-S_PRESS_ANY_KEY_W = 25
-S_PRESS_ANY_KEY_H = 8
 S_LOGO_1010_W = 29
 S_LOGO_1010_H = 64
+
+S_NEXT_FRAME_W =12
+S_NEXT_FRAME_H =33
 
 BOARD_X_COORD = 1   ;; X 
 BOARD_Y_COORD = 54  ;; Y 
 BOARD_ROWS = 10     ;;
 BOARD_COLS = 10     ;;
 
-HIGH_SCORE_TITLE_X_COORD = 4        ;;
-HIGH_SCORE_TITLE_Y_COORD = 6        ;;   
-HIGH_SCORE_X_COORD = 1
-HIGH_SCORE_Y_COORD = 20
-HIGH_SCORE_SCREEN_ADDRESS = 0xE0A1
-
-SCORE_TITLE_X_COORD = 57       ;;
-SCORE_TITLE_Y_COORD = 6       ;; 
-SCORE_X_COORD = 57
-SCORE_Y_COORD = 20
-SCORE_SCREEN_ADDRESS = 0xE16D
-
-
 PIECE_HOR_SIZE = 5
 PIECE_VER_SIZE = 5
 
 MAX_PIECE = 18
 
-
 NEXT_PIECE_MAX_HEIGHT = 30
 NEXT_PIECE_MAX_WIDTH = 10
 
 SCORE_NUM_BYTES = 4
-
-S_NEXT_W = 10
-S_NEXT_H = 16
-NEXT_TITLE_X_COORD = 45       ;;
-NEXT_TITLE_Y_COORD = 70       ;;
-
-S_PIECES_W = 18
-S_PIECES_H = 16
-PIECES_TITLE_X_COORD = 60       ;;
-PIECES_TITLE_Y_COORD = 70       ;;
-
 
 

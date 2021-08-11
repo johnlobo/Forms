@@ -21,6 +21,7 @@
 .include "man/entity.h.s"
 .include "man/game.h.s"
 .include "sys/util.h.s"
+.include "sys/render.h.s"
 
 
 .module input_system
@@ -171,7 +172,10 @@ _move_down:
 ;;  Output:
 ;;  Modified: 
 ;;
-_change_piece::      
+_change_piece::     
+    ld a, (selected_piece)              ;; read selected piece
+    ld (_erase_previous_piece+1), a     ;; keep current selected piece frame for erase later
+_renew_piece:
     ld a, (selected_piece)              ;; read selected piece
     inc a                               ;; increment piece type
     cp #3       
@@ -183,9 +187,16 @@ _valid_piece_0:
     add_hl_a
     ld a, (hl)
     cp #0xff
-    jr z, _change_piece
+    jr z, _renew_piece
     ;; New piece ok       
     ld e_type(ix), a                    ;; Update piece in Player1 struct
+_erase_previous_piece:
+    ld a, #00
+    call sys_render_draw_next_frame     ;; erase previous selected piece frame
+    ld a, (selected_piece)              ;; select current selected piece
+    call sys_render_draw_next_frame     ;; draw current selected piece frame
+   
+    ld a, e_type(ix)
     call man_entity_get_hl_from_piece   ;; get address of the piece type in hl
 _check_width:
     ld a, (hl)                          ;; read width of piece
