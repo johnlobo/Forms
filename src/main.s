@@ -26,6 +26,7 @@
 .include "man/entity.h.s"
 .include "man/game.h.s"
 .include "sys/audio.h.s"
+.include "sys/files.h.s"
 .include "common.h.s"
 
 .module main
@@ -213,6 +214,12 @@ _main_init_keypress:
 ;;    _main:: global symbol is required for correctly compiling and linking
 ;;
 _main::
+
+   ;;call sys_files_check_file
+   ;;call nc, sys_files_save_file
+   call sys_files_save_file
+   call sys_files_load_file
+
    call cpct_disableFirmware_asm
    ld hl, #int_handler1
    call cpct_waitVSYNC_asm
