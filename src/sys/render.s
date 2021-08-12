@@ -22,6 +22,8 @@
 .include "man/game.h.s"
 .include "sys/board.h.s"
 .include "sys/text.h.s"
+.include "sys/score.h.s"
+.include "sys/input.h.s"
 .include "util.h.s"
 
 .module render_system
@@ -88,6 +90,8 @@ sys_render_init::
 ;;  Modified: af, hl, de, bc
 ;;
 sys_render_logo_screen::
+
+    cpctm_clearScreen_asm 255
     
     cpctm_screenPtr_asm de, CPCT_VMEM_START_ASM, 24, 45  ;; screen address for 30, 76 in de
     ld hl, #_s_logo_1010
@@ -101,6 +105,8 @@ sys_render_logo_screen::
     cpctm_screenPtr_asm de, CPCT_VMEM_START_ASM, 26, 145  ;; screen address for 30, 120 in de
     ld hl, #_press_any_key
     call sys_text_draw_string
+
+    call sys_input_wait4anykey
 
     ret
 

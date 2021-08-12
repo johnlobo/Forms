@@ -26,8 +26,6 @@
 .globl selected_piece
 .globl next_pieces_count
 .globl next_pieces_coords
-.globl score
-.globl hi_score
 .globl man_game_no_more_moves
 .globl man_game_cancelled_game
 
@@ -36,4 +34,3 @@
 ;;------------------------------------------------------------------------------
 .globl man_game_init
 .globl man_game_update
-.globl man_game_clean_number

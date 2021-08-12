@@ -38,6 +38,7 @@ _window_y: .db #00
 _window_w: .db #00
 _window_h: .db #00
 _window_message: .dw #0000
+_window_wait_for_key: .db #01
 _press_any_key_string: .asciz "PRESS ANY KEY"
 
 ;; Constants to reach window data
@@ -59,7 +60,8 @@ w_message = 4
 ;; sys_messagees_show
 ;;
 ;;  shows a message
-;;  Input:  de: x and y coord
+;;  Input:  a : wait for key flag
+;;          de: x and y coord
 ;;          bc: h and w of the window
 ;;          hl: message to show 
 ;;  Output:
@@ -75,6 +77,7 @@ sys_messagees_show::
     ld w_y(iy), d
     ld w_message(iy), l
     ld w_message+1(iy), h
+    ld _window_wait_for_key(iy), a
     
 
     ;; Draw Back window
@@ -111,6 +114,8 @@ sys_messagees_show::
     ld a,#0xff                      ;; Patern of solid box
     call cpct_drawSolidBox_asm
 
+
+
     ;; Draw message
     ld de, #CPCT_VMEM_START_ASM     ;; 
     ld c, w_x(iy)                   ;;
@@ -130,7 +135,14 @@ sys_messagees_show::
     ld l, w_message(iy)
     call sys_text_draw_string
 
+
+
     ;; Draw Press Any Key
+
+    ld a, _window_wait_for_key(iy)  ;; check if we have to wait for a key
+    or a                            ;;
+    ret z                           ;; return if not
+
     ld de, #CPCT_VMEM_START_ASM     ;; 
     
     ld a, w_w(iy)                   ;;

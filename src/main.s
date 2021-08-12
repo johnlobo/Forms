@@ -26,7 +26,7 @@
 .include "man/entity.h.s"
 .include "man/game.h.s"
 .include "sys/audio.h.s"
-.include "sys/files.h.s"
+.include "sys/score.h.s"
 .include "common.h.s"
 
 .module main
@@ -42,7 +42,7 @@
 
 _no_more_moves_string: .asciz "NO MORE MOVES"
 _game_cancelled_string: .asciz "GAME CANCELLED"
-_game_over_sring: .asciz "GAME OVER"
+_updating_hiscore_string: .asciz "UPDATING HIGH SCORE"
 
 ;;
 ;; Start of _CODE area
@@ -150,21 +150,47 @@ int_handler6::
    call cpct_setInterruptHandler_asm
 	ret
 
-;;-----------------------------------------------------------------
+
+;-----------------------------------------------------------------
 ;;
-;; main_audio_init
+;; _persist_hiscore
 ;;   Draw player1
 ;;  Input:  
 ;;  Output: 
 ;;  Destroyed: af, bc,de, hl
 ;;
-main_audio_init::
+_persist_hiscore::
+   ld e, #18                           ;; x
+   ld d, #78                           ;; y
+   ld b, #44                           ;; h
+   ld c, #44                           ;; w
+   ld hl, #_updating_hiscore_string    ;; message
+   xor a                               ;; dont wait for a key
+   call sys_messagees_show
+   ld ix, #player1                     ;;
+   ld a, e_hiscore(ix)                 ;; Persist high score
+   or a                                ;;
+   call nz, sys_score_write_hiscore    ;;
+   ret
 
-   ld a, #FEVER_MIX
-   call sys_audio_init_song
 
-   call sys_audio_init_soundEffects
-
+;-----------------------------------------------------------------
+;;
+;; _update_hiscore
+;;   Draw player1
+;;  Input:  
+;;  Output: 
+;;  Destroyed: af, bc,de, hl
+;;
+_update_hiscore::
+   ld e, #18                           ;; x
+   ld d, #78                           ;; y
+   ld b, #44                           ;; h
+   ld c, #44                           ;; w
+   ld hl, #_updating_hiscore_string    ;; message
+   xor a                               ;; don't wait for a key
+   call sys_messagees_show
+   call sys_score_update_hiscore
    ret
 
 ;;-----------------------------------------------------------------
@@ -177,9 +203,11 @@ main_audio_init::
 ;;
 _main_init::
 
-   call main_audio_init
+   call sys_audio_init
 
    call sys_render_init
+
+   call _update_hiscore
 
    call sys_render_logo_screen
 
@@ -205,8 +233,6 @@ _main_init_keypress:
    
    call sys_input_init
 
-   call man_game_init
-
    ret
 ;;-----------------------------------------------------------------
 ;;
@@ -215,11 +241,6 @@ _main_init_keypress:
 ;;
 _main::
 
-   ;;call sys_files_check_file
-   ;;call nc, sys_files_save_file
-   call sys_files_save_file
-   call sys_files_load_file
-
    call cpct_disableFirmware_asm
    ld hl, #int_handler1
    call cpct_waitVSYNC_asm
@@ -227,12 +248,11 @@ _main::
    halt
    call cpct_waitVSYNC_asm
    call cpct_setInterruptHandler_asm
-
-   ld hl, #hi_score                    ;; Init hiscore
-   call man_game_clean_number          ;; clean number
+   
+   call _main_init
 
 start:
-   call _main_init
+   call man_game_init
 
    ;; Loop forever
 loop:
@@ -262,8 +282,12 @@ end_of_game:
    ld d, #78                           ;; y
    ld b, #44                           ;; h
    ld c, #32                           ;; w
-   ld hl, #_no_more_moves_string      ;; message
+   ld hl, #_no_more_moves_string       ;; message
+   ld a, #1                            ;; wait for a key
    call sys_messagees_show
+   call _persist_hiscore
+   call sys_audio_init
+   call sys_render_logo_screen
    jr start
 
 _game_cancelled:
@@ -275,5 +299,9 @@ _game_cancelled:
    ld b, #44                           ;; h
    ld c, #34                           ;; w
    ld hl, #_game_cancelled_string      ;; message
+   ld a, #1                            ;; wait for a key
    call sys_messagees_show
+   call _persist_hiscore
+   call sys_audio_init
+   call sys_render_logo_screen
    jr start
