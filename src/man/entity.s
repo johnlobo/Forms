@@ -51,6 +51,7 @@ player1::
     .db #0                      ;; moved flag
     .db #0                      ;; set flag
     .db #0                      ;; cancel flag
+    .db #0                      ;; high score flag
 
 
 ;;-----------------------------------------------------------------
@@ -125,6 +126,7 @@ man_entity_init::
     ld e_y(ix),#3
     ld e_p_screen_p(ix), #0
     ld e_p_screen_p+1(ix), #0
+    ld e_hiscore(ix), #0
     ret
 
 

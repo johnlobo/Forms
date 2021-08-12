@@ -20,6 +20,23 @@
 
 ;;-----------------------------------------------------------------
 ;;
+;; sys_audio_init
+;;   Draw player1
+;;  Input:  
+;;  Output: 
+;;  Destroyed: af, bc,de, hl
+;;
+sys_audio_init::
+
+   ld a, #FEVER_MIX
+   call sys_audio_init_song
+
+   call sys_audio_init_soundEffects
+
+   ret
+
+;;-----------------------------------------------------------------
+;;
 ;; sys_audio_init_song
 ;;
 ;;  Initilizes a song

@@ -52,6 +52,7 @@ FEVER_MIX = 7
 .globl PLY_AKG_INITSOUNDEFFECTS
 .globl PLY_AKG_PLAYSOUNDEFFECT
 
+.globl sys_audio_init
 .globl sys_audio_play_soundEffect
 .globl sys_audio_init_song
 .globl sys_audio_init_soundEffects

@@ -24,6 +24,7 @@
 .include "sys/render.h.s"
 .include "sys/input.h.s"
 .include "sys/audio.h.s"
+.include "sys/score.h.s"
 
 
 .module game_manager
@@ -40,9 +41,6 @@ next_pieces::               .db #00, #00, #00
 next_pieces_count::         .db #00
 next_pieces_coords::        .db #45, #104, #57, #104, #69, #104
 selected_piece::            .db #00
-score::                     .db #0x00, #0x00, #0x00, #0x00
-hi_score::                  .db #0x01, #0x23, #0x45, #0x67
-score_buffer::              .db #0x00, #0x00, #0x00, #0x00
 line_to_render::            .db #00
 man_game_no_more_moves::    .db #00
 man_game_cancelled_game::   .db #00
@@ -126,25 +124,6 @@ man_game_renew_next_pieces::
 
     ret
 
-;;-----------------------------------------------------------------
-;; man_game_clean_number
-;;
-;;  Initializes number
-;;  Input: hl number to be initialzed
-;;  Output:
-;;  Modified: af, hl
-;;
-man_game_clean_number::
-    xor a
-    ld (hl), a
-    inc hl
-    ld (hl), a
-    inc hl
-    ld (hl), a
-    inc hl
-    ld (hl), a
-    ret
-
 
 ;;-----------------------------------------------------------------
 ;;
@@ -161,6 +140,7 @@ man_game_init::
     ld (man_game_no_more_moves), a
     ld (man_game_cancelled_game), a
 
+    cpctm_clearScreen_asm 255
 
     call sys_board_init
 
@@ -173,7 +153,7 @@ man_game_init::
     call sys_render_game_screen
     
     ld hl, #score
-    call man_game_clean_number
+    call sys_score_reset_score_buffer
     call sys_render_score
     call sys_render_hi_score            ;; render hiscore
 
@@ -279,26 +259,6 @@ man_game_erase_col::
     call sys_render_render_col
     ret
 
-;;-----------------------------------------------------------------
-;;
-;;  man_game_clean_score_buffer
-;;
-;;  set piece in board
-;;  Input: 
-;;  Output:
-;;  Modified:
-;;
-man_game_clean_score_buffer::
-    ld hl, #score_buffer
-    xor a
-    ld (hl), a
-    inc hl
-    ld (hl), a
-    inc hl
-    ld (hl), a
-    inc hl
-    ld (hl), a
-    ret
 
 ;-----------------------------------------------------------------
 ;;
@@ -310,6 +270,13 @@ man_game_clean_score_buffer::
 ;;  Modified:
 ;;
 man_game_copy_score_2_hiscore::
+    jp first_start
+first_start:
+    ld ix, #player1
+    ld e_hiscore(ix), #1
+    ld hl, #second_start
+    ld (man_game_copy_score_2_hiscore+1), hl
+second_start:
     ld hl, #score
     ld de, #hi_score
     ld b, #4
@@ -333,7 +300,8 @@ m_g_copy_score_loop:
 ;;
 man_game_add_score_4piece::
     ;; Add score
-    call man_game_clean_score_buffer
+    ld hl,#score_buffer                         ;; clean score buffer
+    call sys_score_reset_score_buffer           ;;
     ld hl, #piece_scoring                       ;; set hl to point the list of scoring                       
     ld a, e_type(ix)                            ;; read type in a to set offset
     add_hl_a                                    ;; add ofset to pointer
@@ -362,7 +330,8 @@ man_game_add_score_4piece::
 ;;
 man_game_add_score_4line::
     ;; Add score
-    call man_game_clean_score_buffer
+    ld hl,#score_buffer                         ;; clean score buffer
+    call sys_score_reset_score_buffer           ;;
     ld hl, #line_scoring                       ;; set hl to point the list of scoring                       
     ld de, #score_buffer                        ;;
     ld a, (hl)                                  ;;
