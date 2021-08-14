@@ -28,7 +28,7 @@
 ;;
 sys_audio_init::
 
-   ld a, #FEVER_MIX
+   ld a, #ORINOCO_SONG
    call sys_audio_init_song
 
    call sys_audio_init_soundEffects
@@ -48,7 +48,7 @@ sys_audio_init_song::
     push bc
     push hl
     push de
-    ld hl,#DRROLANDSOUNDTRACK_START    ;The music.
+    ld hl,#ORINOCO_START    ;The music.
     ;;ld a, #7     ;The Subsong to play (&gt;=0).
     call PLY_AKG_INIT
     pop de

@@ -29,19 +29,15 @@ SOUND_TURN = 15
 SOUND_HIHAT = 16
 
 ;; SONGS
-LODISKA_SONG = 0
-LESGRACES_SONG = 1
-LANATIVE_SONG = 2
-FARNHAM_SONG = 3
-WIN_SONG = 4
-LOSE_SONG = 5
-SILENCE = 6
-FEVER_MIX = 7
+ORINOCO_SONG = 0
+LOSE_SONG = 1
+WIN_SONG = 2
+SILENCE_SONG = 3
 
 ;;------------------------------------------------------------------------------
 ;; Global variables
 ;;------------------------------------------------------------------------------
-.globl DRROLANDSOUNDTRACK_START
+.globl ORINOCO_START
 .globl FX_SOUNDEFFECTS
 
 ;;------------------------------------------------------------------------------
