@@ -16,7 +16,6 @@
 ;;  along with this program.  If not, see <http://www.gnu.org/licenses/>.
 ;;-------------------------------------------------------------------------------
 
-.module Text
 
 .globl sys_text_str_length
 .globl sys_text_str_copy

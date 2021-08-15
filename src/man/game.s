@@ -154,6 +154,11 @@ man_game_init::
     
     ld hl, #score
     call sys_score_reset_score_buffer
+
+    ;; Reset hiscore flag
+    ld hl, #first_start
+    ld (man_game_copy_score_2_hiscore+1), hl
+
     call sys_render_score
     call sys_render_hi_score            ;; render hiscore
 

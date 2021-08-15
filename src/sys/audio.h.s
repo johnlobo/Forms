@@ -39,12 +39,14 @@ SILENCE_SONG = 3
 ;;------------------------------------------------------------------------------
 .globl ORINOCO_START
 .globl FX_SOUNDEFFECTS
+.globl music_switch
 
 ;;------------------------------------------------------------------------------
 ;; Global routines
 ;;------------------------------------------------------------------------------
 .globl PLY_AKG_INIT
 .globl PLY_AKG_PLAY
+.globl PLY_AKG_STOP
 .globl PLY_AKG_INITSOUNDEFFECTS
 .globl PLY_AKG_PLAYSOUNDEFFECT
 
@@ -52,3 +54,4 @@ SILENCE_SONG = 3
 .globl sys_audio_play_soundEffect
 .globl sys_audio_init_song
 .globl sys_audio_init_soundEffects
+.globl sys_audio_stop_music

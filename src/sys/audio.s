@@ -18,6 +18,16 @@
 
 .include "sys/audio.h.s"
 
+;;
+;; Start of _DATA area 
+;;  SDCC requires at least _DATA and _CODE areas to be declared, but you may use
+;;  any one of them for any purpose. Usually, compiler puts _DATA area contents
+;;  right after _CODE area contents.
+;;
+.area _DATA
+
+music_switch::  .db #00
+
 ;;-----------------------------------------------------------------
 ;;
 ;; sys_audio_init
@@ -28,12 +38,15 @@
 ;;
 sys_audio_init::
 
-   ld a, #ORINOCO_SONG
-   call sys_audio_init_song
+    ld a, #ORINOCO_SONG
+    call sys_audio_init_song
 
-   call sys_audio_init_soundEffects
+    call sys_audio_init_soundEffects
 
-   ret
+    ld a, #1                            ;; switch on music
+    ld (music_switch), a                ;;
+
+    ret
 
 ;;-----------------------------------------------------------------
 ;;
@@ -98,3 +111,26 @@ sys_audio_play_soundEffect::
     pop hl
     pop bc
     ret
+
+
+;;-----------------------------------------------------------------
+;;
+;; sys_audio_stop_music
+;;
+;;  Plays a sound effect
+;;  Input: a sound to play
+;;  Output: 
+;;  Modified: af
+;;
+sys_audio_stop_music::
+    push bc
+    push hl
+    push de
+    xor a                               ;; switch off music
+    ld (music_switch), a                ;;
+    call PLY_AKG_STOP
+    pop de
+    pop hl
+    pop bc
+    ret
+
