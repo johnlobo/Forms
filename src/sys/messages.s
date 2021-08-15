@@ -47,6 +47,7 @@ w_y = 1
 w_w = 2
 w_h = 3
 w_message = 4
+w_wait_for_key = 6
 
 
 ;;
@@ -77,7 +78,7 @@ sys_messagees_show::
     ld w_y(iy), d
     ld w_message(iy), l
     ld w_message+1(iy), h
-    ld _window_wait_for_key(iy), a
+    ld w_wait_for_key(iy), a
     
 
     ;; Draw Back window
@@ -139,7 +140,7 @@ sys_messagees_show::
 
     ;; Draw Press Any Key
 
-    ld a, _window_wait_for_key(iy)  ;; check if we have to wait for a key
+    ld a, w_wait_for_key(iy)  ;; check if we have to wait for a key
     or a                            ;;
     ret z                           ;; return if not
 

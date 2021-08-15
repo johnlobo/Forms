@@ -27,6 +27,8 @@
 .include "man/game.h.s"
 .include "sys/audio.h.s"
 .include "sys/score.h.s"
+.include "sys/system.h.s"
+.include "sys/files.h.s"
 .include "common.h.s"
 
 .module main
@@ -49,106 +51,7 @@ _updating_hiscore_string: .asciz "UPDATING HIGH SCORE"
 ;; 
 .area _CODE
 
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;;DESCRIPTION
-;; Called every interruption
-;;
-;;DESTROYS: AF, BC, DE
-;;
-set_int_handler:
-	ld hl, #0x38
-	ld (hl), #0xc3
-	inc hl
-	ld (hl), #<int_handler1
-	inc hl
-	ld (hl), #>int_handler1
-	inc hl
-	ld (hl), #0xc9
-	ret
 
-
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;;DESCRIPTION
-;; Called on the first interruption
-;;
-;;DESTROYS: AF, BC, DE
-;;
-int_handler1::
-	ld hl, #int_handler2
- 	call cpct_setInterruptHandler_asm	
-	ret
-
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;;DESCRIPTION
-;; Called every interruption
-;;
-;;DESTROYS: AF, BC, DE
-;;
-int_handler2::
-	call cpct_scanKeyboard_if_asm
-
-
-	ld hl, #int_handler3
-   call cpct_setInterruptHandler_asm
-	ret
-
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;;DESCRIPTION
-;; Called every interruption
-;;
-;;DESTROYS: AF, BC, DE
-;;
-int_handler3::
-	ld hl, #int_handler4
-   call cpct_setInterruptHandler_asm
-	ret
-
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;;DESCRIPTION
-;; Called every interruption
-;;
-;;DESTROYS: AF, BC, DE
-;;
-int_handler4::	
-	ld hl, #int_handler5
-   call cpct_setInterruptHandler_asm
-	ret
-
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;;DESCRIPTION
-;; Called every interruption
-;;
-;;DESTROYS: AF, BC, DE
-;;
-int_handler5::
-   exx
-   ex af', af  
-   push af
-   push bc
-   push de
-   push hl
-   call PLY_AKG_PLAY
-   pop hl
-   pop de
-   pop bc
-   pop af
-   ex af', af  
-   exx
-
-	ld hl, #int_handler6
-   call cpct_setInterruptHandler_asm
-	ret
-
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;;DESCRIPTION
-;; Called every interruption
-;;
-;;DESTROYS: AF, BC, DE
-;;
-int_handler6::
-	ld hl, #int_handler1
-   call cpct_setInterruptHandler_asm
-	ret
 
 
 ;-----------------------------------------------------------------
@@ -160,6 +63,10 @@ int_handler6::
 ;;  Destroyed: af, bc,de, hl
 ;;
 _persist_hiscore::
+   ld ix, #player1                     ;;
+   ld a, e_hiscore(ix)                 ;; Persist high score
+   or a                                ;;
+   ret z                               ;; return if not necessary to update the hi score on disk.
    ld e, #18                           ;; x
    ld d, #78                           ;; y
    ld b, #44                           ;; h
@@ -167,10 +74,9 @@ _persist_hiscore::
    ld hl, #_updating_hiscore_string    ;; message
    xor a                               ;; dont wait for a key
    call sys_messagees_show
-   ld ix, #player1                     ;;
-   ld a, e_hiscore(ix)                 ;; Persist high score
-   or a                                ;;
-   call nz, sys_score_write_hiscore    ;;
+   call activate_firmware
+   call sys_files_save_file
+   call deactivate_firmware
    ret
 
 
@@ -183,6 +89,7 @@ _persist_hiscore::
 ;;  Destroyed: af, bc,de, hl
 ;;
 _update_hiscore::
+   call sys_render_init
    ld e, #18                           ;; x
    ld d, #78                           ;; y
    ld b, #44                           ;; h
@@ -190,7 +97,8 @@ _update_hiscore::
    ld hl, #_updating_hiscore_string    ;; message
    xor a                               ;; don't wait for a key
    call sys_messagees_show
-   call sys_score_update_hiscore
+   call activate_firmware
+   call sys_files_load_file
    ret
 
 ;;-----------------------------------------------------------------
@@ -206,8 +114,6 @@ _main_init::
    call sys_audio_init
 
    call sys_render_init
-
-   call _update_hiscore
 
    call sys_render_logo_screen
 
@@ -242,12 +148,10 @@ _main_init_keypress:
 _main::
 
    call cpct_disableFirmware_asm
-   ld hl, #int_handler1
-   call cpct_waitVSYNC_asm
-   halt
-   halt
-   call cpct_waitVSYNC_asm
-   call cpct_setInterruptHandler_asm
+
+   call _update_hiscore
+
+   call deactivate_firmware
    
    call _main_init
 
@@ -285,7 +189,9 @@ end_of_game:
    ld hl, #_no_more_moves_string       ;; message
    ld a, #1                            ;; wait for a key
    call sys_messagees_show
+   call sys_audio_stop_music
    call _persist_hiscore
+   call sys_render_init
    call sys_audio_init
    call sys_render_logo_screen
    jr start
@@ -301,7 +207,9 @@ _game_cancelled:
    ld hl, #_game_cancelled_string      ;; message
    ld a, #1                            ;; wait for a key
    call sys_messagees_show
+   call sys_audio_stop_music
    call _persist_hiscore
+   call sys_render_init
    call sys_audio_init
    call sys_render_logo_screen
    jr start
