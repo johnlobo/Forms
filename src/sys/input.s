@@ -369,6 +369,36 @@ first_key:
 
 ;;-----------------------------------------------------------------
 ;;
+;; sys_input_main_screen_keys
+;;
+;;   Process keyboard in main screen
+;;  Input: 
+;;  Output: a=1->play; a=2->redefine keys
+;;  Modified: iy, bc
+;;
+;;sys_input_check_keys_action::
+sys_input_main_screen_keys::
+    ld hl, #Key_R
+    call cpct_isKeyPressed_asm          ;;
+    jr nz, _redefine_exit               ;; if press R set redefine flag
+    ;;call cpct_isAnyKeyPressed_asm
+    ;;or a
+    ld hl, #Key_S
+    call cpct_isKeyPressed_asm          ;;
+    jr nz, _play_exit               ;; if press R set redefine flag
+    jr sys_input_main_screen_keys
+_play_exit:
+    xor a
+    jr _exit
+_redefine_exit:
+    ld a, #1
+_exit:
+    call sys_input_clean_buffer
+    ret
+
+
+;;-----------------------------------------------------------------
+;;
 ;; sys_input_wait4anykey
 ;;
 ;;   Reads input and wait for any key press
