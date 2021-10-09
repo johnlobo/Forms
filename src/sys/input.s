@@ -53,6 +53,24 @@ sys_input_clean_buffer::
 sys_input_init::
     ret 
 
+sys_input_key_actions:
+    .dw Key_O,      _move_left
+    .dw Joy0_Left,  _move_left
+    .dw Key_P,      _move_right
+    .dw Joy0_Right, _move_right
+    .dw Key_Q,      _move_up
+    .dw Joy0_Up,    _move_up
+    .dw Key_A,      _move_down
+    .dw Joy0_Down,  _move_down
+    .dw Key_I,      _change_piece
+    .dw Joy0_Fire2, _change_piece
+    .dw Key_Space,  _set_piece
+    .dw Joy0_Fire1, _set_piece
+    .dw Key_Esc,    _cancel_game
+    .dw 0
+
+
+
 ;;-----------------------------------------------------------------
 ;;
 ;; _input_update_moved
@@ -94,11 +112,13 @@ _cancel_game:
 _move_left:
     ld a, e_x(ix)
     or a
-    jp z, sys_input_vertical_check
+    ;;jp z, sys_input_vertical_check
+    ret z
     dec a
     ld e_x(ix), a
     call #_input_update_moved             ;; jump to return moved
-    jp sys_input_vertical_check
+    ;;jp sys_input_vertical_check
+    ret
 
 
 ;;-----------------------------------------------------------------
@@ -135,11 +155,13 @@ _move_right:
 _move_up:
     ld a, e_y(ix)
     or a
-    jp z, sys_input_actions_check
+    ;;jp z, sys_input_actions_check
+    ret z
     dec a
     ld e_y(ix), a
     call _input_update_moved             ;; jump to return moved
-    jp sys_input_actions_check
+    ;;jp sys_input_actions_check
+    ret
 
 ;;-----------------------------------------------------------------
 ;;
@@ -240,7 +262,8 @@ _end_check:
     
     call sys_input_clean_buffer         ;; wait until keyboard buffer is empty
     
-    jp _end_input_update
+    ;;jp _end_input_update
+    ret
 
 ;;-----------------------------------------------------------------
 ;;
@@ -271,43 +294,79 @@ _set_piece:
 ;;  Output:
 ;;  Modified: 
 ;;
+;;sys_input_update::
+;;    ld ix, #player1                     ;; get player1 struct
+;;
+;;    ld hl, #Key_O                       ;; check key O   
+;;    call cpct_isKeyPressed_asm          ;; 
+;;    jp nz, _move_left                   ;; if press O move left
+;;    
+;;    ld hl, #Key_P                       ;; check key P
+;;    call cpct_isKeyPressed_asm          ;; 
+;;    call nz, _move_right                  ;; if press P move right  
+;;
+;;sys_input_vertical_check:   
+;;    
+;;    ld hl, #Key_Q                       ;; check key Q
+;;    call cpct_isKeyPressed_asm          ;;
+;;    jp nz, _move_up                     ;; if press Q move up
+;;    
+;;    ld hl, #Key_A                       ;; check key A
+;;    call cpct_isKeyPressed_asm          ;;
+;;    call nz, _move_down                   ;; if press A move down
+;;
+;;sys_input_actions_check:
+;;
+;;    ld hl, #Key_I                       ;; check key I
+;;    call cpct_isKeyPressed_asm          ;;
+;;    jp nz, _change_piece                ;; if press I change piece
+;;
+;;    ld hl, #Key_Space                   ;; check key Space
+;;    call cpct_isKeyPressed_asm          ;;
+;;    call nz, _set_piece                 ;; if press Space set piece in board
+;;
+;;    ld hl, #Key_Esc                     ;; check key Space
+;;    call cpct_isKeyPressed_asm          ;;
+;;    call nz, _cancel_game               ;; if press Space set piece in board
+;;
+;;_end_input_update:
+;;    ret
+
+;;-----------------------------------------------------------------
+;;
+;; sys_input_update
+;;
+;;   Initializes input
+;;  Input: 
+;;  Output:
+;;  Modified: iy, bc
+;;
+;;sys_input_check_keys_action::
 sys_input_update::
     ld ix, #player1                     ;; get player1 struct
+    ld iy, #sys_input_key_actions
+    jr first_key
+keys_loop:
+    ld bc, #4
+    add iy, bc
+first_key:
+    ld l, 0(iy)                     ;; Lower part of the pointer
+    ld h, 1(iy)                     ;; Lower part of the pointer
+    ;; Check if key is null
+    ld a, l
+    or h
+    ret z                           ;; Return if key is null
+    ;; Check if key is pressed
+    call cpct_isKeyPressed_asm      ;;
+    jr z, keys_loop
+    ;; Key pressed execute action
+    ld hl, #keys_loop               ;;
+    push hl                         ;; return addres from executed function
+    ld l, 2(iy)                     ;;
+    ld h, 3(iy)                     ;; retrieve function address    
+    jp (hl)                         ;; jump to function
 
-    ld hl, #Key_O                       ;; check key O   
-    call cpct_isKeyPressed_asm          ;; 
-    jp nz, _move_left                   ;; if press O move left
-    
-    ld hl, #Key_P                       ;; check key P
-    call cpct_isKeyPressed_asm          ;; 
-    call nz, _move_right                  ;; if press P move right  
 
-sys_input_vertical_check:   
-    
-    ld hl, #Key_Q                       ;; check key Q
-    call cpct_isKeyPressed_asm          ;;
-    jp nz, _move_up                     ;; if press Q move up
-    
-    ld hl, #Key_A                       ;; check key A
-    call cpct_isKeyPressed_asm          ;;
-    call nz, _move_down                   ;; if press A move down
-
-sys_input_actions_check:
-
-    ld hl, #Key_I                       ;; check key I
-    call cpct_isKeyPressed_asm          ;;
-    jp nz, _change_piece                ;; if press I change piece
-
-    ld hl, #Key_Space                   ;; check key Space
-    call cpct_isKeyPressed_asm          ;;
-    call nz, _set_piece                 ;; if press Space set piece in board
-
-    ld hl, #Key_Esc                     ;; check key Space
-    call cpct_isKeyPressed_asm          ;;
-    call nz, _cancel_game               ;; if press Space set piece in board
-
-_end_input_update:
-    ret
 ;;-----------------------------------------------------------------
 ;;
 ;; sys_input_wait4anykey
