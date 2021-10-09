@@ -45,7 +45,8 @@ _piece_height:: .db #00
 _piece::        .db #00
 _score_digit:   .db #00
 _fila:          .db #00
-_press_any_key: .asciz "PRESS ANY KEY"
+_press_any_key: .asciz "PRESS P TO PLAY"
+_redefine_keys: .asciz "PRESS R TO REDIFINE KEYS"
 _next_blocks_string: .asciz "NEXT BLOCKS"
 _to_change_block_string: .asciz "[I]-CHANGE"
 
@@ -102,11 +103,14 @@ sys_render_logo_screen::
 
 
     ld c, #0
-    cpctm_screenPtr_asm de, CPCT_VMEM_START_ASM, 26, 145  ;; screen address for 30, 120 in de
-    ld hl, #_press_any_key
+    cpctm_screenPtr_asm de, CPCT_VMEM_START_ASM, 16, 144  ;; screen address for 30, 120 in de
+    ld hl, #_redefine_keys
     call sys_text_draw_string
 
-    call sys_input_wait4anykey
+    ld c, #0
+    cpctm_screenPtr_asm de, CPCT_VMEM_START_ASM, 25, 160  ;; screen address for 26, 145 in de
+    ld hl, #_press_any_key
+    call sys_text_draw_string
 
     ret
 

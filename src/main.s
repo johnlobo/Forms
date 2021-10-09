@@ -45,6 +45,12 @@
 _no_more_moves_string: .asciz "NO MORE MOVES"
 _game_cancelled_string: .asciz "GAME CANCELLED"
 _updating_hiscore_string: .asciz "UPDATING HIGH SCORE"
+_press_key_for_left: .asciz "PRESS KEY FOR LEFT"
+_press_key_for_right: .asciz "PRESS KEY FOR RIGHT"
+_press_key_for_up: .asciz "PRESS KEY FOR UP"
+_press_key_for_down: .asciz "PRESS KEY FOR DOWN"
+_press_key_for_change: .asciz "PRESS KEY FOR CHANGE PIECE"
+_press_key_for_set: .asciz "PRESS KEY FOR SET PIECE"
 
 ;;
 ;; Start of _CODE area
@@ -101,6 +107,82 @@ _update_hiscore::
    call sys_files_load_file
    ret
 
+
+;;-----------------------------------------------------------------
+;;
+;; _show_redefine_one_key
+;;   Draw main screen
+;;  Input: hl message to show
+;;  Output: 
+;;  Destroyed: af, bc,de, hl
+;;
+_show_redefine_one_key:
+   ld e, #18                           ;; x
+   ld d, #78                           ;; y
+   ld b, #44                           ;; h
+   ld c, #44                           ;; w
+   ;;ld hl, #_updating_hiscore_string    ;; message
+   xor a                               ;; don't wait for a key
+   call sys_messagees_show
+   ret
+
+;;-----------------------------------------------------------------
+;;
+;; _redefine_keys
+;;   Draw main screen
+;;  Input:  
+;;  Output: 
+;;  Destroyed: af, bc,de, hl
+;;
+_redefine_keys:
+   ;; Redefine left key
+   ld hl, #_press_key_for_left
+   call _show_redefine_one_key
+   call sys_input_wait4anykey
+   call sys_input_clean_buffer
+   ;; Redefine right key
+   ld hl, #_press_key_for_right
+   call _show_redefine_one_key
+   call sys_input_wait4anykey
+   call sys_input_clean_buffer
+   ;; Redefine up key
+   ld hl, #_press_key_for_up
+   call _show_redefine_one_key
+   call sys_input_wait4anykey
+   call sys_input_clean_buffer
+   ;; Redefine down key
+   ld hl, #_press_key_for_down
+   call _show_redefine_one_key
+   call sys_input_wait4anykey
+   call sys_input_clean_buffer
+   ;; Redefine left set piece
+   ld hl, #_press_key_for_set
+   call _show_redefine_one_key
+   call sys_input_wait4anykey
+   call sys_input_clean_buffer
+   ;; Redefine left change piece
+   ld hl, #_press_key_for_change
+   call _show_redefine_one_key
+   call sys_input_wait4anykey
+   call sys_input_clean_buffer
+   ret
+
+;;-----------------------------------------------------------------
+;;
+;; _show_main_screen
+;;   Draw main screen
+;;  Input:  
+;;  Output: 
+;;  Destroyed: af, bc,de, hl
+;;
+_show_main_screen::
+   call sys_render_logo_screen  
+   call sys_input_main_screen_keys
+   or a                             ;; check if any key different from r has been pressed
+   ret z                            ;; return ir any key was pressed
+   call nz, _redefine_keys          ;; if r was pressed, redefine keys
+   jr _show_main_screen             ;; return to main screen
+
 ;;-----------------------------------------------------------------
 ;;
 ;; main_init
@@ -115,7 +197,7 @@ _main_init::
 
    call sys_render_init
 
-   call sys_render_logo_screen
+   call _show_main_screen
 
    ;; set random seed
    xor a
@@ -193,7 +275,7 @@ end_of_game:
    call _persist_hiscore
    call sys_render_init
    call sys_audio_init
-   call sys_render_logo_screen
+   call _show_main_screen
    jr start
 
 _game_cancelled:
@@ -211,5 +293,5 @@ _game_cancelled:
    call _persist_hiscore
    call sys_render_init
    call sys_audio_init
-   call sys_render_logo_screen
+   call _show_main_screen
    jr start
