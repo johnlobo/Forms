@@ -53,20 +53,20 @@ sys_input_clean_buffer::
 sys_input_init::
     ret 
 
-sys_input_key_actions:
+sys_input_key_actions::
     .dw Key_O,      _move_left
-    .dw Joy0_Left,  _move_left
     .dw Key_P,      _move_right
-    .dw Joy0_Right, _move_right
     .dw Key_Q,      _move_up
-    .dw Joy0_Up,    _move_up
     .dw Key_A,      _move_down
-    .dw Joy0_Down,  _move_down
-    .dw Key_I,      _change_piece
-    .dw Joy0_Fire2, _change_piece
     .dw Key_Space,  _set_piece
-    .dw Joy0_Fire1, _set_piece
+    .dw Key_I,      _change_piece
     .dw Key_Esc,    _cancel_game
+    .dw Joy0_Left,  _move_left
+    .dw Joy0_Right, _move_right
+    .dw Joy0_Up,    _move_up
+    .dw Joy0_Down,  _move_down
+    .dw Joy0_Fire1, _set_piece
+    .dw Joy0_Fire2, _change_piece
     .dw 0
 
 
@@ -388,12 +388,13 @@ sys_input_main_screen_keys::
     jr nz, _play_exit               ;; if press R set redefine flag
     jr sys_input_main_screen_keys
 _play_exit:
+    call sys_input_clean_buffer
     xor a
     jr _exit
 _redefine_exit:
+    call sys_input_clean_buffer
     ld a, #1
 _exit:
-    call sys_input_clean_buffer
     ret
 
 
@@ -410,4 +411,85 @@ sys_input_wait4anykey::
     call cpct_isAnyKeyPressed_asm
     or a
     jr z, sys_input_wait4anykey
+    ret
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;; DESCRIPTION
+;; Gets the ID of the FIRST key pressed found on the key
+;; buffer
+;; ----------------------------------------------------
+;; PARAMS
+;; ----------------------------------------------------
+;; RETURNS
+;; HL: Key pressed if anyone pressed. If not returns 0
+;; ----------------------------------------------------
+;; DESTROYS
+;; AF, HL
+;; ----------------------------------------------------
+;;
+;; Routine taken from Promotion from Bite Studios
+;;
+sys_input_getKeyPressed::
+    ld hl, #_cpct_keyboardStatusBuffer
+    xor a                           ;; A = 0
+
+_kp_loop:
+    cp #BUFFER_SIZE
+    jr z, _kp_endLoop               ;; Check counter value. End if its 0
+    ld (_size_counter), a
+
+    ld a, (hl)                      ;; Load byte from the buffer
+    xor #ZERO_KEYS_ACTIVATED        ;; Inverts bytes
+    jr z, _no_key_detected
+        ld h, a                     ;; H is the mask
+        ld a, (_size_counter)
+        ld l, a                     ;; L is the offset
+        ; ld (_current_key_pressed), hl
+        ret
+_no_key_detected:
+    inc hl
+_size_counter = .+1
+    ld a, #0x00                     ;; AUTOMODIFIABLE, A = counter
+    inc a
+    jr _kp_loop
+_kp_endLoop:
+    ld hl, #0x00                    ;; Return 0 if no key is pressed
+    ld a, #0
+    ld (_key_released), a
+    ret
+
+; _current_key_pressed::
+;     .dw #0x0000
+
+
+_key_released::
+    .db #0
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;; DESCRIPTION
+;; Does not return the key pressed until one is pressed.
+;; WARNING: This blocks the execution until done
+;; ----------------------------------------------------
+;; PARAMS
+;; ----------------------------------------------------
+;; RETURNS
+;; HL: Key pressed
+;; ----------------------------------------------------
+;; DESTROYS
+;; AF, HL
+;; ----------------------------------------------------
+;;
+;; Routine taken from Promotion from Bite Studios
+;;
+sys_input_waitKeyPressed::
+    call sys_input_getKeyPressed
+    ld a, (_key_released)
+    or a
+    jr nz, sys_input_waitKeyPressed
+    xor a
+    or h
+    or l
+    jr z, sys_input_waitKeyPressed
+    ld a, #1
+    ld (_key_released), a
     ret

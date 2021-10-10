@@ -117,10 +117,10 @@ _update_hiscore::
 ;;  Destroyed: af, bc,de, hl
 ;;
 _show_redefine_one_key:
-   ld e, #18                           ;; x
+   ld e, #11                           ;; x
    ld d, #78                           ;; y
    ld b, #44                           ;; h
-   ld c, #44                           ;; w
+   ld c, #58                           ;; w
    ;;ld hl, #_updating_hiscore_string    ;; message
    xor a                               ;; don't wait for a key
    call sys_messagees_show
@@ -134,37 +134,83 @@ _show_redefine_one_key:
 ;;  Output: 
 ;;  Destroyed: af, bc,de, hl
 ;;
-_redefine_keys:
+redefine_keys::
    ;; Redefine left key
    ld hl, #_press_key_for_left
    call _show_redefine_one_key
-   call sys_input_wait4anykey
+   call sys_input_waitKeyPressed
+   ;; Update left key
+   ld de, #sys_input_key_actions
+   ex de, hl
+   ld (hl), e
+   inc hl
+   ld (hl), d
+   ;; Wait till key buffer is empty
    call sys_input_clean_buffer
+
    ;; Redefine right key
    ld hl, #_press_key_for_right
    call _show_redefine_one_key
-   call sys_input_wait4anykey
+   call sys_input_waitKeyPressed
+   ;; Update right key
+   ld de, #sys_input_key_actions+4
+   ex de, hl
+   ld (hl), e
+   inc hl
+   ld (hl), d
+   ;; Wait till key buffer is empty
    call sys_input_clean_buffer
+
    ;; Redefine up key
    ld hl, #_press_key_for_up
    call _show_redefine_one_key
-   call sys_input_wait4anykey
+   call sys_input_waitKeyPressed
+   ;; Update up key
+   ld de, #sys_input_key_actions+8
+   ex de, hl
+   ld (hl), e
+   inc hl
+   ld (hl), d
+   ;; Wait till key buffer is empty
    call sys_input_clean_buffer
+
    ;; Redefine down key
    ld hl, #_press_key_for_down
    call _show_redefine_one_key
-   call sys_input_wait4anykey
+   call sys_input_waitKeyPressed
+   ;; Update down key
+   ld de, #sys_input_key_actions+12
+   ex de, hl
+   ld (hl), e
+   inc hl
+   ld (hl), d
+   ;; Wait till key buffer is empty
    call sys_input_clean_buffer
-   ;; Redefine left set piece
+
+   ;; Redefine set piece
    ld hl, #_press_key_for_set
    call _show_redefine_one_key
-   call sys_input_wait4anykey
+   call sys_input_waitKeyPressed
+   ;; Update set key
+   ld de, #sys_input_key_actions+16
+   ex de, hl
+   ld (hl), e
+   inc hl
+   ld (hl), d
+   ;; Wait till key buffer is empty
    call sys_input_clean_buffer
-   ;; Redefine left change piece
+
+   ;; Redefine change piece
    ld hl, #_press_key_for_change
    call _show_redefine_one_key
-   call sys_input_wait4anykey
-   call sys_input_clean_buffer
+   call sys_input_waitKeyPressed
+   ;; Update change key
+   ld de, #sys_input_key_actions+20
+   ex de, hl
+   ld (hl), e
+   inc hl
+   ld (hl), d
+   ;; Wait till key buffer is empty
    ret
 
 ;;-----------------------------------------------------------------
@@ -180,7 +226,7 @@ _show_main_screen::
    call sys_input_main_screen_keys
    or a                             ;; check if any key different from r has been pressed
    ret z                            ;; return ir any key was pressed
-   call nz, _redefine_keys          ;; if r was pressed, redefine keys
+   call nz, redefine_keys          ;; if r was pressed, redefine keys
    jr _show_main_screen             ;; return to main screen
 
 ;;-----------------------------------------------------------------
