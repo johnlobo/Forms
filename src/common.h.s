@@ -96,6 +96,7 @@
 .globl cpct_setInterruptHandler_asm
 .globl cpct_waitVSYNC_asm
 .globl cpct_drawSpriteBlended_asm
+.globl _cpct_keyboardStatusBuffer
 
 ;;===============================================================================
 ;; DEFINED CONSTANTS
@@ -141,5 +142,9 @@ NEXT_PIECE_MAX_HEIGHT = 30
 NEXT_PIECE_MAX_WIDTH = 10
 
 SCORE_NUM_BYTES = 4
+
+;; Keyboard constants
+BUFFER_SIZE = 10
+ZERO_KEYS_ACTIVATED = #0xFF
 
 

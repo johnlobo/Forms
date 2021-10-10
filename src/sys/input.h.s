@@ -16,7 +16,10 @@
 ;;  along with this program.  If not, see <http://www.gnu.org/licenses/>.
 ;;-------------------------------------------------------------------------------
 
-
+;;------------------------------------------------------------------------------
+;; Global variables
+;;------------------------------------------------------------------------------
+.globl sys_input_key_actions
 
 ;;------------------------------------------------------------------------------
 ;; Global routines
@@ -26,3 +29,6 @@
 .globl sys_input_update
 .globl sys_input_main_screen_keys
 .globl sys_input_wait4anykey
+.globl sys_input_waitKeyPressed
+.globl sys_input_getKeyPressed
+
