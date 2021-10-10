@@ -61,17 +61,116 @@ man_game_cancelled_game::   .db #00
 ;;  Output: a random piece
 ;;  Modified: AF, BC, DE, HL
 ;;
+;;man_game_get_random_piece::
+;;    call cpct_getRandom_xsp40_u8_asm
+;;    ld a, l
+;;    srl a
+;;    srl a
+;;    srl a
+;;    cp #19
+;;    jr c, _get_random_piece_continue
+;;    sub #18
+;;_get_random_piece_continue:
+;;    ret
 man_game_get_random_piece::
     call cpct_getRandom_xsp40_u8_asm
     ld a, l
-    srl a
-    srl a
-    srl a
-    cp #19
-    jr c, _get_random_piece_continue
-    sub #18
-_get_random_piece_continue:
+    call sys_util_41_modulo             ;; convert the 0-255 number to 0-41
+    or a
+    jp z, _8
+    cp #1
+    jp z, _9
+    cp #2
+    jp z, _10
+    cp #3
+    jp z, _11
+    cp #6
+    jp c, _18
+    cp #8
+    jp c, _12
+    cp #10
+    jp c, _13
+    cp #12
+    jp c, _14
+    cp #14
+    jp c, _15
+    cp #16
+    jp c, _1
+    cp #18
+    jp c, _5
+    cp #20
+    jp c, _0
+    cp #22
+    jp c, _4
+    cp #24
+    jp c, _16
+    cp #27
+    jp c, _7
+    cp #30
+    jp c, _3
+    cp #33
+    jp c, _6
+    cp #36
+    jp c, _2
+    jr _17
+_8:
+    ld a, #8
     ret
+_9:
+    ld a, #9
+    ret
+_10:
+    ld a, #10
+    ret
+_11:
+    ld a, #11
+    ret
+_18:
+    ld a, #18
+    ret
+_12:
+    ld a, #12
+    ret
+_13:
+    ld a, #13
+    ret
+_14:
+    ld a, #14
+    ret
+_15:
+    ld a, #15
+    ret
+_1:
+    ld a, #1
+    ret
+_5:
+    ld a, #5
+    ret
+_0:
+    ld a, #0
+    ret
+_4:
+    ld a, #4
+    ret
+_16:
+    ld a, #16
+    ret
+_7:
+    ld a, #7
+    ret
+_3:
+    ld a, #3
+    ret
+_6:
+    ld a, #6
+    ret
+_2:
+    ld a, #2
+    ret
+_17:
+    ld a, #17
+    ret
+
 
 ;;-----------------------------------------------------------------
 ;;
