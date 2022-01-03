@@ -18,6 +18,13 @@
 
 
 ;;------------------------------------------------------------------------------
+;; Global constants
+;;------------------------------------------------------------------------------
+sc_score = 0
+sc_name = 4
+sizeof_sc = 25
+
+;;------------------------------------------------------------------------------
 ;; Global variables
 ;;------------------------------------------------------------------------------
 .globl score
@@ -32,3 +39,7 @@
 .globl sys_score_reset_hiscore
 .globl sys_score_reset_score_buffer
 .globl sys_score_update_hiscore
+
+.globl sys_score_read_hiscore_table
+.globl sys_score_write_hiscore_table
+
