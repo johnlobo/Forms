@@ -38,4 +38,5 @@ sizeof_sc_tb = sizeof_sc * 5
 ;;------------------------------------------------------------------------------
 
 .globl sys_score_reset_score_buffer
+.globl sys_score_hiscore_reached
 

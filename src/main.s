@@ -45,6 +45,8 @@
 _no_more_moves_string: .asciz "NO MORE MOVES"
 _game_cancelled_string: .asciz "GAME CANCELLED"
 _updating_hiscore_string: .asciz "UPDATING HIGH SCORE"
+_congratulations_string: .asciz "CONGRATS!! ITS A HIGH SCORE"
+_enteryourname_string: .asciz "ENTER YOUR NAME"
 _press_key_for_left: .asciz "PRESS KEY FOR LEFT"
 _press_key_for_right: .asciz "PRESS KEY FOR RIGHT"
 _press_key_for_up: .asciz "PRESS KEY FOR UP"
@@ -57,6 +59,35 @@ _press_key_for_set: .asciz "PRESS KEY FOR SET PIECE"
 ;; 
 .area _CODE
 
+
+;-----------------------------------------------------------------
+;;
+;; _get_name
+;;   Draw player1
+;;  Input:  
+;;  Output: 
+;;  Destroyed: af, bc,de, hl
+;;
+_get_name::
+   ld e, #8                            ;; x
+   ld d, #65                           ;; y
+   ld b, #70                          ;; h
+   ld c, #64                           ;; w
+   call sys_messages_draw_window
+       
+   ld c, #0
+   cpctm_screenPtr_asm de, CPCT_VMEM_START_ASM, 14, 70  ;; screen address for 30, 120 in de
+   ld hl, #_congratulations_string    ;; message
+   call sys_text_draw_string
+   
+   ld c, #0
+   cpctm_screenPtr_asm de, CPCT_VMEM_START_ASM, 25, 95  ;; screen address for 30, 120 in de
+   ld hl, #_enteryourname_string    ;; message
+   call sys_text_draw_string
+
+   call sys_input_wait4anykey
+
+   ret
 
 
 
@@ -73,13 +104,16 @@ _persist_hiscore::
    ld a, e_hiscore(ix)                 ;; Persist high score
    or a                                ;;
    ret z                               ;; return if not necessary to update the hi score on disk.
+
+   call _get_name                       ;; get name for the hiscore table
+
    ld e, #18                           ;; x
    ld d, #78                           ;; y
    ld b, #44                           ;; h
    ld c, #44                           ;; w
    ld hl, #_updating_hiscore_string    ;; message
    xor a                               ;; dont wait for a key
-   call sys_messagees_show
+   call sys_messages_show
    call activate_firmware
    call sys_files_save_file
    call deactivate_firmware
@@ -102,7 +136,7 @@ _update_hiscore::
    ld c, #44                           ;; w
    ld hl, #_updating_hiscore_string    ;; message
    xor a                               ;; don't wait for a key
-   call sys_messagees_show
+   call sys_messages_show
    call activate_firmware
    call sys_files_load_file
    ret
@@ -123,7 +157,7 @@ _show_redefine_one_key:
    ld c, #58                           ;; w
    ;;ld hl, #_updating_hiscore_string    ;; message
    xor a                               ;; don't wait for a key
-   call sys_messagees_show
+   call sys_messages_show
    ret
 
 ;;-----------------------------------------------------------------
@@ -243,6 +277,8 @@ _main_init::
 
    call sys_render_init
 
+   call sys_render_hiscore_screen
+
    call _show_main_screen
 
    ;; set random seed
@@ -284,6 +320,7 @@ _main::
    call _main_init
 
 start:
+   
    call man_game_init
 
    ;; Loop forever
@@ -316,11 +353,12 @@ end_of_game:
    ld c, #32                           ;; w
    ld hl, #_no_more_moves_string       ;; message
    ld a, #1                            ;; wait for a key
-   call sys_messagees_show
+   call sys_messages_show
    call sys_audio_stop_music
    call _persist_hiscore
    call sys_render_init
    call sys_audio_init
+   call sys_render_hiscore_screen
    call _show_main_screen
    jr start
 
@@ -334,10 +372,11 @@ _game_cancelled:
    ld c, #34                           ;; w
    ld hl, #_game_cancelled_string      ;; message
    ld a, #1                            ;; wait for a key
-   call sys_messagees_show
+   call sys_messages_show
    call sys_audio_stop_music
    call _persist_hiscore
    call sys_render_init
    call sys_audio_init
+   call sys_render_hiscore_screen
    call _show_main_screen
    jr start

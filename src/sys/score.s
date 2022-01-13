@@ -18,6 +18,8 @@
 
 .include "../common.h.s"
 .include "sys/score.h.s"
+.include "sys/util.h.s"
+
 
 
 .module score_system
@@ -72,3 +74,17 @@ sys_score_reset_score_buffer::
     ld (hl), a
     ret
 
+;;-----------------------------------------------------------------
+;;
+;; sys_score_hiscore_reached
+;;
+;;  Checks if a high score has been reached
+;;  Input: hl: address to Score to check
+;;  Output: c: "0" if no high score has been reached, "1" otherwise
+;;  Modified: af, de, hl, bc
+;;
+sys_score_hiscore_reached::
+    ld hl, #score
+    ld de, #(hi_score_table+(sizeof_sc*4))
+    call sys_util_BCD_Compare
+    ret
