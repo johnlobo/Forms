@@ -16,7 +16,6 @@
 ;;  along with this program.  If not, see <http://www.gnu.org/licenses/>.
 ;;-------------------------------------------------------------------------------
 
-.include "sys/fdc.h.s"
 .include "../common.h.s"
 .include "sys/score.h.s"
 
@@ -36,191 +35,22 @@ hi_score::                  .db #0x00, #0x00, #0x00, #0x00
 score_buffer::              .db #0x00, #0x00, #0x00, #0x00
 
 hi_score_table::    
-    .ds sizeof_sc       ;; Each line is 4 bytes for score and up to 20 chars (plus /0) for name
-    .ds sizeof_sc
-    .ds sizeof_sc
-    .ds sizeof_sc
-    .ds sizeof_sc
-    
-
-_track: .db #0
-_sector0: .db #0xc2
-_sector1: .db #0xc2
-
+    .db #0x50, #0x00, #0x00, #0x00 
+    .asciz "DAVID     "
+    .db #0x40, #0x00, #0x00, #0x00 
+    .asciz "MARIA     "
+    .db #0x30, #0x00, #0x00, #0x00 
+    .asciz "DIEGO     "
+    .db #0x20, #0x00, #0x00, #0x00 
+    .asciz "MARTIN    "
+    .db #0x10, #0x00, #0x00, #0x00 
+    .asciz "FIRST     "
 
 ;;
 ;; Start of _CODE area
 ;; 
 .area _CODE
 
-;;-----------------------------------------------------------------
-;;
-;; sys_score_read_hiscore
-;;
-;;   Reads hi score form the disk
-;;  Input: 
-;;  Output:
-;;  Modified: af, hl, de, bc
-;;
-sys_score_read_hiscore::
-    call FDC_MotorOn
-    call FDC_DriveWaitReady
-    
-    ld a, (_track)
-    call FDC_track
-    
-    ld HL,#hi_score
-    ld DE,#SCORE_NUM_BYTES ;(512 bytes per sector)
-    ld a, (_sector0)
-    ld b, a  ;(e.g #C1)
-    ld a, (_sector1)
-    ld c, a  ;(e.g #C1)
-    call FDC_read
-    ;check here if you have errors
-    call FDC_CheckErrors
- 
-    call FDC_MotorOff
-    ret
-
-;;-----------------------------------------------------------------
-;;
-;; sys_score_read_hiscore_table
-;;
-;;   Reads hi score table from disk
-;;  Input:  hl : address to store the information
-;;          de : number of bytes to read
-;;  Output:
-;;  Modified: af, hl, de, bc
-;;
-sys_score_read_hiscore_table::
-    ld a, l
-    ld (sys_score_read_hiscore_table_hl + 1), a     ;; Store current address to store data (self modifying code)
-    ld a, h
-    ld (sys_score_read_hiscore_table_hl + 2), a     ;; Store current address to store data (self modifying code)
-
-    ld a, e
-    ld (sys_score_read_hiscore_table_de + 1), a     ;; Store num of bytes to read (self modifying code)
-    ld a, d
-    ld (sys_score_read_hiscore_table_de + 2), a     ;; Store num of bytes to read (self modifying code)
-
-    call FDC_MotorOn
-    call FDC_DriveWaitReady
-    
-    ld a, (_track)
-    call FDC_track
-sys_score_read_hiscore_table_hl:
-    ld HL,#hi_score
-sys_score_read_hiscore_table_de:
-    ld DE,#SCORE_NUM_BYTES ;(512 bytes per sector)
-    ld a, (_sector0)
-    ld b, a  ;(e.g #C1)
-    ld a, (_sector1)
-    ld c, a  ;(e.g #C1)
-    call FDC_read
-    ;check here if you have errors
-    call FDC_CheckErrors
- 
-    call FDC_MotorOff
-    ret
-
-;;-----------------------------------------------------------------
-;;
-;; sys_score_write_score
-;;
-;;   Writes hi score to the disk
-;;  Input: 
-;;  Output:
-;;  Modified: af, hl, de, bc
-;;
-sys_score_write_hiscore::
-    call FDC_MotorOn
-    call FDC_DriveWaitReady
-
-    ld a,(_track)
-    call FDC_track
-
-    ld HL,#hi_score
-    ld DE,#SCORE_NUM_BYTES ;(512 bytes per sector)
-    ld a, (_sector0)
-    ld b, a  ;(e.g #C1)
-    ld a, (_sector1)
-    ld c, a  ;(e.g #C1)
-    call FDC_write
-    ;check here if you have errors
-    call FDC_CheckErrors
- 
-    call FDC_MotorOff
-    ret
-
-;;-----------------------------------------------------------------
-;;
-;; sys_score_write_hiscore_table
-;;
-;;   Writes hi score table to disk
-;;  Input:  hl : address to read the information
-;;          de : number of bytes to read
-;;  Output:
-;;  Modified: af, hl, de, bc
-;;
-sys_score_write_hiscore_table::
-    ld a, l
-    ld (sys_score_write_hiscore_table_hl + 1), a     ;; Store current address to store data (self modifying code)
-    ld a, h
-    ld (sys_score_write_hiscore_table_hl + 2), a     ;; Store current address to store data (self modifying code)
-
-    ld a, e
-    ld (sys_score_write_hiscore_table_de + 1), a     ;; Store num of bytes to read (self modifying code)
-    ld a, d
-    ld (sys_score_write_hiscore_table_de + 2), a     ;; Store num of bytes to read (self modifying code)
-
-    call FDC_MotorOn
-    call FDC_DriveWaitReady
-
-    ld a,(_track)
-    call FDC_track
-sys_score_write_hiscore_table_hl:
-    ld HL,#hi_score
-sys_score_write_hiscore_table_de:
-    ld DE,#SCORE_NUM_BYTES ;(512 bytes per sector)
-    ld a, (_sector0)
-    ld b, a  ;(e.g #C1)
-    ld a, (_sector1)
-    ld c, a  ;(e.g #C1)
-    call FDC_write
-    ;check here if you have errors
-    call FDC_CheckErrors
- 
-    call FDC_MotorOff
-    ret
-
-;;-----------------------------------------------------------------
-;;
-;; sys_score_reset_score
-;;
-;;   Resets hi score
-;;  Input: 
-;;  Output:
-;;  Modified: af, hl, de, bc
-;;
-sys_score_reset_hiscore::
-    call FDC_MotorOn
-    call FDC_DriveWaitReady
-
-    ld a,(_track)
-    call FDC_track
-
-    ld HL,#hi_score
-    ld DE,#SCORE_NUM_BYTES ;(512 bytes per sector)
-    ld a, (_sector0)
-    ld b, a  ;(e.g #C1)
-    ld a, (_sector1)
-    ld c, a  ;(e.g #C1)
-    call FDC_write
-    ;check here if you have errors
-    call FDC_CheckErrors
- 
-    call FDC_MotorOff
-    ret
 
 ;;-----------------------------------------------------------------
 ;;
@@ -242,22 +72,3 @@ sys_score_reset_score_buffer::
     ld (hl), a
     ret
 
-;;-----------------------------------------------------------------
-;;
-;; sys_score_reset_score_buffer
-;;
-;;   Initializes render
-;;  Input: de: buffer to reset
-;;  Output:
-;;  Modified: af, hl, de, bc
-;;
-sys_score_update_hiscore::
-    call sys_score_read_hiscore
-    ld a, (hi_score)
-    cp #0xE5
-    jr z, _clear_hiscore
-    ret
-_clear_hiscore:
-    ld hl,#hi_score
-    call sys_score_reset_score_buffer
-    ret

@@ -382,7 +382,7 @@ first_start:
     ld (man_game_copy_score_2_hiscore+1), hl
 second_start:
     ld hl, #score
-    ld de, #hi_score
+    ld de, #hi_score_table
     ld b, #4
 m_g_copy_score_loop:
     ld a, (hl)
@@ -418,7 +418,7 @@ man_game_add_score_4piece::
     call sys_util_BCD_Add
     call sys_render_score
     ld hl, #score
-    ld de, #hi_score
+    ld de, #hi_score_table
     call sys_util_BCD_Compare
     call c, man_game_copy_score_2_hiscore
     ret
@@ -450,7 +450,7 @@ man_game_add_score_4line::
     call sys_util_BCD_Add
     call sys_render_score                       ;; re-render score
     ld hl, #score                               ;;
-    ld de, #hi_score                            ;;  compare score with hiscore
+    ld de, #hi_score_table                      ;;  compare score with hiscore
     call sys_util_BCD_Compare                   ;;
     call c, man_game_copy_score_2_hiscore       ;; if score higher then copy score to hiscore
     ret

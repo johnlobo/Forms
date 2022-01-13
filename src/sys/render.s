@@ -125,10 +125,7 @@ sys_render_logo_screen::
 ;;
 sys_render_game_screen::
     ;; Draw Hi Score Title
-    cpctm_screenPtr_asm de, CPCT_VMEM_START_ASM, 18, 1       ;; screen address for 4, 6 in de
-    ;;ld hl, #_s_hi_score             ;; load in HL the address of the sprite
-    ;;ld c, #S_HI_SCORE_W             ;; load in c the sprite width 
-    ;;ld b, #S_HI_SCORE_H             ;; load in b sprite height
+    cpctm_screenPtr_asm de, CPCT_VMEM_START_ASM, 1, 14       ;; screen address for 4, 6 in de
 
     ld hl, #_s_high_score_icon             ;; load in HL the address of the sprite
     ld c, #S_HI_SCORE_ICON_W             ;; load in c the sprite width 
@@ -137,9 +134,7 @@ sys_render_game_screen::
 
     ;; Draw Score Title
     cpctm_screenPtr_asm de, CPCT_VMEM_START_ASM, 60, 4       ;; screen address for 57, 6 in de
-    ;;ld hl, #_s_score                ;; load in HL the address of the sprite
-    ;;ld c, #S_SCORE_W                ;; load in c the sprite width 
-    ;;ld b, #S_SCORE_H                ;; load in b sprite height
+
     ld hl, #_s_star_icon                ;; load in HL the address of the sprite
     ld c, #S_STAR_ICON_W                ;; load in c the sprite width 
     ld b, #S_STAR_ICON_H                ;; load in b sprite height
@@ -818,10 +813,16 @@ sys_render_draw_next_frame::
 ;;  Destroyed: af, bc,de, hl
 ;;
 sys_render_hi_score::
-    ld de,#hi_score
-    ;;ld hl, #HIGH_SCORE_SCREEN_ADDRESS
+    ld de,#hi_score_table
     cpctm_screenPtr_asm hl, CPCT_VMEM_START_ASM, 9, 23  ;; screen address for 1, 20 in de
     call sys_render_BCD_show
+
+    cpctm_push hl, de, bc, ix
+    cpctm_screenPtr_asm de, CPCT_VMEM_START_ASM, 9, 12  ;; screen address for 9, 13 in de
+    ld c, #0
+    ld hl, #(hi_score_table + sc_name)
+    call sys_text_draw_string
+    cpctm_pop ix, bc, de, hl
     ret
 
 ;-----------------------------------------------------------------

@@ -35,11 +35,12 @@ filename:
 .ascii "HISCORE.BIN"
 end_filename:
 
+;;
 ;; This example shows the firmware functions used to load
 ;; a file with a AMSDOS header (a non-ASCII file)
 ;;
-;; in this example, the file is called SCREEN.SCR
-;; and is loaded to the default screen location &c000-&ffff
+;; https://www.cpcwiki.eu/index.php/Programming:Loading_a_file
+;;
 sys_files_load_file::
     ld b, #(end_filename - filename)        ;; B = length of the filename in characters
     ld hl, #filename                        ;; HL = address of the start of the filename
@@ -57,18 +58,18 @@ sys_files_load_file::
                                             ;; - BC contains the length of the file (from the file header)
                                             ;; - A contains the file type (2 for binary files)
     jr nc, _load_file_exit                  ;; if the file has not properly opened exit
-    ld hl, #hi_score                        ;; HL = load address
+    ld hl, #hi_score_table                  ;; HL = load address
     call cas_in_direct                      ;; read file
 _load_file_exit:
     call cas_in_close                       ;; firmware function to close a file opened for reading
     ret
 
-
+;;
 ;; This example shows the firmware functions used to save
 ;; a file.
 ;;
-;; in this example, the file is called SCREEN.SCR
-;; and is a dump of the screen (from the default location &c000-&ffff)
+;; https://www.cpcwiki.eu/index.php/Programming:Saving_a_file
+;;
 sys_files_save_file::
      ld b, #(end_filename - filename)       ;; B = length of the filename in characters
     ld hl, #filename                        ;; HL = address of the start of the filename
@@ -81,8 +82,8 @@ sys_files_save_file::
                                             ;; firmware function to write the entire file
                                             ;; this will automatically generate a AMSDOS header
                                             ;; and write it before the the file data.
-    ld hl,#hi_score                         ;; HL = load address
-    ld de,#SCORE_NUM_BYTES                  ;; DE = length
+    ld hl,#hi_score_table                   ;; HL = load address
+    ld de,#sizeof_sc_tb                    ;; DE = length
     ld bc,#0x0000                           ;; BC = execution address
     ld a,#2                                 ;; A = file type (2 = binary)
     call cas_out_direct                     ;; write file
