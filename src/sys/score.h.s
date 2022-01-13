@@ -22,24 +22,20 @@
 ;;------------------------------------------------------------------------------
 sc_score = 0
 sc_name = 4
-sizeof_sc = 25
+sizeof_sc = 15
+sizeof_sc_tb = sizeof_sc * 5
 
 ;;------------------------------------------------------------------------------
 ;; Global variables
 ;;------------------------------------------------------------------------------
 .globl score
 .globl hi_score
+.globl hi_score_table
 .globl score_buffer
+
 ;;------------------------------------------------------------------------------
 ;; Global routines
 ;;------------------------------------------------------------------------------
 
-.globl sys_score_read_hiscore
-.globl sys_score_write_hiscore
-.globl sys_score_reset_hiscore
 .globl sys_score_reset_score_buffer
-.globl sys_score_update_hiscore
-
-.globl sys_score_read_hiscore_table
-.globl sys_score_write_hiscore_table
 
