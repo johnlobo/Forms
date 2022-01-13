@@ -417,10 +417,14 @@ man_game_add_score_4piece::
     ld b, #SCORE_NUM_BYTES                      ;; store in b the number of bytes of the numbers add 
     call sys_util_BCD_Add
     call sys_render_score
+
+    call sys_score_hiscore_reached
+
     ld hl, #score
     ld de, #hi_score_table
     call sys_util_BCD_Compare
     call c, man_game_copy_score_2_hiscore
+
     ret
 
 ;;-----------------------------------------------------------------
