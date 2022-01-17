@@ -151,8 +151,8 @@ sys_messages_show::
 
     ;; Draw Back window
     ld de, #CPCT_VMEM_START_ASM     ;; DE = Pointer to start of the screen
-    ld b, w_y(iy)                  ;; B = y coordinate 
-    ld c, w_x(iy)                  ;; C = x coordinate 
+    ld b, w_y(iy)                   ;; B = y coordinate 
+    ld c, w_x(iy)                   ;; C = x coordinate 
     call cpct_getScreenPtr_asm      ;; Calculate video memory location and return it in HL
     ex de, hl                       ;; move screen address to de
     ld c, w_w(iy)
@@ -189,16 +189,25 @@ sys_messages_show::
     ld de, #CPCT_VMEM_START_ASM     ;; 
     ld c, w_x(iy)                   ;;
     inc c                           ;; 
-    inc c                           ;; C = y + 1
+    inc c                           ;; C = x + 1
     inc c                           ;; 
     
     ld b, w_y(iy)                   ;;
+
+    ld a, w_wait_for_key(iy)        ;; check if we have to wait for a key
+    or a                            ;;
+    jr z, no_wait4key               ;; return if not
     ld a, #10                       ;; B = y + 10
+    jr y_coord
+no_wait4key:
+    ld a, #15
+y_coord:
     add b                           ;;
     ld b, a                         ;;
     
     call cpct_getScreenPtr_asm      ;; Calculate video memory location and return it in HL
     ex de, hl                       ;; move screen address to de
+
     ld c, #0
     ld h, w_message+1(iy)
     ld l, w_message(iy)

@@ -279,6 +279,8 @@ _main_init::
 
    call sys_render_hiscore_screen
 
+   call sys_score_hiscore_entry
+
    call _show_main_screen
 
    ;; set random seed
