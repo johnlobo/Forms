@@ -245,3 +245,77 @@ y_coord:
     call sys_input_wait4anykey
 
     ret
+
+;;-----------------------------------------------------------------
+;;
+;; draw_box
+;;
+;;  draws an empty box
+;;  Input:  (2B DE) memory	Video memory pointer to the upper left box corner byte
+;;          (1B A ) colour_pattern	1-byte colour pattern (in screen pixel format) to fill the box with
+;;          (1B C ) HEIGHT	Box width in bytes [1-64] (Beware!  not in pixels!)
+;;          (1B B ) WIDTH	Box height in bytes (>0)
+;;  Output:
+;;  Modified: af, hl, de, bc
+;;
+sys_messages_draw_box::
+    ld (#draw_border+1), a
+    ld (#draw_border2+1), a
+    ld (#draw_line+1), a
+ 	ld h, d
+	ld l, e
+	
+    inc c                   ;; increment height in one 
+	jr draw_line
+
+next_line:
+	ld a, c
+	dec a
+	or a
+	ret z
+
+	ld c, a
+	ld a, (width)
+	ld b,a
+
+	ld a, c
+	cp #1
+	jr z, draw_line		;; Si estoy en la ultima linea salto a line
+draw_border:
+	ld (hl), #0xff
+	ld a, l 
+	add b
+	dec a
+	ld l, a
+draw_border2:
+	ld (hl), #0xff
+	jr down_line
+
+draw_line:
+	ld (hl), #0xff
+	inc hl
+	djnz draw_line
+
+down_line:
+	ld a, #8          	;; [2] / HL = DE = DE + 0x800
+	add d
+    ld h, a           	;; [1] | Adding 0x800 makes HL point to the start of
+	ld d, a
+	ld l, e
+	
+	and   #0x38        	;; [2] leave out only bits 13,12 and 11 from new memory address (00xxx000 00000000)
+    jp    nz, next_line    	;; [3] If any bit from {13,12,11} is not 0, we are still inside 
+                        	;; ... video memory boundaries, so proceed with next line
+    ;; Every 8 lines, we cross the 16K video memory boundaries and have to
+    ;; reposition destination pointer. That means our next line is 16K-0x50 bytes back
+    ;; which is the same as advancing 48K+0x50 = 0xC050 bytes, as memory is 64K 
+    ;; and our 16bit pointers cycle over it
+    ld    hl, #0xC050       	;; [3] We advance destination pointer to next line
+    add   hl, de            ;; [3] HL = DE + 0xC050
+    ld     d, h             ;; [1] / DE = HL
+    ld     e, l             ;; [1] \
+    jp   next_line         	;; [3] Continue copying
+
+    ret
+width: .db #0
+height: .db #0

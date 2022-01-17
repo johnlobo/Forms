@@ -105,16 +105,18 @@ sys_score_hiscore_reached::
     call sys_util_BCD_Compare
     ret
 
-;-----------------------------------------------------------------
+
+
+;;-----------------------------------------------------------------
 ;;
-;; sys_score_hiscore_entry
+;; sys_score_hiscore_entry_screen
 ;;
-;;   Renders high score screen
+;;  Renders high score screen entry name
 ;;  Input: 
 ;;  Output:
 ;;  Modified: af, hl, de, bc
 ;;
-sys_score_hiscore_entry::
+sys_score_hiscore_entry_screen:
     ;; clear screen
     cpctm_clearScreen_asm 255           ;; Clear screen
 
@@ -170,3 +172,123 @@ sys_score_hiscore_entry::
 
     call sys_input_wait4anykey
     ret
+
+;;-----------------------------------------------------------------
+;;
+;; sys_score_check_entry_keyboard
+;;
+;;   Renders high score screen
+;;  Input: 
+;;  Output:
+;;  Modified: af, hl, de, bc
+;;
+sys_score_check_entry_keyboard:
+    ret
+;;-----------------------------------------------------------------
+;;
+;; sys_score_get_marker_width
+;;
+;;  Returns the width & height of the marker in BC
+;;  Input:  ix: address to the marker strcut
+;;  Output: bc: height & widht of the marker
+;;  Modified: af, hl, de, bc
+;;
+sys_score_get_marker_width:
+    ld a, m_y(ix)
+    cp #3                   ;; check if marker is in the first 3 lines (letters)
+    jr c, letter_lines
+    jr z, third_row         ;; check if it's on the forth
+    cp #4
+    jr z, forth_row         ;; check if it's on the fifth
+    ld b, #m_w5
+    jr height
+letter_lines:
+    ld b, #m_w02
+    jr height
+third_row:
+    ld b, #m_w3
+    jr height
+forth_row:
+    ld b, #m_w4
+height:
+    ld c, #11
+    ret
+
+;;-----------------------------------------------------------------
+;;
+;; sys_score_entry_print_marker
+;;
+;;  Render de marker
+;;  Input:  ix: address to the marker strcut
+;;          a: printing or erasing
+;;  Output:
+;;  Modified: af, hl, de, bc
+;;
+sys_score_entry_print_marker:
+
+    ;; Draw Back window
+
+    ld a, m_y(ix)                    ;; B = y coordinate 
+    sla a
+    sla a                             ;; multiply y coord by 4 
+    add #entry_start_y              ;; add the staring position in screen
+    ld b,a
+    ld h, m_x(ix)                   ;; C = x coordinate 
+    ld e, #11
+    call sys_util_h_times_e         ;; multiply by 11
+    ld a, l
+    add #entry_start_x
+    ld c, a
+    ld de, #CPCT_VMEM_START_ASM     ;; DE = Pointer to start of the screen
+    call cpct_getScreenPtr_asm      ;; Calculate video memory location and return it in HL
+    ex de, hl                       ;; move screen address to de
+    call sys_score_get_marker_width
+    ld a,#33                        ;; Patern of solid box
+    call sys_messages_draw_box
+    ld m_moved(ix), #0
+    ret
+
+;;-----------------------------------------------------------------
+;;
+;; sys_score_hiscore_entry
+;;
+;;   Renders high score screen
+;;  Input: 
+;;  Output:
+;;  Modified: af, hl, de, bc
+;;
+sys_score_hiscore_entry::
+    
+    call sys_score_hiscore_entry_screen
+    ld ix, #marker
+    ld m_moved(ix), #1
+    ld m_x(ix), #0
+    ld m_y(ix), #0
+    call sys_score_entry_print_marker
+loop:
+    call sys_score_check_entry_keyboard
+    ld a, m_moved(ix)
+    or a
+    jr z, loop
+    ret
+;; marker struct
+marker:
+    .db #0              ;; moved
+    .db #0, #0          ;; x, y
+    .db #0, #0          ;; px, py
+;; Marker strcut constants
+m_moved = 0
+m_x = 1
+m_y = 2
+m_px = 3
+m_py = 4
+;; General use constants
+m_w02 = 4
+m_w3 = 10
+m_w4 = 12
+m_w5 = 8
+m_h = 11
+entry_start_x = 14
+entry_start_y = 58
+entry_width = 9
+entry_letter_lines = 3
