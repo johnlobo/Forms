@@ -32,3 +32,4 @@
 
 .globl sys_messages_draw_window
 .globl sys_messages_show
+.globl sys_messages_draw_box
