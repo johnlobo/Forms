@@ -38,9 +38,13 @@
 ;;
 .area _DATA
 
-score::                     .db #0x00, #0x00, #0x00, #0x00
+
 hi_score::                  .db #0x00, #0x00, #0x00, #0x00
 score_buffer::              .db #0x00, #0x00, #0x00, #0x00
+
+score::                     .db #0x00, #0x00, #0x00, #0x00
+hiscore_name_string:: .ds #11                               ;; 10 chars, 20 bytes + 0
+hiscore_name_length:: .db #0
 
 hi_score_table::    
     .db #0x50, #0x00, #0x00, #0x00 
@@ -61,8 +65,14 @@ _hiscore_line3_string: .asciz "S  T  U  V  W  X  Y  Z"      ;; 22 chars, 44 byte
 _hiscore_space_string: .asciz "SPACE"                        ;; 5 chars, 10 bytes
 _hiscore_delete_string: .asciz "DELETE"                       ;; 6 chars, 12 bytes
 _hiscore_done_string: .asciz "DONE"                         ;; 4 chars, 8 bytes
-_hiscore_name_string: .asciz "__________"                   ;; 10 chars, 20 bytes
 
+
+;; score marker struct
+score_marker::
+    .db #0              ;; moved
+    .db #0, #0          ;; x, y
+    .db #0, #0          ;; px, py
+    .db #0              ;; ended
 
 ;;
 ;; Start of _CODE area
@@ -106,6 +116,26 @@ sys_score_hiscore_reached::
     ret
 
 
+;;-----------------------------------------------------------------
+;;
+;; sys_score_hiscore_name_print
+;;
+;;  Prints the hiscore name
+;;  Input: 
+;;  Output:
+;;  Modified: af, hl, de, bc
+;;
+sys_score_hiscore_name_print::
+    cpctm_screenPtr_asm de, CPCT_VMEM_START_ASM, 30, 155  ;; screen address for 30, 155 in de
+    ld bc, #0x0914
+    ld a, #0xff
+    call cpct_drawSolidBox_asm
+
+    ld c, #0
+    cpctm_screenPtr_asm de, CPCT_VMEM_START_ASM, 30, 155  ;; screen address for 30, 155 in de
+    ld hl, #hiscore_name_string    ;; message
+    call sys_text_draw_string
+    ret
 
 ;;-----------------------------------------------------------------
 ;;
@@ -120,7 +150,7 @@ sys_score_hiscore_entry_screen:
     ;; clear screen
     cpctm_clearScreen_asm 255           ;; Clear screen
 
-    cpctm_setBorder_asm HW_BLACK
+    ;;cpctm_setBorder_asm HW_BLACK
     
     ld e, #8                            ;; x
     ld d, #32                           ;; y
@@ -164,13 +194,8 @@ sys_score_hiscore_entry_screen:
     ld hl, #_hiscore_done_string    ;; message
     call sys_text_draw_string
 
-    ld c, #0
-    cpctm_screenPtr_asm de, CPCT_VMEM_START_ASM, 30, 155  ;; screen address for 30, 120 in de
-    ld hl, #_hiscore_name_string    ;; message
-    call sys_text_draw_string
+    call sys_score_hiscore_name_print
     
-
-    call sys_input_wait4anykey
     ret
 
 ;;-----------------------------------------------------------------
@@ -183,6 +208,15 @@ sys_score_hiscore_entry_screen:
 ;;  Modified: af, hl, de, bc
 ;;
 sys_score_check_entry_keyboard:
+    call sys_input_waitKeyPressed
+    ;; Update left key
+    ld de, #sys_input_key_actions
+    ex de, hl
+    ld (hl), e
+    inc hl
+    ld (hl), d
+    ;; Wait till key buffer is empty
+    call sys_input_clean_buffer
     ret
 ;;-----------------------------------------------------------------
 ;;
@@ -190,11 +224,18 @@ sys_score_check_entry_keyboard:
 ;;
 ;;  Returns the width & height of the marker in BC
 ;;  Input:  ix: address to the marker strcut
+;;          a: 1 -> current coordinates; 0 -> previous coordinates
 ;;  Output: bc: height & widht of the marker
 ;;  Modified: af, hl, de, bc
 ;;
 sys_score_get_marker_width:
-    ld a, m_y(ix)
+    or a                        ;; select current or previous coords
+    jr nz, current_coords
+    ld a, m_py(ix)              ;; a=0 -> previous coords
+    jr start_marker_width
+current_coords:
+    ld a, m_y(ix)               ;; a<>0 -> current coords
+start_marker_width:
     cp #3                   ;; check if marker is in the first 3 lines (letters)
     jr c, letter_lines
     jr z, third_row         ;; check if it's on the forth
@@ -216,7 +257,7 @@ height:
 
 ;;-----------------------------------------------------------------
 ;;
-;; sys_score_entry_print_marker
+;; sys_score_entry_generic_print_marker
 ;;
 ;;  Render de marker
 ;;  Input:  ix: address to the marker strcut
@@ -224,18 +265,18 @@ height:
 ;;  Output:
 ;;  Modified: af, hl, de, bc
 ;;
-sys_score_entry_print_marker:
+sys_score_entry_print_marker::
 
-    ;; Draw Back window
-
-    ld a, m_y(ix)                    ;; B = y coordinate 
-    sla a
-    sla a                           ;; multiply y coord by 4 
+    ;; Erase
+    ld h, m_py(ix)                    ;; B = y coordinate 
+    ld e, #m_place_height
+    call sys_util_h_times_e         ;; multiply by 11
+    ld a, l
     add #entry_start_y              ;; add the staring position in screen
     ld b,a
 
-    ld h, m_x(ix)                   ;; C = x coordinate 
-    ld e, #4
+    ld h, m_px(ix)                   ;; C = x coordinate 
+    ld e, #m_place_width
     call sys_util_h_times_e         ;; multiply by 11
     ld a, l
     add #entry_start_x
@@ -244,11 +285,43 @@ sys_score_entry_print_marker:
     ld de, #CPCT_VMEM_START_ASM     ;; DE = Pointer to start of the screen
     call cpct_getScreenPtr_asm      ;; Calculate video memory location and return it in HL
     ex de, hl                       ;; move screen address to de
-    call sys_score_get_marker_width
+    xor a                           ;; previous coords parameter
+    call sys_score_get_marker_width ;; get market width
+    ld a,#0xff                      ;; Patern of solid box
+    call sys_messages_draw_box
+    
+    ;; Print
+    ld h, m_y(ix)                    ;; B = y coordinate 
+    ld e, #m_place_height
+    call sys_util_h_times_e         ;; multiply by 11
+    ld a, l
+    add #entry_start_y              ;; add the staring position in screen
+    ld b,a
+
+    ld h, m_x(ix)                   ;; C = x coordinate 
+    ld e, #m_place_width
+    call sys_util_h_times_e         ;; multiply by 11
+    ld a, l
+    add #entry_start_x
+    ld c, a
+
+    ld de, #CPCT_VMEM_START_ASM     ;; DE = Pointer to start of the screen
+    call cpct_getScreenPtr_asm      ;; Calculate video memory location and return it in HL
+    ex de, hl                       ;; move screen address to de
+    ld a, #1                        ;; current coords parameter
+    call sys_score_get_marker_width ;; get market width
     ld a,#0xc0                      ;; Patern of solid box
     call sys_messages_draw_box
+    
     ld m_moved(ix), #0
+    ;; Update previous coordinates
+    ld a, m_x(ix)
+    ld m_px(ix), a
+    ld a, m_y(ix)
+    ld m_py(ix), a
     ret
+
+
 
 ;;-----------------------------------------------------------------
 ;;
@@ -259,38 +332,69 @@ sys_score_entry_print_marker:
 ;;  Output:
 ;;  Modified: af, hl, de, bc
 ;;
-sys_score_hiscore_entry::
-    
+sys_score_hiscore_entry::    
+    ld hl, #hiscore_name_string
+    ld (hl), #0
+    ld hl, #hiscore_name_length
+    ld (hl), #0
     call sys_score_hiscore_entry_screen
-    ld ix, #marker
+    ld ix, #score_marker
     ld m_moved(ix), #1
-    ld m_x(ix), #2
-    ld m_y(ix), #0
+    ld m_ended(ix), #0
     call sys_score_entry_print_marker
-loop:
-    call sys_score_check_entry_keyboard
+entry_loop:
+    ld b, #20
+    call cpct_waitHalts_asm
+    
+    call sys_input_score_entry_update
+    
     ld a, m_moved(ix)
     or a
-    jr z, loop
+    jr z, check_end
+    call sys_score_entry_print_marker
+
+check_end:
+    ld a, m_ended(ix)
+    or a
+    jr z, entry_loop
     ret
-;; marker struct
-marker:
-    .db #0              ;; moved
-    .db #0, #0          ;; x, y
-    .db #0, #0          ;; px, py
-;; Marker strcut constants
-m_moved = 0
-m_x = 1
-m_y = 2
-m_px = 3
-m_py = 4
-;; General use constants
-m_w02 = 5
-m_w3 = 10
-m_w4 = 12
-m_w5 = 8
-m_h = 12
-entry_start_x = 13
-entry_start_y = 58
-entry_width = 10
-entry_letter_lines = 3
+
+;;-----------------------------------------------------------------
+;;
+;; sys_score_update_high_score_table
+;;
+;;  Updates the high score table with the score and the hiscore_name_string
+;;  Input: 
+;;  Output:
+;;  Modified: af, hl, de, bc
+;;
+sys_score_update_high_score_table::
+    ld b, #4
+    ld hl, #score
+    ld de, #hi_score_table
+update_loop:
+    cpctm_push hl, de, bc
+    call sys_util_BCD_Compare
+    cpctm_pop bc, de, hl
+    jr c, move_data
+    dec b
+    ld a, #sizeof_sc
+    add e
+    ld e, a
+    jr update_loop
+move_data:
+    ld h, d
+    ld l, e
+    ld a, #sizeof_sc
+    add e                   ;; DE = DE + sizeof_sc   
+    cptm_push hl, de
+    ld h, #sizeof_sc
+    ld e, b
+    call sys_util_h_times_e
+    ld b, #0
+    ld c, l
+    cptm_push de, hl
+    ldir
+
+    ret
+

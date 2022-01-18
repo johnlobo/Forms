@@ -277,9 +277,16 @@ _main_init::
 
    call sys_render_init
 
-   call sys_render_hiscore_screen
+   ;; debug
+   ld hl, #score
+   ld (hl), #00
+   inc hl
+   ld (hl), #10
+   ;; debug
 
    call sys_score_hiscore_entry
+
+   call sys_score_update_high_score_table
 
    call _show_main_screen
 

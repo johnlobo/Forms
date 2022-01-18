@@ -22,9 +22,53 @@
 .include "man/game.h.s"
 .include "sys/util.h.s"
 .include "sys/render.h.s"
+.include "sys/score.h.s"
 
 
 .module input_system
+
+;;
+;; Start of _DATA area 
+;;  SDCC requires at least _DATA and _CODE areas to be declared, but you may use
+;;  any one of them for any purpose. Usually, compiler puts _DATA area contents
+;;  right after _CODE area contents.
+;;
+.area _DATA
+
+sys_input_key_actions::
+    .dw Key_O,      _move_left
+    .dw Key_P,      _move_right
+    .dw Key_Q,      _move_up
+    .dw Key_A,      _move_down
+    .dw Key_Space,  _set_piece
+    .dw Key_I,      _change_piece
+    .dw Key_Esc,    _cancel_game
+    .dw Joy0_Left,  _move_left
+    .dw Joy0_Right, _move_right
+    .dw Joy0_Up,    _move_up
+    .dw Joy0_Down,  _move_down
+    .dw Joy0_Fire1, _set_piece
+    .dw Joy0_Fire2, _change_piece
+    .dw 0
+
+sys_input_score_key_actions::
+    .dw Key_O,      _score_move_left
+    .dw Key_P,      _score_move_right
+    .dw Key_Q,      _score_move_up
+    .dw Key_A,      _score_move_down
+    .dw Key_Space,  _score_fire
+    .dw Key_Esc,    _score_cancel_entry
+    .dw Joy0_Left,  _score_move_left
+    .dw Joy0_Right, _score_move_right
+    .dw Joy0_Up,    _score_move_up
+    .dw Joy0_Down,  _score_move_down
+    .dw Joy0_Fire1, _score_fire
+    .dw 0
+
+;;
+;; Start of _CODE area
+;; 
+.area _CODE
 
 
 ;;-----------------------------------------------------------------
@@ -53,23 +97,201 @@ sys_input_clean_buffer::
 sys_input_init::
     ret 
 
-sys_input_key_actions::
-    .dw Key_O,      _move_left
-    .dw Key_P,      _move_right
-    .dw Key_Q,      _move_up
-    .dw Key_A,      _move_down
-    .dw Key_Space,  _set_piece
-    .dw Key_I,      _change_piece
-    .dw Key_Esc,    _cancel_game
-    .dw Joy0_Left,  _move_left
-    .dw Joy0_Right, _move_right
-    .dw Joy0_Up,    _move_up
-    .dw Joy0_Down,  _move_down
-    .dw Joy0_Fire1, _set_piece
-    .dw Joy0_Fire2, _change_piece
-    .dw 0
+;;-----------------------------------------------------------------
+;;
+;; _score_move_down
+;;
+;;  Process fire key press
+;;  Input: 
+;;  Output:
+;;  Modified: 
+;;
+_score_move_down::
+    ld a, m_y(ix)
+    cp #max_score_y
+    ret z
+    ;; check if in 8,1
+    cp #1
+    jr nz, not_anomaly_down
+    ld a, m_x(ix)
+    cp #8
+    ret z                       ;; return if I'm in 8,1 -> can't go down
+not_anomaly_down:
+    ld a, m_y(ix)
+    ld m_py(ix), a
+    inc a
+    ld m_y(ix), a
+    cp #entry_letter_lines
+    jr c, _score_move_down_exit
+    ld m_x(ix), #0
+_score_move_down_exit:
+    ld m_moved(ix), #1
+    ret
+
+;;-----------------------------------------------------------------
+;;
+;; _score_move_up
+;;
+;;  Process fire key press
+;;  Input: 
+;;  Output:
+;;  Modified: 
+;;
+_score_move_up:
+    ld a, m_y(ix)
+    or a
+    ret z
+    ld m_py(ix), a
+    dec a
+    ld m_y(ix), a
+    ld m_moved(ix), #1
+    ret
+
+;;-----------------------------------------------------------------
+;;
+;; _score_move_right
+;;
+;;  Process fire key press
+;;  Input: 
+;;  Output:
+;;  Modified: 
+;;
+_score_move_right::
+    ld a, m_y(ix)
+    cp #entry_letter_lines
+    ret nc
+    ;; check if in 7,2
+    cp #2
+    jr nz, not_anomaly_right
+    ld a, m_x(ix)
+    cp #7
+    ret z                       ;; return if I'm in 7,2
+not_anomaly_right:
+    ld a, m_x(ix)
+    cp #max_score_x
+    ret z
+    ld m_px(ix), a
+    inc a
+    ld m_x(ix), a
+    ld m_moved(ix), #1
+    ret
+
+;;-----------------------------------------------------------------
+;;
+;; _score_move_left
+;;
+;;  Process fire key press
+;;  Input: 
+;;  Output:
+;;  Modified: 
+;;
+_score_move_left:
+    ld a, m_y(ix)
+    cp #entry_letter_lines
+    ret nc
+    ld a, m_x(ix)
+    or a
+    ret z
+    ld m_px(ix), a
+    dec a
+    ld m_x(ix), a
+    ld m_moved(ix), #1
+    ret
+
+;;-----------------------------------------------------------------
+;;
+;; _score_cancel_entry
+;;
+;;  Process fire key press
+;;  Input: 
+;;  Output:
+;;  Modified: 
+;;
+_score_cancel_entry:
+    ld m_ended(ix), #1
+    ret
 
 
+;;-----------------------------------------------------------------
+;;
+;; _get_letter
+;;
+;;  Obtain the leter selected by the marker
+;;  Input: 
+;;  Output: a: letter
+;;  Modified: 
+;;
+_get_letter::
+    cpctm_push hl, de
+    ld h, m_y(ix)
+    ld e, #9
+    call sys_util_h_times_e
+    ld a, m_x(ix)               ;; add x    
+    add l                       ;; add row by 9
+    add #65                     ;; add starting capital letters
+    cpctm_pop de, hl
+    ret
+
+;;-----------------------------------------------------------------
+;;
+;; _score_fire
+;;
+;;  Process fire key press
+;;  Input: 
+;;  Output:
+;;  Modified: 
+;;
+_score_fire::
+    ld a, m_y(ix)
+    cp #entry_letter_lines
+    jr c, _letter_lines
+    cp #3
+    jr z, _space
+    cp #4
+    jr z, _delete
+done:
+    ld m_ended(ix), #2
+    ret
+_letter_lines:
+    ld a, (hiscore_name_length)
+    cp #10
+    ret z               ;; resturn if we already have 10 chars in the string
+    ld hl, #hiscore_name_string
+    add l
+    ld l,a
+    call _get_letter
+    ld (hl), a        ;; insert the selected character
+    inc hl              
+    ld (hl), #0         ;; insert 0 to terminate de string
+    ld hl, #hiscore_name_length
+    inc (hl)
+    call sys_score_hiscore_name_print
+    ret
+_space:
+    ld a, (hiscore_name_length)
+    cp #10
+    ret z               ;; resturn if we already have 10 chars in the string
+    ld hl, #hiscore_name_string
+    add l
+    ld l,a
+    ld (hl), #32        ;; insert the space character
+    inc hl              
+    ld (hl), #0         ;; insert 0 to terminate de string
+    ld hl, #hiscore_name_length
+    inc (hl)
+    call sys_score_hiscore_name_print
+    ret
+_delete:
+    ld a, (hiscore_name_length)
+    dec a
+    ld hl, #hiscore_name_string
+    add l
+    ld l,a
+    ld (hl), #0
+    ld hl, #hiscore_name_length
+    dec (hl)
+    call sys_score_hiscore_name_print
+    ret
 
 ;;-----------------------------------------------------------------
 ;;
@@ -285,56 +507,10 @@ _set_piece:
     call _input_update_moved
     ret
 
-;;-----------------------------------------------------------------
-;;
-;; sys_input_update
-;;
-;;   Reads input
-;;  Input: 
-;;  Output:
-;;  Modified: 
-;;
-;;sys_input_update::
-;;    ld ix, #player1                     ;; get player1 struct
-;;
-;;    ld hl, #Key_O                       ;; check key O   
-;;    call cpct_isKeyPressed_asm          ;; 
-;;    jp nz, _move_left                   ;; if press O move left
-;;    
-;;    ld hl, #Key_P                       ;; check key P
-;;    call cpct_isKeyPressed_asm          ;; 
-;;    call nz, _move_right                  ;; if press P move right  
-;;
-;;sys_input_vertical_check:   
-;;    
-;;    ld hl, #Key_Q                       ;; check key Q
-;;    call cpct_isKeyPressed_asm          ;;
-;;    jp nz, _move_up                     ;; if press Q move up
-;;    
-;;    ld hl, #Key_A                       ;; check key A
-;;    call cpct_isKeyPressed_asm          ;;
-;;    call nz, _move_down                   ;; if press A move down
-;;
-;;sys_input_actions_check:
-;;
-;;    ld hl, #Key_I                       ;; check key I
-;;    call cpct_isKeyPressed_asm          ;;
-;;    jp nz, _change_piece                ;; if press I change piece
-;;
-;;    ld hl, #Key_Space                   ;; check key Space
-;;    call cpct_isKeyPressed_asm          ;;
-;;    call nz, _set_piece                 ;; if press Space set piece in board
-;;
-;;    ld hl, #Key_Esc                     ;; check key Space
-;;    call cpct_isKeyPressed_asm          ;;
-;;    call nz, _cancel_game               ;; if press Space set piece in board
-;;
-;;_end_input_update:
-;;    ret
 
 ;;-----------------------------------------------------------------
 ;;
-;; sys_input_update
+;; sys_input_generic_update
 ;;
 ;;   Initializes input
 ;;  Input: 
@@ -342,9 +518,7 @@ _set_piece:
 ;;  Modified: iy, bc
 ;;
 ;;sys_input_check_keys_action::
-sys_input_update::
-    ld ix, #player1                     ;; get player1 struct
-    ld iy, #sys_input_key_actions
+sys_input_generic_update:
     jr first_key
 keys_loop:
     ld bc, #4
@@ -366,6 +540,35 @@ first_key:
     ld h, 3(iy)                     ;; retrieve function address    
     jp (hl)                         ;; jump to function
 
+;;-----------------------------------------------------------------
+;;
+;; sys_input_update
+;;
+;;   Initializes input
+;;  Input: 
+;;  Output:
+;;  Modified: iy, bc
+;;
+sys_input_update::
+    ld ix, #player1                     ;; get player1 struct
+    ld iy, #sys_input_key_actions
+    call sys_input_generic_update
+    ret
+
+;;-----------------------------------------------------------------
+;;
+;; sys_input_score_entry_update
+;;
+;;   Initializes input
+;;  Input: 
+;;  Output:
+;;  Modified: iy, bc
+;;
+sys_input_score_entry_update::
+    ld ix, #score_marker                     ;; get player1 struct
+    ld iy, #sys_input_score_key_actions
+    call sys_input_generic_update
+    ret
 
 ;;-----------------------------------------------------------------
 ;;
@@ -376,7 +579,6 @@ first_key:
 ;;  Output: a=1->play; a=2->redefine keys
 ;;  Modified: iy, bc
 ;;
-;;sys_input_check_keys_action::
 sys_input_main_screen_keys::
     ld hl, #Key_R
     call cpct_isKeyPressed_asm          ;;
