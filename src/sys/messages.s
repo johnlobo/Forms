@@ -262,6 +262,8 @@ sys_messages_draw_box::
     ld (#draw_border+1), a
     ld (#draw_border2+1), a
     ld (#draw_line+1), a
+    ld a, b
+    ld (width), a
  	ld h, d
 	ld l, e
 	
