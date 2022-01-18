@@ -31,4 +31,5 @@
 .globl sys_input_wait4anykey
 .globl sys_input_waitKeyPressed
 .globl sys_input_getKeyPressed
+.globl sys_input_score_entry_update
 

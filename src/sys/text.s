@@ -218,6 +218,7 @@ _char_buffer:: .db 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 sys_text_draw_string::
+    push ix
     ld a,c
     ld (_string_color),a            ;; store color in memory
 draw_string_2::
@@ -270,5 +271,6 @@ _next_char:
 _draw_string_exit:
     pop hl
     pop de
+    pop ix
     ret
 _string_color: .db 0
