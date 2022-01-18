@@ -211,7 +211,7 @@ third_row:
 forth_row:
     ld b, #m_w4
 height:
-    ld c, #11
+    ld c, #m_h
     ret
 
 ;;-----------------------------------------------------------------
@@ -230,20 +230,22 @@ sys_score_entry_print_marker:
 
     ld a, m_y(ix)                    ;; B = y coordinate 
     sla a
-    sla a                             ;; multiply y coord by 4 
+    sla a                           ;; multiply y coord by 4 
     add #entry_start_y              ;; add the staring position in screen
     ld b,a
+
     ld h, m_x(ix)                   ;; C = x coordinate 
-    ld e, #11
+    ld e, #4
     call sys_util_h_times_e         ;; multiply by 11
     ld a, l
     add #entry_start_x
     ld c, a
+
     ld de, #CPCT_VMEM_START_ASM     ;; DE = Pointer to start of the screen
     call cpct_getScreenPtr_asm      ;; Calculate video memory location and return it in HL
     ex de, hl                       ;; move screen address to de
     call sys_score_get_marker_width
-    ld a,#33                        ;; Patern of solid box
+    ld a,#0xc0                      ;; Patern of solid box
     call sys_messages_draw_box
     ld m_moved(ix), #0
     ret
@@ -262,7 +264,7 @@ sys_score_hiscore_entry::
     call sys_score_hiscore_entry_screen
     ld ix, #marker
     ld m_moved(ix), #1
-    ld m_x(ix), #0
+    ld m_x(ix), #2
     ld m_y(ix), #0
     call sys_score_entry_print_marker
 loop:
@@ -283,12 +285,12 @@ m_y = 2
 m_px = 3
 m_py = 4
 ;; General use constants
-m_w02 = 4
+m_w02 = 5
 m_w3 = 10
 m_w4 = 12
 m_w5 = 8
-m_h = 11
-entry_start_x = 14
+m_h = 12
+entry_start_x = 13
 entry_start_y = 58
-entry_width = 9
+entry_width = 10
 entry_letter_lines = 3
