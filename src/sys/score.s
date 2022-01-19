@@ -58,13 +58,14 @@ hi_score_table::
     .db #0x10, #0x00, #0x00, #0x00 
     .asciz "FIRST     "
 
-_hiscore_enter_string: .asciz "HIGH SCORE ENTER YOUR NAME"  ;; 26 chars, 52 bytes
-_hiscore_line1_string: .asciz "A  B  C  D  E  F  G  H  I"   ;; 25 chars, 50 bytes
-_hiscore_line2_string: .asciz "J  K  L  M  N  O  P  Q  R"   ;; 25 chars, 50 bytes
-_hiscore_line3_string: .asciz "S  T  U  V  W  X  Y  Z"      ;; 22 chars, 44 bytes
-_hiscore_space_string: .asciz "SPACE"                        ;; 5 chars, 10 bytes
-_hiscore_delete_string: .asciz "DELETE"                       ;; 6 chars, 12 bytes
-_hiscore_done_string: .asciz "DONE"                         ;; 4 chars, 8 bytes
+_hiscore_enter_string: .asciz "CONGRATULATIONS!! HIGH SCORE"    ;; 28 chars, 56 bytes
+_hiscore_enter2_string: .asciz "ENTER YOUR NAME"                ;; 15 chars, 30 bytes
+_hiscore_line1_string: .asciz "A  B  C  D  E  F  G  H  I"       ;; 25 chars, 50 bytes
+_hiscore_line2_string: .asciz "J  K  L  M  N  O  P  Q  R"       ;; 25 chars, 50 bytes
+_hiscore_line3_string: .asciz "S  T  U  V  W  X  Y  Z"          ;; 22 chars, 44 bytes
+_hiscore_space_string: .asciz "SPACE"                           ;; 5 chars, 10 bytes
+_hiscore_delete_string: .asciz "DELETE"                         ;; 6 chars, 12 bytes
+_hiscore_done_string: .asciz "DONE"                             ;; 4 chars, 8 bytes
 
 
 ;; score marker struct
@@ -105,7 +106,7 @@ sys_score_reset_score_buffer::
 ;; sys_score_hiscore_reached
 ;;
 ;;  Checks if a high score has been reached
-;;  Input: hl: address to Score to check
+;;  Input: 
 ;;  Output: c: "0" if no high score has been reached, "1" otherwise
 ;;  Modified: af, de, hl, bc
 ;;
@@ -154,43 +155,48 @@ sys_score_hiscore_entry_screen:
     
     ld e, #8                            ;; x
     ld d, #32                           ;; y
-    ld b, #138                          ;; h
-    ld c, #62                           ;; w      
+    ld b, #139                          ;; h
+    ld c, #63                           ;; w      
     call sys_messages_draw_window
 
     ;; print title
     ld c, #0
-    cpctm_screenPtr_asm de, CPCT_VMEM_START_ASM, 14, 40  ;; screen address for 30, 120 in de
+    cpctm_screenPtr_asm de, CPCT_VMEM_START_ASM, 12, 40  ;; screen address for 30, 120 in de
     ld hl, #_hiscore_enter_string    ;; message
     call sys_text_draw_string
 
     ld c, #0
-    cpctm_screenPtr_asm de, CPCT_VMEM_START_ASM, 15, 60  ;; screen address for 30, 120 in de
+    cpctm_screenPtr_asm de, CPCT_VMEM_START_ASM, 25, 60  ;; screen address for 30, 120 in de
+    ld hl, #_hiscore_enter2_string    ;; message
+    call sys_text_draw_string
+
+    ld c, #0
+    cpctm_screenPtr_asm de, CPCT_VMEM_START_ASM, 15, 80  ;; screen address for 30, 120 in de
     ld hl, #_hiscore_line1_string    ;; message
     call sys_text_draw_string
 
     ld c, #0
-    cpctm_screenPtr_asm de, CPCT_VMEM_START_ASM, 15, 75  ;; screen address for 30, 120 in de
+    cpctm_screenPtr_asm de, CPCT_VMEM_START_ASM, 15, 95  ;; screen address for 30, 120 in de
     ld hl, #_hiscore_line2_string    ;; message
     call sys_text_draw_string
 
     ld c, #0
-    cpctm_screenPtr_asm de, CPCT_VMEM_START_ASM, 15, 90  ;; screen address for 30, 120 in de
+    cpctm_screenPtr_asm de, CPCT_VMEM_START_ASM, 15, 110  ;; screen address for 30, 120 in de
     ld hl, #_hiscore_line3_string    ;; message
     call sys_text_draw_string
 
     ld c, #0
-    cpctm_screenPtr_asm de, CPCT_VMEM_START_ASM, 15, 105  ;; screen address for 30, 120 in de
+    cpctm_screenPtr_asm de, CPCT_VMEM_START_ASM, 15, 125  ;; screen address for 30, 120 in de
     ld hl, #_hiscore_space_string    ;; message
     call sys_text_draw_string
 
     ld c, #0
-    cpctm_screenPtr_asm de, CPCT_VMEM_START_ASM, 15, 120  ;; screen address for 30, 120 in de
+    cpctm_screenPtr_asm de, CPCT_VMEM_START_ASM, 15, 140  ;; screen address for 30, 120 in de
     ld hl, #_hiscore_delete_string    ;; message
     call sys_text_draw_string
 
     ld c, #0
-    cpctm_screenPtr_asm de, CPCT_VMEM_START_ASM, 15, 135  ;; screen address for 30, 120 in de
+    cpctm_screenPtr_asm de, CPCT_VMEM_START_ASM, 15, 155  ;; screen address for 30, 120 in de
     ld hl, #_hiscore_done_string    ;; message
     call sys_text_draw_string
 
@@ -198,26 +204,6 @@ sys_score_hiscore_entry_screen:
     
     ret
 
-;;-----------------------------------------------------------------
-;;
-;; sys_score_check_entry_keyboard
-;;
-;;   Renders high score screen
-;;  Input: 
-;;  Output:
-;;  Modified: af, hl, de, bc
-;;
-sys_score_check_entry_keyboard:
-    call sys_input_waitKeyPressed
-    ;; Update left key
-    ld de, #sys_input_key_actions
-    ex de, hl
-    ld (hl), e
-    inc hl
-    ld (hl), d
-    ;; Wait till key buffer is empty
-    call sys_input_clean_buffer
-    ret
 ;;-----------------------------------------------------------------
 ;;
 ;; sys_score_get_marker_width
@@ -343,7 +329,7 @@ sys_score_hiscore_entry::
     ld m_ended(ix), #0
     call sys_score_entry_print_marker
 entry_loop:
-    ld b, #20
+    ld b, #25
     call cpct_waitHalts_asm
     
     call sys_input_score_entry_update
@@ -357,6 +343,7 @@ check_end:
     ld a, m_ended(ix)
     or a
     jr z, entry_loop
+    call sys_score_update_high_score_table
     ret
 
 ;;-----------------------------------------------------------------
@@ -383,18 +370,46 @@ update_loop:
     ld e, a
     jr update_loop
 move_data:
-    ld h, d
-    ld l, e
-    ld a, #sizeof_sc
-    add e                   ;; DE = DE + sizeof_sc   
-    cptm_push hl, de
+    ld a,e
+    ld (data_move_place_to_insert_row), a
+    ld (data_move_origin), a
+    ld a,d
+    ld (data_move_place_to_insert_row+1), a         ;; save the place to insert new row
+    ld (data_move_origin+1), a                      ;; save the the origin of the movement
+    
+    ld a,b
+    or a
+    jr z, data_move_new_row            ;; if the row to insert is the last, just copy
+
     ld h, #sizeof_sc
     ld e, b
-    call sys_util_h_times_e
+    call sys_util_h_times_e     ;; calculate the amount of bytes to move
+    ld a, l                     
+    ld (data_move_amount), a    ;; keep the amount of bytes to copy (self modifying)
+    dec a                       ;; adjust starting in zero
+data_move_origin  = .+1
+    ld hl, #hi_score_table
+    add l
+    ld l,a                      ;; HL pointing to the last row to copy
+    ld de, #hi_score_table
+    ld a, #(sizeof_sc * 5)      ;; 
+    dec a                       ;; adjust starting in zero
+    add e
+    ld e, a                     ;; de points to the last row of the table.
+data_move_amount = .+1
+    ld b, #0                   ;; amount of data to copy
+data_move_loop:
+    ld a, (hl)
+    ld (de), a
+    dec de
+    dec hl
+    djnz data_move_loop
+data_move_new_row:
+data_move_place_to_insert_row = .+1
+    ld de, #0000
+    ld hl, #score
+    ld c,#sizeof_sc
     ld b, #0
-    ld c, l
-    cptm_push de, hl
-    ldir
-
+    ldir                    ;; move score and name in new place
     ret
 
