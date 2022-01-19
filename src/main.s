@@ -59,38 +59,6 @@ _press_key_for_set: .asciz "PRESS KEY FOR SET PIECE"
 ;; 
 .area _CODE
 
-
-;-----------------------------------------------------------------
-;;
-;; _get_name
-;;   Draw player1
-;;  Input:  
-;;  Output: 
-;;  Destroyed: af, bc,de, hl
-;;
-_get_name::
-   ld e, #8                            ;; x
-   ld d, #65                           ;; y
-   ld b, #70                          ;; h
-   ld c, #64                           ;; w
-   call sys_messages_draw_window
-       
-   ld c, #0
-   cpctm_screenPtr_asm de, CPCT_VMEM_START_ASM, 14, 70  ;; screen address for 30, 120 in de
-   ld hl, #_congratulations_string    ;; message
-   call sys_text_draw_string
-   
-   ld c, #0
-   cpctm_screenPtr_asm de, CPCT_VMEM_START_ASM, 25, 95  ;; screen address for 30, 120 in de
-   ld hl, #_enteryourname_string    ;; message
-   call sys_text_draw_string
-
-   call sys_input_wait4anykey
-
-   ret
-
-
-
 ;-----------------------------------------------------------------
 ;;
 ;; _persist_hiscore
@@ -101,11 +69,11 @@ _get_name::
 ;;
 _persist_hiscore::
    ld ix, #player1                     ;;
-   ld a, e_hiscore(ix)                 ;; Persist high score
-   or a                                ;;
-   ret z                               ;; return if not necessary to update the hi score on disk.
 
-   call _get_name                       ;; get name for the hiscore table
+   call sys_score_hiscore_reached
+   ret nc                               ;; return if not necessary to update the hi score on disk.
+    
+   call sys_score_hiscore_entry        ;; get name for the hiscore table
 
    ld e, #18                           ;; x
    ld d, #78                           ;; y
@@ -277,16 +245,7 @@ _main_init::
 
    call sys_render_init
 
-   ;; debug
-   ld hl, #score
-   ld (hl), #00
-   inc hl
-   ld (hl), #10
-   ;; debug
-
-   call sys_score_hiscore_entry
-
-   call sys_score_update_high_score_table
+   call sys_render_hiscore_screen
 
    call _show_main_screen
 
@@ -305,7 +264,7 @@ _main_init_keypress:
 
    ld hl, #0xbc00
    ld de, #0xac00
-   pop af                              ;; retrieve last a value to set the seed
+   pop af                                  ;; retrieve last a value to set the seed
    call cpct_setSeed_xsp40_u8_asm          ;; change seed
 
    cpctm_clearScreen_asm 255

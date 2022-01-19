@@ -580,6 +580,7 @@ sys_input_score_entry_update::
 ;;  Modified: iy, bc
 ;;
 sys_input_main_screen_keys::
+    
     ld hl, #Key_R
     call cpct_isKeyPressed_asm          ;;
     jr nz, _redefine_exit               ;; if press R set redefine flag
