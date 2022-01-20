@@ -78,7 +78,7 @@ sys_render_init::
     call cpct_setPalette_asm
     ;; Set Border
     cpctm_setBorder_asm HW_BRIGHT_WHITE
-    cpctm_setBorder_asm HW_BLACK
+    ;;cpctm_setBorder_asm HW_BLACK
 
     cpctm_clearScreen_asm 255
 

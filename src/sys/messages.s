@@ -258,6 +258,8 @@ y_coord:
 ;;  Output:
 ;;  Modified: af, hl, de, bc
 ;;
+;; Implementation partly copied form cpctelera drawSolidBox
+;;
 sys_messages_draw_box::
     ld (#draw_border+1), a
     ld (#draw_border2+1), a
@@ -265,8 +267,7 @@ sys_messages_draw_box::
     ld a, b
     ld (width), a
  	ld h, d
-	ld l, e
-	
+	ld l, e	
     inc c                   ;; increment height in one 
 	jr draw_line
 
@@ -285,10 +286,9 @@ next_line:
 	jr z, draw_line		;; Si estoy en la ultima linea salto a line
 draw_border:
 	ld (hl), #0xff
-	ld a, l 
-	add b
-	dec a
-	ld l, a
+    ld a, b
+    dec a
+    add_hl_a
 draw_border2:
 	ld (hl), #0xff
 	jr down_line
@@ -299,20 +299,20 @@ draw_line:
 	djnz draw_line
 
 down_line:
-	ld a, #8          	;; [2] / HL = DE = DE + 0x800
+	ld a, #8          	    ;; [2] / HL = DE = DE + 0x800
 	add d
-    ld h, a           	;; [1] | Adding 0x800 makes HL point to the start of
+    ld h, a           	    ;; [1] | Adding 0x800 makes HL point to the start of
 	ld d, a
 	ld l, e
 	
-	and   #0x38        	;; [2] leave out only bits 13,12 and 11 from new memory address (00xxx000 00000000)
+	and   #0x38        	    ;; [2] leave out only bits 13,12 and 11 from new memory address (00xxx000 00000000)
     jp    nz, next_line    	;; [3] If any bit from {13,12,11} is not 0, we are still inside 
                         	;; ... video memory boundaries, so proceed with next line
-    ;; Every 8 lines, we cross the 16K video memory boundaries and have to
-    ;; reposition destination pointer. That means our next line is 16K-0x50 bytes back
-    ;; which is the same as advancing 48K+0x50 = 0xC050 bytes, as memory is 64K 
-    ;; and our 16bit pointers cycle over it
-    ld    hl, #0xC050       	;; [3] We advance destination pointer to next line
+                            ;; Every 8 lines, we cross the 16K video memory boundaries and have to
+                            ;; reposition destination pointer. That means our next line is 16K-0x50 bytes back
+                            ;; which is the same as advancing 48K+0x50 = 0xC050 bytes, as memory is 64K 
+                            ;; and our 16bit pointers cycle over it
+    ld    hl, #0xC050       ;; [3] We advance destination pointer to next line
     add   hl, de            ;; [3] HL = DE + 0xC050
     ld     d, h             ;; [1] / DE = HL
     ld     e, l             ;; [1] \

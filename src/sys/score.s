@@ -24,10 +24,6 @@
 .include "sys/input.h.s"
 .include "sys/messages.h.s"
 
-
-
-
-
 .module score_system
 
 ;;
@@ -379,18 +375,19 @@ sys_score_hiscore_entry::
     ld ix, #score_marker
     ld m_moved(ix), #1
     ld m_ended(ix), #0
+    ld m_x(ix), #0
+    ld m_y(ix), #0
+    ld m_px(ix), #0
+    ld m_py(ix), #0
     call sys_score_entry_print_marker
 entry_loop:
     ld b, #25
     call cpct_waitHalts_asm
-    
     call sys_input_score_entry_update
-    
     ld a, m_moved(ix)
     or a
     jr z, check_end
     call sys_score_entry_print_marker
-
 check_end:
     ld a, m_ended(ix)
     or a
@@ -423,45 +420,32 @@ update_loop:
     jr update_loop
 move_data:
     ld a,e
-    ld (data_move_place_to_insert_row), a
-    ld (data_move_origin), a
+    ld (_move_place_to_insert_row), a
     ld a,d
-    ld (data_move_place_to_insert_row+1), a         ;; save the place to insert new row
-    ld (data_move_origin+1), a                      ;; save the the origin of the movement
-    
+    ld (_move_place_to_insert_row+1), a         ;; save the place to insert new row
     ld a,b
     or a
-    jr z, data_move_new_row            ;; if the row to insert is the last, just copy
-
+    jr z, _move_new_row                         ;; if the row to insert is the last, just copy
     ld h, #sizeof_sc
     ld e, b
-    call sys_util_h_times_e     ;; calculate the amount of bytes to move
+    call sys_util_h_times_e                         ;; calculate the amount of bytes to move
     ld a, l                     
-    ld (data_move_amount), a    ;; keep the amount of bytes to copy (self modifying)
-    dec a                       ;; adjust starting in zero
-data_move_origin  = .+1
-    ld hl, #hi_score_table
-    add l
-    ld l,a                      ;; HL pointing to the last row to copy
-    ld de, #hi_score_table
-    ld a, #(sizeof_sc * 5)      ;; 
-    dec a                       ;; adjust starting in zero
-    add e
-    ld e, a                     ;; de points to the last row of the table.
-data_move_amount = .+1
-    ld b, #0                   ;; amount of data to copy
-data_move_loop:
+    ld (_move_amount), a                        ;; keep the amount of bytes to copy (self modifying)
+    ld hl, #(hi_score_table+(sizeof_sc * 4)-1)
+    ld de, #(hi_score_table+sizeof_sc_tb-1)
+_move_amount = .+1
+    ld b, #0                                        ;; amount of data to copy data
+_move_loop:
     ld a, (hl)
     ld (de), a
     dec de
     dec hl
-    djnz data_move_loop
-data_move_new_row:
-data_move_place_to_insert_row = .+1
+    djnz _move_loop
+_move_new_row:
+_move_place_to_insert_row = .+1
     ld de, #0000
     ld hl, #score
     ld c,#sizeof_sc
     ld b, #0
-    ldir                    ;; move score and name in new place
+    ldir                                            ;; move score and name in new place
     ret
-
