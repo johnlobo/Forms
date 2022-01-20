@@ -51,7 +51,6 @@ _next_blocks_string: .asciz "NEXT BLOCKS"
 _to_change_block_string: .asciz "[I]-CHANGE"
 _hiscore_string: .asciz "HIGH SCORE TABLE"
 _press_any_key_string: .asciz "PRESS ANY KEY"       ;; 13 chars, 26
-_player_string: .asciz "PLAYER"                     ;; 6 chars, 12 bytes
 
 
 
@@ -906,20 +905,13 @@ sys_render_draw_next_frame::
 sys_render_hi_score::
     cpctm_push hl, de, bc, ix
     
-    ld de,#hi_score_table
+    ld de,#hi_score
     cpctm_screenPtr_asm hl, CPCT_VMEM_START_ASM, 9, 23  ;; screen address for 1, 20 in de
     call sys_render_BCD_show
 
     cpctm_screenPtr_asm de, CPCT_VMEM_START_ASM, 9, 12  ;; screen address for 9, 13 in de
     ld c, #0
-    ld ix, #player1
-    ld hl, #(hi_score_table + sc_name)
-    ;; check if it's a players hiscore
-    ld a, e_hiscore(ix)
-    or a
-    jr z, no_player
-    ld hl, #_player_string              ;; if player has set a high score, "player" string is rendered
-no_player:
+    ld hl, #(hi_score + 4)
     call sys_text_draw_string
     
     cpctm_pop ix, bc, de, hl
