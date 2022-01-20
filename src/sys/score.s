@@ -24,7 +24,7 @@
 .include "sys/input.h.s"
 .include "sys/messages.h.s"
 
-.module score_system
+.module sys_score
 
 ;;
 ;; Start of _DATA area 
