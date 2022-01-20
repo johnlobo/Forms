@@ -39,12 +39,14 @@
 .area _DATA
 
 
-hi_score::                  .db #0x00, #0x00, #0x00, #0x00
-score_buffer::              .db #0x00, #0x00, #0x00, #0x00
+hi_score::  .db #0x00, #0x00, #0x00, #0x00
+hi_score_name_string:: .ds #11       ;; 10 bytes + 0
 
-score::                     .db #0x00, #0x00, #0x00, #0x00
-hiscore_name_string:: .ds #11                               ;; 10 chars, 20 bytes + 0
-hiscore_name_length:: .db #0
+score_buffer::  .db #0x00, #0x00, #0x00, #0x00
+
+score:: .db #0x00, #0x00, #0x00, #0x00
+score_name_string:: .ds #11       ;; 10 bytes + 0
+score_name_length:: .db #0
 
 hi_score_table::    
     .db #0x50, #0x00, #0x00, #0x00 
@@ -58,6 +60,7 @@ hi_score_table::
     .db #0x10, #0x00, #0x00, #0x00 
     .asciz "FIRST     "
 
+_player_string: .asciz "PLAYER"                                 ;; 6 chars, 12 bytes
 _hiscore_enter_string: .asciz "CONGRATULATIONS!! HIGH SCORE"    ;; 28 chars, 56 bytes
 _hiscore_enter2_string: .asciz "ENTER YOUR NAME"                ;; 15 chars, 30 bytes
 _hiscore_line1_string: .asciz "A  B  C  D  E  F  G  H  I"       ;; 25 chars, 50 bytes
@@ -80,6 +83,30 @@ score_marker::
 ;; 
 .area _CODE
 
+;;-----------------------------------------------------------------
+;;
+;; sys_score_init
+;;
+;;  Initializes a score buffer
+;;  Input: hl: buffer to reset
+;;  Output:
+;;  Modified: af, hl, de, bc
+;;
+sys_score_init::
+    ld hl, #hi_score_table
+    ld de, #hi_score
+    ld bc, #15
+    ldir
+    
+    ;; Reset score buffer
+    ld hl, #score
+    call sys_score_reset_score_buffer
+
+    ;; Reset hiscore string
+    ld hl, #first_start
+    ld (sys_score_copy_score_2_hiscore+1), hl
+
+    ret
 
 ;;-----------------------------------------------------------------
 ;;
@@ -99,6 +126,31 @@ sys_score_reset_score_buffer::
     ld (hl), a
     inc hl
     ld (hl), a
+    ret
+
+;-----------------------------------------------------------------
+;;
+;;  man_game_copy_score_2_hiscore
+;;
+;;  set piece in board
+;;  Input: 
+;;  Output:
+;;  Modified:
+;;
+sys_score_copy_score_2_hiscore::
+    jp first_start
+first_start:
+    ld hl, #_player_string
+    ld de, #hi_score_name_string
+    ld bc, #11
+    ldir
+    ld hl, #second_start
+    ld (sys_score_copy_score_2_hiscore+1), hl
+second_start:
+    ld hl, #score
+    ld de, #hi_score
+    ld bc, #4
+    ldir
     ret
 
 ;;-----------------------------------------------------------------
@@ -134,7 +186,7 @@ sys_score_hiscore_name_print::
 
     ld c, #0
     cpctm_screenPtr_asm de, CPCT_VMEM_START_ASM, 30, 155  ;; screen address for 30, 155 in de
-    ld hl, #hiscore_name_string    ;; message
+    ld hl, #score_name_string    ;; message
     call sys_text_draw_string
     ret
 
@@ -319,9 +371,9 @@ sys_score_entry_print_marker::
 ;;  Modified: af, hl, de, bc
 ;;
 sys_score_hiscore_entry::    
-    ld hl, #hiscore_name_string
+    ld hl, #score_name_string
     ld (hl), #0
-    ld hl, #hiscore_name_length
+    ld hl, #score_name_length
     ld (hl), #0
     call sys_score_hiscore_entry_screen
     ld ix, #score_marker
@@ -350,7 +402,7 @@ check_end:
 ;;
 ;; sys_score_update_high_score_table
 ;;
-;;  Updates the high score table with the score and the hiscore_name_string
+;;  Updates the high score table with the score and the score_name_string
 ;;  Input: 
 ;;  Output:
 ;;  Modified: af, hl, de, bc

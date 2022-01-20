@@ -253,42 +253,42 @@ done:
     ld m_ended(ix), #2
     ret
 _letter_lines:
-    ld a, (hiscore_name_length)
+    ld a, (score_name_length)
     cp #10
     ret z               ;; resturn if we already have 10 chars in the string
-    ld hl, #hiscore_name_string
+    ld hl, #score_name_string
     add l
     ld l,a
     call _get_letter
     ld (hl), a        ;; insert the selected character
     inc hl              
     ld (hl), #0         ;; insert 0 to terminate de string
-    ld hl, #hiscore_name_length
+    ld hl, #score_name_length
     inc (hl)
     call sys_score_hiscore_name_print
     ret
 _space:
-    ld a, (hiscore_name_length)
+    ld a, (score_name_length)
     cp #10
     ret z               ;; resturn if we already have 10 chars in the string
-    ld hl, #hiscore_name_string
+    ld hl, #score_name_string
     add l
     ld l,a
     ld (hl), #32        ;; insert the space character
     inc hl              
     ld (hl), #0         ;; insert 0 to terminate de string
-    ld hl, #hiscore_name_length
+    ld hl, #score_name_length
     inc (hl)
     call sys_score_hiscore_name_print
     ret
 _delete:
-    ld a, (hiscore_name_length)
+    ld a, (score_name_length)
     dec a
-    ld hl, #hiscore_name_string
+    ld hl, #score_name_string
     add l
     ld l,a
     ld (hl), #0
-    ld hl, #hiscore_name_length
+    ld hl, #score_name_length
     dec (hl)
     call sys_score_hiscore_name_print
     ret

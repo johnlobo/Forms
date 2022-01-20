@@ -250,13 +250,8 @@ man_game_init::
     call sys_render_draw_next_frame
 
     call sys_render_game_screen
-    
-    ld hl, #score
-    call sys_score_reset_score_buffer
 
-    ;; Reset hiscore flag
-    ld hl, #first_start
-    ld (man_game_copy_score_2_hiscore+1), hl
+    call sys_score_init
 
     call sys_render_score
     call sys_render_hi_score            ;; render hiscore
@@ -363,36 +358,6 @@ man_game_erase_col::
     call sys_render_render_col
     ret
 
-
-;-----------------------------------------------------------------
-;;
-;;  man_game_copy_score_2_hiscore
-;;
-;;  set piece in board
-;;  Input: 
-;;  Output:
-;;  Modified:
-;;
-man_game_copy_score_2_hiscore::
-    jp first_start
-first_start:
-    ld ix, #player1
-    ld e_hiscore(ix), #1
-    ld hl, #second_start
-    ld (man_game_copy_score_2_hiscore+1), hl
-second_start:
-    ld hl, #score
-    ld de, #hi_score_table
-    ld b, #4
-m_g_copy_score_loop:
-    ld a, (hl)
-    ld (de), a
-    inc hl
-    inc de
-    djnz m_g_copy_score_loop
-    call sys_render_hi_score
-    ret
-
 ;;-----------------------------------------------------------------
 ;;
 ;; man_game_add_score_4piece
@@ -421,8 +386,10 @@ man_game_add_score_4piece::
     ld hl, #score
     ld de, #hi_score_table
     call sys_util_BCD_Compare
-    call c, man_game_copy_score_2_hiscore
-
+    ret nc  
+    ;; update high score
+    call sys_score_copy_score_2_hiscore
+    call sys_render_hi_score
     ret
 
 ;;-----------------------------------------------------------------
@@ -455,7 +422,10 @@ man_game_add_score_4line::
     ld hl, #score                               ;;
     ld de, #hi_score_table                      ;;  compare score with hiscore
     call sys_util_BCD_Compare                   ;;
-    call c, man_game_copy_score_2_hiscore       ;; if score higher then copy score to hiscore
+    ret nc  
+    ;; update high score
+    call sys_score_copy_score_2_hiscore
+    call sys_render_hi_score
     ret
 
 ;;-----------------------------------------------------------------

@@ -56,14 +56,16 @@ max_score_y = 5
 .globl hi_score_table
 .globl score_buffer
 .globl score_marker
-.globl hiscore_name_string
-.globl hiscore_name_length
+.globl score_name_string
+.globl score_name_length
 
 ;;------------------------------------------------------------------------------
 ;; Global routines
 ;;------------------------------------------------------------------------------
 
+.globl sys_score_init
 .globl sys_score_reset_score_buffer
+.globl sys_score_copy_score_2_hiscore
 .globl sys_score_hiscore_reached
 .globl sys_score_hiscore_name_print
 .globl sys_score_hiscore_entry
