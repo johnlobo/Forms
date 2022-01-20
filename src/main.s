@@ -67,7 +67,7 @@ _press_key_for_set: .asciz "PRESS KEY FOR SET PIECE"
 ;;  Output: 
 ;;  Destroyed: af, bc,de, hl
 ;;
-_persist_hiscore::
+_persist_hiscore:
    ld ix, #player1                     ;;
 
    call sys_score_hiscore_reached
@@ -82,9 +82,9 @@ _persist_hiscore::
    ld hl, #_updating_hiscore_string    ;; message
    xor a                               ;; dont wait for a key
    call sys_messages_show
-   call activate_firmware
+   call sys_system_activate_firmware
    call sys_files_save_file
-   call deactivate_firmware
+   call sys_system_deactivate_firmware
    ret
 
 
@@ -96,7 +96,7 @@ _persist_hiscore::
 ;;  Output: 
 ;;  Destroyed: af, bc,de, hl
 ;;
-_update_hiscore::
+_update_hiscore:
    call sys_render_init
    ld e, #18                           ;; x
    ld d, #78                           ;; y
@@ -105,7 +105,7 @@ _update_hiscore::
    ld hl, #_updating_hiscore_string    ;; message
    xor a                               ;; don't wait for a key
    call sys_messages_show
-   call activate_firmware
+   call sys_system_activate_firmware
    call sys_files_load_file
    ret
 
@@ -136,7 +136,7 @@ _show_redefine_one_key:
 ;;  Output: 
 ;;  Destroyed: af, bc,de, hl
 ;;
-redefine_keys::
+redefine_keys:
    ;; Redefine left key
    ld hl, #_press_key_for_left
    call _show_redefine_one_key
@@ -223,7 +223,7 @@ redefine_keys::
 ;;  Output: 
 ;;  Destroyed: af, bc,de, hl
 ;;
-_show_main_screen::
+_show_main_screen:
    call sys_render_logo_screen  
    call sys_input_main_screen_keys
    or a                             ;; check if any key different from r has been pressed
@@ -239,7 +239,7 @@ _show_main_screen::
 ;;  Output: 
 ;;  Destroyed: af, bc,de, hl
 ;;
-_main_init::
+_main_init:
 
    call sys_audio_init
 
@@ -283,7 +283,7 @@ _main::
 
    call _update_hiscore
 
-   call deactivate_firmware
+   call sys_system_deactivate_firmware
    
    call _main_init
 

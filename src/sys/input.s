@@ -106,7 +106,7 @@ sys_input_init::
 ;;  Output:
 ;;  Modified: 
 ;;
-_score_move_down::
+_score_move_down:
     ld a, m_y(ix)
     cp #max_score_y
     ret z
@@ -156,7 +156,7 @@ _score_move_up:
 ;;  Output:
 ;;  Modified: 
 ;;
-_score_move_right::
+_score_move_right:
     ld a, m_y(ix)
     cp #entry_letter_lines
     ret nc
@@ -221,7 +221,7 @@ _score_cancel_entry:
 ;;  Output: a: letter
 ;;  Modified: 
 ;;
-_get_letter::
+_get_letter:
     cpctm_push hl, de
     ld h, m_y(ix)
     ld e, #9
@@ -241,7 +241,7 @@ _get_letter::
 ;;  Output:
 ;;  Modified: 
 ;;
-_score_fire::
+_score_fire:
     ld a, m_y(ix)
     cp #entry_letter_lines
     jr c, _letter_lines
@@ -415,7 +415,7 @@ _move_down:
 ;;  Output:
 ;;  Modified: 
 ;;
-_change_piece::     
+_change_piece:     
     ld a, (selected_piece)              ;; read selected piece
     ld (_erase_previous_piece+1), a     ;; keep current selected piece frame for erase later
 _renew_piece:
@@ -517,7 +517,7 @@ _set_piece:
 ;;  Output:
 ;;  Modified: iy, bc
 ;;
-;;sys_input_check_keys_action::
+
 sys_input_generic_update:
     jr first_key
 keys_loop:
@@ -660,10 +660,6 @@ _kp_endLoop:
     ld a, #0
     ld (_key_released), a
     ret
-
-; _current_key_pressed::
-;     .dw #0x0000
-
 
 _key_released::
     .db #0
