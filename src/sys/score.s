@@ -381,7 +381,7 @@ sys_score_hiscore_entry::
     ld m_py(ix), #0
     call sys_score_entry_print_marker
 entry_loop:
-    ld b, #25
+    ld b, #30
     call cpct_waitHalts_asm
     call sys_input_score_entry_update
     ld a, m_moved(ix)

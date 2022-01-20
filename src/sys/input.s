@@ -226,9 +226,9 @@ _get_letter::
     ld h, m_y(ix)
     ld e, #9
     call sys_util_h_times_e
-    ld a, m_x(ix)               ;; add x    
-    add l                       ;; add row by 9
-    add #65                     ;; add starting capital letters
+    ld a, m_x(ix)                           ;; add x    
+    add l                                   ;; add row by 9
+    add #65                                 ;; add starting capital letters
     cpctm_pop de, hl
     ret
 
@@ -255,42 +255,41 @@ done:
 _letter_lines:
     ld a, (score_name_length)
     cp #10
-    ret z               ;; resturn if we already have 10 chars in the string
+    ret z                                   ;; resturn if we already have 10 chars in the string
     ld hl, #score_name_string
-    add l
-    ld l,a
+    add_hl_a
     call _get_letter
-    ld (hl), a        ;; insert the selected character
+    ld (hl), a                              ;; insert the selected character
     inc hl              
-    ld (hl), #0         ;; insert 0 to terminate de string
+    ld (hl), #0                             ;; insert 0 to terminate de string
     ld hl, #score_name_length
     inc (hl)
     call sys_score_hiscore_name_print
     ret
 _space:
-    ld a, (score_name_length)
-    cp #10
-    ret z               ;; resturn if we already have 10 chars in the string
+    ld a, (score_name_length)               ;;
+    cp #10                                  ;;
+    ret z                                   ;; return if we already have 10 chars in the string
     ld hl, #score_name_string
-    add l
-    ld l,a
-    ld (hl), #32        ;; insert the space character
+    add_hl_a
+    ld (hl), #32                            ;; insert the space character
     inc hl              
-    ld (hl), #0         ;; insert 0 to terminate de string
+    ld (hl), #0                             ;; insert 0 to terminate de string
     ld hl, #score_name_length
     inc (hl)
     call sys_score_hiscore_name_print
     ret
 _delete:
-    ld a, (score_name_length)
-    dec a
-    ld hl, #score_name_string
-    add l
-    ld l,a
-    ld (hl), #0
-    ld hl, #score_name_length
-    dec (hl)
-    call sys_score_hiscore_name_print
+    ld a, (score_name_length)               ;;
+    or a                                    ;;
+    ret z                                   ;; Return if lenght of string is 0
+    dec a                                   ;; Decrement length
+    ld hl, #score_name_string               ;;
+    add_hl_a                                ;; Position hl on last char of string
+    ld (hl), #0                             ;; Set char to #0 (end of string)
+    ld hl, #score_name_length               ;;
+    dec (hl)                                ;; Decrement string length
+    call sys_score_hiscore_name_print       ;; Print name to check changes
     ret
 
 ;;-----------------------------------------------------------------
@@ -303,8 +302,8 @@ _delete:
 ;;  Modified: 
 ;;
 _input_update_moved:
-    ld a, #1
-    ld e_moved(ix), a
+    ld a, #1                                ;;
+    ld e_moved(ix), a                       ;; Set moved flag to 1
     ret
 
 ;;-----------------------------------------------------------------
@@ -317,9 +316,9 @@ _input_update_moved:
 ;;  Modified: 
 ;;
 _cancel_game:
-    ld a, #1
-    ld (man_game_cancelled_game), a
-    call sys_input_clean_buffer
+    ld a, #1                                ;;
+    ld (man_game_cancelled_game), a         ;; Set cancelled game flag to 1
+    call sys_input_clean_buffer             ;; Clean input buffer
     ret
 
 ;;-----------------------------------------------------------------
@@ -510,10 +509,11 @@ _set_piece:
 
 ;;-----------------------------------------------------------------
 ;;
-;; sys_input_generic_update
+;;  sys_input_generic_update
 ;;
-;;   Initializes input
-;;  Input: 
+;;  Initializes input
+;;  Input:  iy: array of key, actions to check
+;;          ix: pointer to the strcut to be used in the actions
 ;;  Output:
 ;;  Modified: iy, bc
 ;;
@@ -524,8 +524,8 @@ keys_loop:
     ld bc, #4
     add iy, bc
 first_key:
-    ld l, 0(iy)                     ;; Lower part of the pointer
-    ld h, 1(iy)                     ;; Lower part of the pointer
+    ld l, 0(iy)                     ;; Lower part of the key pointer
+    ld h, 1(iy)                     ;; Lower part of the key pointer
     ;; Check if key is null
     ld a, l
     or h
