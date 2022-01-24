@@ -45,16 +45,16 @@ score_name_string:: .ds #11       ;; 10 bytes + 0
 score_name_length:: .db #0
 
 hi_score_table::    
-    .db #0x50, #0x00, #0x00, #0x00 
-    .asciz "DAVID     "
-    .db #0x40, #0x00, #0x00, #0x00 
+    .db #0x00, #0x20, #0x00, #0x00 
     .asciz "MARIA     "
-    .db #0x30, #0x00, #0x00, #0x00 
+    .db #0x00, #0x10, #0x00, #0x00 
     .asciz "DIEGO     "
-    .db #0x20, #0x00, #0x00, #0x00 
+    .db #0x00, #0x05, #0x00, #0x00 
     .asciz "MARTIN    "
-    .db #0x10, #0x00, #0x00, #0x00 
-    .asciz "FIRST     "
+    .db #0x00, #0x03, #0x00, #0x00 
+    .asciz "JOHN LOBO "
+    .db #0x00, #0x01, #0x00, #0x00 
+    .asciz "GLASNOST  "
 
 _player_string: .asciz "PLAYER"                                 ;; 6 chars, 12 bytes
 _hiscore_enter_string: .asciz "CONGRATULATIONS!! HIGH SCORE"    ;; 28 chars, 56 bytes
@@ -160,7 +160,7 @@ second_start:
 ;;
 sys_score_hiscore_reached::
     ld hl, #score
-    ld de, #(hi_score_table+(sizeof_sc*4))
+    ld de, #(hi_score_table+(sizeof_sc*4))      ;; Compare start of fifth element in high score table
     call sys_util_BCD_Compare
     ret
 
@@ -415,8 +415,7 @@ update_loop:
     jr c, move_data
     dec b
     ld a, #sizeof_sc
-    add e
-    ld e, a
+    add_de_a
     jr update_loop
 move_data:
     ld a,e

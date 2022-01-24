@@ -83,7 +83,7 @@ sys_files_save_file::
                                             ;; this will automatically generate a AMSDOS header
                                             ;; and write it before the the file data.
     ld hl,#hi_score_table                   ;; HL = load address
-    ld de,#sizeof_sc_tb                    ;; DE = length
+    ld de,#sizeof_sc_tb                     ;; DE = length
     ld bc,#0x0000                           ;; BC = execution address
     ld a,#2                                 ;; A = file type (2 = binary)
     call cas_out_direct                     ;; write file

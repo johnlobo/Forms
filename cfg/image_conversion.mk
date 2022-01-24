@@ -60,6 +60,7 @@ $(eval $(call IMG2SP, CONVERT         , assets/font_chars0.png, 4, 405, g_font_c
 $(eval $(call IMG2SP, CONVERT         , assets/hi-score-icon.png, 12, 19, s_high_score_icon, ,))
 $(eval $(call IMG2SP, CONVERT         , assets/star-icon.png, 10, 14, s_star_icon, ,))
 $(eval $(call IMG2SP, CONVERT         , assets/next_frame.png, 24, 33, s_next_frame, ,))
+$(eval $(call IMG2SP, CONVERT         , assets/glasnost.png , 54, 16, g_glasnost, ,))
 
 
 ##

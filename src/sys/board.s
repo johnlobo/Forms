@@ -88,8 +88,7 @@ s_b_generate_addresses_loop:
     ld a, b                         ;; copy the row in a
     sla a                           ;; multiply a by 2 two obtain the offset of the address list
     ld hl, #board_row_addresses     ;; load in hl the address of the address list
-    add l                           ;; add a to l
-    ld l, a                         ;; and return the sum to l
+    add_hl_a                        ;; add a to hl
     ld (hl), e                      ;; stores the calculated address in the address list
     inc hl
     ld (hl), d                      ;; stores the calculated address in the address list
