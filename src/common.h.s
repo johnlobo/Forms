@@ -72,6 +72,7 @@
 .globl _s_high_score_icon
 .globl _s_star_icon
 .globl _s_next_frame
+.globl _g_glasnost
 
 
 ;;===============================================================================
@@ -127,6 +128,9 @@ S_LOGO_1010_H = 64
 
 S_NEXT_FRAME_W =12
 S_NEXT_FRAME_H =33
+
+G_GLASNOST_W = 27
+G_GLASNOST_H = 16
 
 BOARD_X_COORD = 1   ;; X 
 BOARD_Y_COORD = 54  ;; Y 

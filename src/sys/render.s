@@ -46,7 +46,7 @@ _piece::        .db #00
 _score_digit:   .db #00
 _fila:          .db #00
 _press_any_key: .asciz "PRESS S TO START"
-_redefine_keys: .asciz "PRESS R TO REDIFINE KEYS"
+_redefine_keys: .asciz "PRESS R TO REDEFINE KEYS"
 _next_blocks_string: .asciz "NEXT BLOCKS"
 _to_change_block_string: .asciz "[I]-CHANGE"
 _hiscore_string: .asciz "HIGH SCORE TABLE"
@@ -97,7 +97,7 @@ sys_render_logo_screen::
 
     cpctm_clearScreen_asm 255
     
-    cpctm_screenPtr_asm de, CPCT_VMEM_START_ASM, 24, 45  ;; screen address for 30, 76 in de
+    cpctm_screenPtr_asm de, CPCT_VMEM_START_ASM, 24, 35  ;; screen address in de
     ld hl, #_s_logo_1010
     ld c, #S_LOGO_1010_W
     ld b, #S_LOGO_1010_H
@@ -106,14 +106,20 @@ sys_render_logo_screen::
 
 
     ld c, #0
-    cpctm_screenPtr_asm de, CPCT_VMEM_START_ASM, 16, 144  ;; screen address for 30, 120 in de
+    cpctm_screenPtr_asm de, CPCT_VMEM_START_ASM, 16, 134  ;; screen address in de
     ld hl, #_redefine_keys
     call sys_text_draw_string
 
     ld c, #0
-    cpctm_screenPtr_asm de, CPCT_VMEM_START_ASM, 24, 160  ;; screen address for 26, 145 in de
+    cpctm_screenPtr_asm de, CPCT_VMEM_START_ASM, 24, 150  ;; screen address in de
     ld hl, #_press_any_key
     call sys_text_draw_string
+
+    cpctm_screenPtr_asm de, CPCT_VMEM_START_ASM, 26, 184  ;; screen address in de
+    ld hl, #_g_glasnost
+    ld c, #G_GLASNOST_W
+    ld b, #G_GLASNOST_H
+    call cpct_drawSprite_asm
 
     ret
 
@@ -134,17 +140,17 @@ sys_render_hiscore_screen::
           
     ;; print title
     ld c, #0
-    cpctm_screenPtr_asm de, CPCT_VMEM_START_ASM, 24, 31  ;; screen address for 30, 120 in de
+    cpctm_screenPtr_asm de, CPCT_VMEM_START_ASM, 24, 26  ;; screen address for 30, 120 in de
     ld hl, #_hiscore_string    ;; message
     call sys_text_draw_string
 
     ;; first line
     ;; print score
     ld de,#hi_score_table
-    cpctm_screenPtr_asm hl, CPCT_VMEM_START_ASM, 16, 60  ;; screen address for 1, 20 in de
+    cpctm_screenPtr_asm hl, CPCT_VMEM_START_ASM, 16, 55  ;; screen address for 1, 20 in de
     call sys_render_BCD_show
     ;; print name
-    cpctm_screenPtr_asm de, CPCT_VMEM_START_ASM, 46, 63  ;; screen address for 9, 13 in de
+    cpctm_screenPtr_asm de, CPCT_VMEM_START_ASM, 46, 58  ;; screen address for 9, 13 in de
     ld c, #0
     ld hl,#hi_score_table + sc_name
     call sys_text_draw_string
@@ -152,10 +158,10 @@ sys_render_hiscore_screen::
     ;; second line
     ;; print score
     ld de,#hi_score_table + sizeof_sc
-    cpctm_screenPtr_asm hl, CPCT_VMEM_START_ASM, 16, 80  ;; screen address for 1, 20 in de
+    cpctm_screenPtr_asm hl, CPCT_VMEM_START_ASM, 16, 75  ;; screen address for 1, 20 in de
     call sys_render_BCD_show
     ;; print name
-    cpctm_screenPtr_asm de, CPCT_VMEM_START_ASM, 46, 83  ;; screen address for 9, 13 in de
+    cpctm_screenPtr_asm de, CPCT_VMEM_START_ASM, 46, 78  ;; screen address for 9, 13 in de
     ld c, #0
     ld hl,#hi_score_table + sizeof_sc + sc_name
     call sys_text_draw_string
@@ -163,10 +169,10 @@ sys_render_hiscore_screen::
     ;; third line
     ;; print score
     ld de,#hi_score_table + (sizeof_sc * 2)
-    cpctm_screenPtr_asm hl, CPCT_VMEM_START_ASM, 16, 100  ;; screen address for 1, 20 in de
+    cpctm_screenPtr_asm hl, CPCT_VMEM_START_ASM, 16, 95  ;; screen address for 1, 20 in de
     call sys_render_BCD_show
     ;; print name
-    cpctm_screenPtr_asm de, CPCT_VMEM_START_ASM, 46, 103  ;; screen address for 9, 13 in de
+    cpctm_screenPtr_asm de, CPCT_VMEM_START_ASM, 46, 98  ;; screen address for 9, 13 in de
     ld c, #0
     ld hl,#hi_score_table + (sizeof_sc * 2) + sc_name
     call sys_text_draw_string
@@ -174,10 +180,10 @@ sys_render_hiscore_screen::
     ;; forth line
     ;; print score
     ld de,#hi_score_table + (sizeof_sc * 3)
-    cpctm_screenPtr_asm hl, CPCT_VMEM_START_ASM, 16, 120  ;; screen address for 1, 20 in de
+    cpctm_screenPtr_asm hl, CPCT_VMEM_START_ASM, 16, 115  ;; screen address for 1, 20 in de
     call sys_render_BCD_show
     ;; print name
-    cpctm_screenPtr_asm de, CPCT_VMEM_START_ASM, 46, 123  ;; screen address for 9, 13 in de
+    cpctm_screenPtr_asm de, CPCT_VMEM_START_ASM, 46, 118  ;; screen address for 9, 13 in de
     ld c, #0
     ld hl,#hi_score_table + (sizeof_sc * 3) + sc_name
     call sys_text_draw_string
@@ -185,10 +191,10 @@ sys_render_hiscore_screen::
     ;; fifth line
     ;; print score
     ld de,#hi_score_table + (sizeof_sc * 4)
-    cpctm_screenPtr_asm hl, CPCT_VMEM_START_ASM, 16, 140  ;; screen address for 1, 20 in de
+    cpctm_screenPtr_asm hl, CPCT_VMEM_START_ASM, 16, 135  ;; screen address for 1, 20 in de
     call sys_render_BCD_show
     ;; print name
-    cpctm_screenPtr_asm de, CPCT_VMEM_START_ASM, 46, 143  ;; screen address for 9, 13 in de
+    cpctm_screenPtr_asm de, CPCT_VMEM_START_ASM, 46, 138  ;; screen address for 9, 13 in de
     ld c, #0
     ld hl,#hi_score_table + (sizeof_sc * 4) + sc_name
     call sys_text_draw_string
@@ -1005,14 +1011,11 @@ _print_score_draw_number:                       ;; draw sprite
     pop de                                      ;; retrieve screen addres to draw form stack
     push de                                     ;; restore the stack
 _retrive_digit_position:
-    ld c, #00                                   ;; load digit position in c (self modifying code)
-    ld a, c
+    ld a, #00                                   ;; load digit position in c (self modifying code)
+    ld c, a
     sla a
-    add c                                       ;; multiply digit position by 4 wich is the width of the number sprite (hard coded) to get the screen offset
-    ld c, a 
-    ld a, e                                     ;;
-    add c                                       ;; add the offset to the screen address
-    ld e, a                                     ;;
+    add c                                       ;; multiply digit position by 3 wich is the width of the number sprite (hard coded) to get the screen offset
+    add_de_a
     ld c, #S_SCORE_NUMBERS_W
     ld b, #S_SCORE_NUMBERS_H
     call cpct_drawSprite_asm
