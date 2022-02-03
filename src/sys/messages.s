@@ -149,42 +149,6 @@ sys_messages_show::
 
     call sys_messages_draw_window
 
-    ;; Draw Back window
-    ld de, #CPCT_VMEM_START_ASM     ;; DE = Pointer to start of the screen
-    ld b, w_y(iy)                   ;; B = y coordinate 
-    ld c, w_x(iy)                   ;; C = x coordinate 
-    call cpct_getScreenPtr_asm      ;; Calculate video memory location and return it in HL
-    ex de, hl                       ;; move screen address to de
-    ld c, w_w(iy)
-    ld b, w_h(iy)
-    ld a,#0                         ;; Patern of solid box
-    call cpct_drawSolidBox_asm
-
-    ;; Draw Front Window
-    ld de, #CPCT_VMEM_START_ASM     ;; 
-    ld c, w_x(iy)                   ;;
-    inc c                           ;; C = y coordinate + 1
-    ld b, w_y(iy)                   ;;
-    inc b                           ;; B = y coordinate + 2
-    inc b                           ;;
-    call cpct_getScreenPtr_asm      ;; Calculate video memory location and return it in HL
-    ex de, hl                       ;; move screen address to de
-    
-    ld c, w_w(iy)                   ;;
-    dec c                           ;; C = w - 2
-    dec c                           ;;   
-    
-    ld b, w_h(iy)                   ;;
-    dec b                           ;; B = h - 4
-    dec b                           ;;
-    dec b                           ;;
-    dec b                           ;;
-    
-    ld a,#0xff                      ;; Patern of solid box
-    call cpct_drawSolidBox_asm
-
-
-
     ;; Draw message
     ld de, #CPCT_VMEM_START_ASM     ;; 
     ld c, w_x(iy)                   ;;
