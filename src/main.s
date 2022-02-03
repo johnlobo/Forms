@@ -42,6 +42,7 @@
 ;;
 .area _DATA
 
+_game_loaded_string: .asciz "GAME LOADED - PRESS ANY KEY"      ;;27 chars, 54 bytes
 _no_more_moves_string: .asciz "NO MORE MOVES"
 _game_cancelled_string: .asciz "GAME CANCELLED"
 _updating_hiscore_string: .asciz "UPDATING HIGH SCORE"
@@ -245,9 +246,13 @@ _main_init:
 
    call sys_render_init
 
-   call sys_render_hiscore_screen
-
-   call _show_main_screen
+   ld e, #10                           ;; x
+   ld d, #78                           ;; y
+   ld b, #44                           ;; h
+   ld c, #60                           ;; w
+   ld hl, #_game_loaded_string    ;; message
+   xor a                               ;; don't wait for a key
+   call sys_messages_show
 
    ;; set random seed
    xor a
@@ -266,10 +271,12 @@ _main_init_keypress:
    ld de, #0xac00
    pop af                                  ;; retrieve last a value to set the seed
    call cpct_setSeed_xsp40_u8_asm          ;; change seed
-
-   cpctm_clearScreen_asm 255
    
    call sys_input_init
+
+   call sys_render_hiscore_screen
+
+   call _show_main_screen
 
    ret
 ;;-----------------------------------------------------------------
