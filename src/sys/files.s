@@ -43,11 +43,12 @@ is_disk:: .db 0x00
 ;;
 ;; Thanks to  Jean-Marie (https://www.cpcwiki.eu/forum/programming/how-to-check-if-program-was-launched-from-disk-or-tape/msg228058/#msg228058)
 sys_files_check_media::
-   ld hl, #0xa70a
-   ld a, (hl)
-   ld hl, #is_disk
-   ld (hl), a
-   ret
+    ;; check cpc464, cpc6128
+    ld hl, #0xa70a
+    ld a, (hl)
+    ld hl, #is_disk
+    ld (hl), a
+    ret
 
 
 cas_in_open = 0xbc77    ;; firmware function to open a file for reading
@@ -56,6 +57,75 @@ cas_in_close = 0xbc7a   ;; firmware function to close a file opened for reading
 cas_out_open = 0xbc8c   ;; firmware function to open a file for writing
 cas_out_direct = 0xbc98 ;; firmware function to write an entire filewith a AMSDOS header
 cas_out_close = 0xbc8f  ;; firmware function to close a file opened for writing
+disk_error_messages =  0xbe78       ;; firmware function to enable (0x00) of disable (0xff) the disk error messages
+
+
+
+_StoreDriveLetter:
+  ;;------------------------------------------------------------------------
+  ;; store the drive number the loader was run from to InitializeAmsdos
+  ld hl,(#0xbe7d)
+  ld a,(hl)                 
+  ld (_driveLoad+1),a                 
+  
+  ;;------------------------------------------------------------------------
+  ;; store jump restore call to InitializeAmsdos
+  ld a,(#0xbD38)                 
+  ld (_firmJump+1),a
+   
+  ret
+
+
+_InitializeAmsdos:
+  ;; ** INITIALISE ALTERNATE REGISTER SET FOR FIRMWARE **
+  exx
+  ld bc,#0x7f88     ;initialise lower rom and select mode 0
+  out (c),c         ;this routine must be located above &4000
+  exx 
+  ex af,AF
+  xor a
+  ex af,af
+
+  ;; ** INITIALISE FIRMWARE **
+  call #0x0044      ;initialise lower jumpblock (&0000-&0040)
+                  ;and high kernal jumpblock (&b800-&bae4)
+  _firmJump: call #0x08bd                ;initialise firmware jumpblock entries
+                      ;call #0xBD37
+                      ;(&bb00- ...)
+  call #0xbb00                ;initialise keyboard manager
+  call #0xb909                ;disable lower rom
+
+  ;;; ** INITIALISE DISK ROM FOR LOADING/SAVING **
+  ld c,#7                      ;disk rom
+  ld de,#0x8000                 ;lowest useable byte of memory
+  ld hl,#0xb0ff                 ;highest useable byte of memory
+  call #0xbcce           ;initialise disk rom
+
+  ld c,#6                      ;disk rom
+  ld de,#0x8000                 ;lowest useable byte of memo ry
+  ld hl,#0xb0ff                 ;highest useable byte of memory
+  call #0xbcce           ;initialise disk rom
+
+  ld a,#0xc9
+  ld (#0xbb5a),a           ;prevent printing of text characters
+                      ;don t get error messages corrupting screen
+
+  ld a,#0xff
+  ld (#0xbe78),a                ;turn off disc error messages
+                    
+  ;;------------------------------------------------------------------------
+  ;; when AMSDOS is enabled, the drive reverts back to drive 0!
+  ;; This will restore the drive number to the drive the loader was run from
+  _driveLoad: ld a, #0x00
+  ld hl,(#0xbe7d)
+  ld (hl),a 
+
+  ret
+
+
+
+
+
 
 ;; the filename to load
 ;; disc filenames are a maximum of 12 characters, 8 for name, and 3 for extension
@@ -70,6 +140,13 @@ end_filename:
 ;; https://www.cpcwiki.eu/index.php/Programming:Loading_a_file
 ;;
 sys_files_load_file::
+BREAKPOINT
+    call _StoreDriveLetter
+    call _InitializeAmsdos
+    ;; disable disk error messages
+    ld a, #0xff
+    ld (#disk_error_messages),a                          ;; turn off disc error messages
+    ;; load file
     ld b, #(end_filename - filename)        ;; B = length of the filename in characters
     ld hl, #filename                        ;; HL = address of the start of the filename
     ld de, #0                               ;; DE = address of a 2k buffer
@@ -99,7 +176,11 @@ _load_file_exit:
 ;; https://www.cpcwiki.eu/index.php/Programming:Saving_a_file
 ;;
 sys_files_save_file::
-     ld b, #(end_filename - filename)       ;; B = length of the filename in characters
+    ;; disable disk error messages
+    ld a, #0xff
+    ld (#disk_error_messages),a                          ;; turn off disc error messages
+    ;; save file
+    ld b, #(end_filename - filename)       ;; B = length of the filename in characters
     ld hl, #filename                        ;; HL = address of the start of the filename
     ld de, #0                               ;; DE = address of a 2k buffer
                                             ;; 
