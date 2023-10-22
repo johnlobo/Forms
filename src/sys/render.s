@@ -24,6 +24,7 @@
 .include "sys/text.h.s"
 .include "sys/score.h.s"
 .include "sys/input.h.s"
+.include "sys/messages.h.s"
 .include "util.h.s"
 
 .module render_system
@@ -97,10 +98,10 @@ sys_render_logo_screen::
 
     cpctm_clearScreen_asm 255
     
-    cpctm_screenPtr_asm de, CPCT_VMEM_START_ASM, 24, 35  ;; screen address in de
-    ld hl, #_s_logo_1010
-    ld c, #S_LOGO_1010_W
-    ld b, #S_LOGO_1010_H
+    cpctm_screenPtr_asm de, CPCT_VMEM_START_ASM, 21, 35  ;; screen address in de
+    ld hl, #_s_logo
+    ld c, #S_LOGO_W
+    ld b, #S_LOGO_H
     call cpct_drawSprite_asm
 
 
@@ -1131,3 +1132,163 @@ s_r_render_col_sprite:
 s_r_render_col_y:    
     ret
 
+
+
+;;-----------------------------------------------------------------
+;;
+;; sys_render_nomoremoves_screen
+;;
+;;  renders the no more moves screen
+;;  Input: 
+;;  Output: 
+;;  Modified: af, hl, bc
+;;
+sys_render_nomoremoves_screen::
+
+    ;;cpctm_setBorder_asm HW_BLACK
+
+    ld e, #16                           ;; x
+    ld d, #60                           ;; y
+    ld b, #69                           ;; h
+    ld c, #47                           ;; w
+    ld hl, #_no_more_moves_string       ;; message
+    ld a, #0                            ;; wait for a key
+    call sys_messages_show
+
+    cpctm_screenPtr_asm de, CPCT_VMEM_START_ASM, 19, 101     ;; screen address for 1, 20 in de
+    ld hl, #_press_any_key_string
+    ld c, #0
+    call sys_text_draw_string
+
+    cpctm_screenPtr_asm de, CPCT_VMEM_START_ASM, 52, 78     ;; screen address for 1, 20 in de
+    ld hl, #_s_witch_0
+    ld c, #S_WITCH_W
+    ld b, #S_WITCH_H
+    call cpct_drawSprite_asm
+
+    call sys_input_wait4anykey
+
+    cpctm_screenPtr_asm de, CPCT_VMEM_START_ASM, 52, 78     ;; screen address for 1, 20 in de
+    call sys_render_deadwitch_animation
+
+    ret
+
+;;-----------------------------------------------------------------
+;;
+;;  sys_render_getNextLine
+;;
+;;  Shows the the entire fight screen
+;;  Input: hl : screen address 
+;;  Output: hl : screen address below
+;;  Modified: AF, DE, HL
+;;
+sys_render_getNextLine::
+    ld     a, #0x8          ;; [2] / HL = DE = DE + 0x800
+    add    h                ;; 
+    ld     h, a             ;; [1] | Adding 0x800 makes HL point to the start of the next line
+    ;; We check if we have crossed video memory boundaries (which will happen every 8 lines). 
+    ;; ... If that happens, bits 13,12 and 11 of destination pointer will be 0
+    and   #0x38             ;; [2] leave out only bits 13,12 and 11 from new memory address (00xxx000 00000000)
+    jp    nz, srg_exit          ;; [3] If any bit from {13,12,11} is not 0, we are still inside 
+                            ;; ... video memory boundaries, so proceed with next line
+    ;; Every 8 lines, we cross the 16K video memory boundaries and have to
+    ;; reposition destination pointer. That means our next line is 16K-0x50 bytes back
+    ;; which is the same as advancing 48K+0x50 = 0xC050 bytes, as memory is 64K 
+    ;; and our 16bit pointers cycle over it
+    ld    de, #0xC050       ;; [3] We advance destination pointer to next line
+    add   hl, de            ;; [3] HL = DE + 0xC050
+srg_exit:
+    ret
+
+
+;;-----------------------------------------------------------------
+;;
+;; sys_render_deadwitch_animation
+;;
+;;  renders the animation of the dead witch
+;;  Input: de : screen addres to render animation
+;;  Output: 
+;;  Modified: af, hl, bc
+;;
+
+HALTS = 60
+
+sys_render_deadwitch_animation::
+    push de
+    ld hl, #_s_witch_0
+    ld c, #S_WITCH_W
+    ld b, #S_WITCH_H
+    call cpct_drawSprite_asm
+
+    ld b,#HALTS
+    call cpct_waitHalts_asm
+
+    pop de
+    push de
+    ld hl, #_s_witch_1
+    ld c, #S_WITCH_W
+    ld b, #S_WITCH_H
+    call cpct_drawSprite_asm
+
+    ld b,#HALTS
+    call cpct_waitHalts_asm
+
+    pop de
+    push de
+    ld hl, #_s_witch_2
+    ld c, #S_WITCH_W
+    ld b, #S_WITCH_H
+    call cpct_drawSprite_asm
+
+    ld b,#HALTS
+    call cpct_waitHalts_asm
+
+    pop de
+    push de
+    ld c, #S_WITCH_W
+    ld b, #S_WITCH_H
+    ld a,#255                        ;; Patern of solid box
+    call cpct_drawSolidBox_asm
+
+    ld a, #6
+_animation_loop:
+    ld (_LOOP_INDEX), a
+    
+    pop hl                              ;; screen address in hl
+    ld b, #4                            ;; screen address going down 4 lines
+_hat_go_down:
+    call sys_render_getNextLine         ;;
+    djnz _hat_go_down                   ;;
+    ex de, hl
+    
+    push de
+    ld hl, #_s_hat
+    ld c, #S_HAT_W
+    ld b, #S_HAT_H
+    call cpct_drawSprite_asm
+
+    ld b,#HALTS
+    call cpct_waitHalts_asm
+
+    pop de
+    push de
+    ld c, #S_HAT_W
+    ld b, #S_HAT_H
+    ld a,#255                           ;; Patern of solid box
+    call cpct_drawSolidBox_asm
+
+_LOOP_INDEX = . + 1                      ;; loop avoiding using the stack
+    ld a, #0000
+    dec a 
+    jr nz, _animation_loop
+
+    pop de
+    ld hl, #_s_hat
+    ld c, #S_HAT_W
+    ld b, #S_HAT_H
+    call cpct_drawSprite_asm
+
+    ld b,#180
+    call cpct_waitHalts_asm
+
+    ret

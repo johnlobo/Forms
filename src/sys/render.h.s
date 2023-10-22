@@ -37,3 +37,4 @@
 .globl sys_render_render_row
 .globl sys_render_render_col
 .globl sys_render_draw_next_frame
+.globl sys_render_nomoremoves_screen

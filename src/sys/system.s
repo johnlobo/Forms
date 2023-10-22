@@ -28,6 +28,7 @@
 ;; 
 .area _CODE
 
+
 sys_system_activate_firmware::        
     DI   
 ;;    LD SP,#0xC000     ; On remet la pile a sa valeur initiale

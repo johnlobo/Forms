@@ -600,20 +600,27 @@ _redefine_exit:
 _exit:
     ret
 
-
 ;;-----------------------------------------------------------------
 ;;
 ;; sys_input_wait4anykey
 ;;
-;;   Reads input and wait for any key press
+;;  Reads input and wait for any key press
 ;;  Input: 
-;;  Output:
+;;  Output: hl: number of loops
 ;;  Modified: 
 ;;
 sys_input_wait4anykey::
+    ld hl, #0
+_siw_loop:
+    push hl
     call cpct_isAnyKeyPressed_asm
     or a
-    jr z, sys_input_wait4anykey
+    pop hl
+    inc hl
+    jr z, _siw_loop
+    push hl
+    call sys_input_clean_buffer
+    pop hl
     ret
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;

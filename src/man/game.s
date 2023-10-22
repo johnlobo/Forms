@@ -584,7 +584,7 @@ m_g_set_piece_next_space_check:
     djnz m_g_set_piece_check_next_pieces_loop
 
     ld a, #1                                        ;; if loop finish -> no more moves
-    ld (man_game_no_more_moves), a                           ;; set no more moves and return
+    ld (man_game_no_more_moves), a                  ;; set no more moves and return
     jr m_g_set_piece_not_valid                      ;; jump and return
 
 m_g_set_piece_return:

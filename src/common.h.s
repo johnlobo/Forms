@@ -67,12 +67,17 @@
 .globl _s_score_numbers_06
 .globl _s_score_numbers_07
 .globl _s_score_numbers_08
-.globl _s_logo_1010
+.globl _s_logo
 .globl _g_font_chars
 .globl _s_high_score_icon
 .globl _s_star_icon
 .globl _s_next_frame
 .globl _g_glasnost
+.globl _s_witch_0
+.globl _s_witch_1
+.globl _s_witch_2
+.globl _s_hat
+.globl _no_more_moves_string
 
 
 ;;===============================================================================
@@ -123,14 +128,20 @@ S_STAR_ICON_H = 14
 S_SCORE_NUMBERS_W = 3
 S_SCORE_NUMBERS_H = 15
 
-S_LOGO_1010_W = 29
-S_LOGO_1010_H = 64
+S_LOGO_W = 34
+S_LOGO_H = 64
 
 S_NEXT_FRAME_W =12
 S_NEXT_FRAME_H =33
 
 G_GLASNOST_W = 27
 G_GLASNOST_H = 16
+
+S_WITCH_W  = 6
+S_WITCH_H  = 34
+
+S_HAT_W  = 6
+S_HAT_H  = 8
 
 BOARD_X_COORD = 1   ;; X 
 BOARD_Y_COORD = 54  ;; Y 
@@ -150,5 +161,12 @@ SCORE_NUM_BYTES = 4
 ;; Keyboard constants
 BUFFER_SIZE = 10
 ZERO_KEYS_ACTIVATED = #0xFF
+
+;; WinAPE special BRK instruction
+;; - more info at http://www.winape.net/help/debug.html
+.mdelete BREAKPOINT
+.macro BREAKPOINT
+  .db #0xed, #0xff
+.endm
 
 

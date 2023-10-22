@@ -22,6 +22,34 @@
 
 .module files_system
 
+;;-----------------------------------------------------------------
+;;
+;; Start of _DATA area 
+;;  SDCC requires at least _DATA and _CODE areas to be declared, but you may use
+;;  any one of them for any purpose. Usually, compiler puts _DATA area contents
+;;  right after _CODE area contents.
+;;
+.area _DATA
+
+is_disk:: .db 0x00
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;; sys_files_check_media
+;;
+;; Check if the gmae has been loaded from disk or tape. If the game has been loaded from disk 
+;; address a70a stores a number higher than 64, in cas of tape stores 0.
+;;
+;; DESTROYS: HL, AF
+;;
+;; Thanks to  Jean-Marie (https://www.cpcwiki.eu/forum/programming/how-to-check-if-program-was-launched-from-disk-or-tape/msg228058/#msg228058)
+sys_files_check_media::
+   ld hl, #0xa70a
+   ld a, (hl)
+   ld hl, #is_disk
+   ld (hl), a
+   ret
+
+
 cas_in_open = 0xbc77    ;; firmware function to open a file for reading
 cas_in_direct = 0xbc83  ;; firmware function to read an entire file (must have a AMSDOS header been opened
 cas_in_close = 0xbc7a   ;; firmware function to close a file opened for reading

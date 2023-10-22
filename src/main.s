@@ -43,7 +43,7 @@
 .area _DATA
 
 _game_loaded_string: .asciz "GAME LOADED - PRESS ANY KEY"      ;;27 chars, 54 bytes
-_no_more_moves_string: .asciz "NO MORE MOVES"
+_no_more_moves_string:: .asciz "NO MORE MOVES"
 _game_cancelled_string: .asciz "GAME CANCELLED"
 _updating_hiscore_string: .asciz "UPDATING HIGH SCORE"
 _congratulations_string: .asciz "CONGRATS!! ITS A HIGH SCORE"
@@ -83,6 +83,12 @@ _persist_hiscore:
    ld hl, #_updating_hiscore_string    ;; message
    xor a                               ;; dont wait for a key
    call sys_messages_show
+
+   ;; check if it's been loaded from disk
+   ld a, (is_disk)
+   or a
+   ret z                               ;; if it's not disk return.
+
    call sys_system_activate_firmware
    call sys_files_save_file
    call sys_system_deactivate_firmware
@@ -98,6 +104,11 @@ _persist_hiscore:
 ;;  Destroyed: af, bc,de, hl
 ;;
 _update_hiscore:
+   ;; check if it's been loaded from disk
+   ld a, (is_disk)
+   or a
+   ret z                               ;; if it's not disk return.
+
    call sys_render_init
    ld e, #18                           ;; x
    ld d, #78                           ;; y
@@ -288,6 +299,8 @@ _main::
 
    call cpct_disableFirmware_asm
 
+   call sys_files_check_media                   ;; store info to check if it's loaded in a cdt or a disk
+
    call _update_hiscore
 
    call sys_system_deactivate_firmware
@@ -322,13 +335,8 @@ end_of_game:
    ld a, #LOSE_SONG                 ;The Subsong to play (&gt;=0).
    call sys_audio_init_song
 
-   ld e, #24                           ;; x
-   ld d, #78                           ;; y
-   ld b, #44                           ;; h
-   ld c, #32                           ;; w
-   ld hl, #_no_more_moves_string       ;; message
-   ld a, #1                            ;; wait for a key
-   call sys_messages_show
+   call sys_render_nomoremoves_screen
+
    call sys_audio_stop_music
    call _persist_hiscore
    call sys_render_init
