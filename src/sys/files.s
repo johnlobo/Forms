@@ -1,6 +1,4 @@
 ;;-----------------------------LICENSE NOTICE------------------------------------
-;;  This file is part of CPCtelera: An Amstrad CPC Game Engine 
-;;  Copyright (C) 2018 ronaldo / Fremos / Cheesetea / ByteRealms (@FranGallegoBR)
 ;;
 ;;  This program is free software: you can redistribute it and/or modify
 ;;  it under the terms of the GNU Lesser General Public License as published by
@@ -140,7 +138,6 @@ end_filename:
 ;; https://www.cpcwiki.eu/index.php/Programming:Loading_a_file
 ;;
 sys_files_load_file::
-BREAKPOINT
     call _StoreDriveLetter
     call _InitializeAmsdos
     ;; disable disk error messages
@@ -179,6 +176,8 @@ sys_files_save_file::
     ;; disable disk error messages
     ld a, #0xff
     ld (#disk_error_messages),a                          ;; turn off disc error messages
+    call _StoreDriveLetter
+    call _InitializeAmsdos
     ;; save file
     ld b, #(end_filename - filename)       ;; B = length of the filename in characters
     ld hl, #filename                        ;; HL = address of the start of the filename
