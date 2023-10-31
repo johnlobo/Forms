@@ -41,7 +41,7 @@
 #$(eval $(call IMG2SP, CONVERT_PALETTE , $(PALETTE), g_palette ))
 #$(eval $(call IMG2SP, CONVERT         , img.png , w, h, array, palette, tileset))
 
-PALETTE0=0 7 8 15 16 11 10 20 18 5 6 13 24 2 9 26
+PALETTE0=0 3 8 15 16 11 10 20 18 5 6 13 24 2 9 26
 
 $(eval $(call IMG2SP, SET_MODE        , 0                  ))
 $(eval $(call IMG2SP, SET_FOLDER      , src/sprites               ))
@@ -63,6 +63,7 @@ $(eval $(call IMG2SP, CONVERT         , assets/next_frame.png, 24, 33, s_next_fr
 $(eval $(call IMG2SP, CONVERT         , assets/glasnost.png , 54, 16, g_glasnost, ,))
 $(eval $(call IMG2SP, CONVERT         , assets/witch.png , 12, 34, s_witch, ,))
 $(eval $(call IMG2SP, CONVERT         , assets/hat.png , 12, 8, s_hat, ,))
+$(eval $(call IMG2SP, CONVERT         , assets/cpc.png , 64, 74, s_cpc, ,))
 
 
 ##

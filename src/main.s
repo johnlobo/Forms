@@ -283,6 +283,8 @@ _main_init_keypress:
    
    call sys_input_init
 
+   call sys_render_tribute_screen
+
    call sys_render_hiscore_screen
 
    call _show_main_screen

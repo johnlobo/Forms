@@ -49,8 +49,10 @@ _redefine_keys: .asciz "PRESS R TO REDEFINE KEYS"
 _next_blocks_string: .asciz "NEXT BLOCKS"
 _to_change_block_string: .asciz "[I]-CHANGE"
 _hiscore_string: .asciz "HIGH SCORE TABLE"
-_press_any_key_string: .asciz "PRESS ANY KEY"       ;; 13 chars, 26
-
+_press_any_key_string: .asciz "PRESS ANY KEY"   ;; 13 chars, 26 bytes
+_tribute_string00: .asciz "HEY CPC,"            ;; 25 chars, 50 bytes
+_tribute_string01: .asciz "THANKS FOR THE "     ;; 25 chars, 50 bytes
+_tribute_string02: .asciz "LAST 30 YEARS"       ;; 25 chars, 50 bytes
 
 
 ;;
@@ -1288,5 +1290,44 @@ _LOOP_INDEX = . + 1                      ;; loop avoiding using the stack
 
     ld b,#180
     call cpct_waitHalts_asm
+
+    ret
+
+;;-----------------------------------------------------------------
+;;
+;; sys_render_tribute_screen
+;;
+;;  renders the no more moves screen
+;;  Input: 
+;;  Output: 
+;;  Modified: af, hl, bc
+;;
+sys_render_tribute_screen::
+    cpctm_clearScreen_asm 255
+  
+    cpctm_screenPtr_asm de, CPCT_VMEM_START_ASM, 6, 55  ;; screen address in de
+    ld hl, #_s_cpc
+    ld c, #S_CPC_W
+    ld b, #S_CPC_H
+    call cpct_drawSprite_asm
+
+    cpctm_screenPtr_asm de, CPCT_VMEM_START_ASM, 50, 70     ;; screen address for 1, 20 in de
+    ld hl, #_tribute_string00
+    ld c, #0
+    call sys_text_draw_string
+
+    cpctm_screenPtr_asm de, CPCT_VMEM_START_ASM, 44, 90     ;; screen address for 1, 20 in de
+    ld hl, #_tribute_string01
+    ld c, #0
+    call sys_text_draw_string
+
+    cpctm_screenPtr_asm de, CPCT_VMEM_START_ASM, 45, 110     ;; screen address for 1, 20 in de
+    ld hl, #_tribute_string02
+    ld c, #0
+    call sys_text_draw_string
+
+
+
+    call sys_input_wait4anykey
 
     ret

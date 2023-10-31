@@ -76,6 +76,7 @@
 .globl _s_witch_2
 .globl _s_hat
 .globl _no_more_moves_string
+.globl _s_cpc
 
 
 ;;===============================================================================
@@ -140,6 +141,9 @@ S_WITCH_H  = 34
 
 S_HAT_W  = 6
 S_HAT_H  = 8
+
+S_CPC_W = 32
+S_CPC_H = 74
 
 BOARD_X_COORD = 1   ;; X 
 BOARD_Y_COORD = 54  ;; Y 
