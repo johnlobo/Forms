@@ -1,0 +1,22 @@
+<html>
+  <head>
+    <script src='https://cdn.rvmplayer.org/rvmplayer.cpc6128.min.js'></script>
+  </head>
+
+  <body>
+    <div class='container' style='position: relative; width: 640px; height: 480px;'></div>
+    <script>
+        const container=document.querySelector('.container')
+        //Load a Amstrad CPC game and warp 20 seconds
+      rvmPlayer_cpc6128(container,{
+        disk: {
+          type: 'dsk',
+          url: './Forms.dsk',
+        },
+        command: 'run"loader\n', 
+        warpFrames: 20*50      
+      })
+    </script>
+
+  </body>
+</html>

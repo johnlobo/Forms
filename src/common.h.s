@@ -75,7 +75,6 @@
 .globl _s_witch_1
 .globl _s_witch_2
 .globl _s_hat
-.globl _no_more_moves_string
 .globl _s_cpc
 
 

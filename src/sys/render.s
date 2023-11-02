@@ -46,13 +46,15 @@ _score_digit:   .db #00
 _fila:          .db #00
 _press_any_key: .asciz "PRESS S TO START"
 _redefine_keys: .asciz "PRESS R TO REDEFINE KEYS"
-_next_blocks_string: .asciz "NEXT BLOCKS"
-_to_change_block_string: .asciz "[I]-CHANGE"
+_next_forms_string: .asciz "NEXT FORMS"
+_to_change_form_string: .asciz "[I]-CHANGE"
 _hiscore_string: .asciz "HIGH SCORE TABLE"
 _press_any_key_string: .asciz "PRESS ANY KEY"   ;; 13 chars, 26 bytes
 _tribute_string00: .asciz "HEY CPC,"            ;; 25 chars, 50 bytes
 _tribute_string01: .asciz "THANKS FOR THE "     ;; 25 chars, 50 bytes
 _tribute_string02: .asciz "LAST 30 YEARS"       ;; 25 chars, 50 bytes
+_no_more_moves_string: .asciz "NO MORE MOVES"
+_game_cancelled_string: .asciz "GAME CANCELLED"
 
 
 ;;
@@ -98,25 +100,23 @@ sys_render_logo_screen::
 
     cpctm_clearScreen_asm 255
     
-    cpctm_screenPtr_asm de, CPCT_VMEM_START_ASM, 21, 35  ;; screen address in de
+    cpctm_screenPtr_asm de, CPCT_VMEM_START_ASM, 21, 35     ;; screen address in de
     ld hl, #_s_logo
     ld c, #S_LOGO_W
     ld b, #S_LOGO_H
     call cpct_drawSprite_asm
 
-
-
     ld c, #0
-    cpctm_screenPtr_asm de, CPCT_VMEM_START_ASM, 16, 134  ;; screen address in de
+    cpctm_screenPtr_asm de, CPCT_VMEM_START_ASM, 16, 134    ;; screen address in de
     ld hl, #_redefine_keys
     call sys_text_draw_string
 
     ld c, #0
-    cpctm_screenPtr_asm de, CPCT_VMEM_START_ASM, 24, 150  ;; screen address in de
+    cpctm_screenPtr_asm de, CPCT_VMEM_START_ASM, 24, 150    ;; screen address in de
     ld hl, #_press_any_key
     call sys_text_draw_string
 
-    cpctm_screenPtr_asm de, CPCT_VMEM_START_ASM, 26, 184  ;; screen address in de
+    cpctm_screenPtr_asm de, CPCT_VMEM_START_ASM, 26, 184    ;; screen address in de
     ld hl, #_g_glasnost
     ld c, #G_GLASNOST_W
     ld b, #G_GLASNOST_H
@@ -242,13 +242,13 @@ sys_render_game_screen::
     ;; Text to remember I Key change pieces
     ld c, #0
     cpctm_screenPtr_asm de, CPCT_VMEM_START_ASM, 48, 74  ;; screen address for 30, 120 in de
-    ld hl, #_next_blocks_string
+    ld hl, #_next_forms_string
     call sys_text_draw_string
 
     ;; Text to remember I Key change pieces
     ld c, #0
     cpctm_screenPtr_asm de, CPCT_VMEM_START_ASM, 49, 138  ;; screen address for 30, 120 in de
-    ld hl, #_to_change_block_string
+    ld hl, #_to_change_form_string
     call sys_text_draw_string
 
     ret
@@ -374,7 +374,7 @@ sys_render_capture_background::
     ld e_p_screen_p+1(ix), h        ;; Screen address to restore
 
     ld h, b                         ;; Height of the piece
-    ld e, #S_BALLS_BIG_H + 1        ;; Piece size in bytes + 1 for the separation between blocks
+    ld e, #S_BALLS_BIG_H + 1        ;; Piece size in bytes + 1 for the separation between forms
     call sys_util_h_times_e         ;; Calculate offset for piece type in HL
     ld a, l                         ;; store buffer height in player
     ld e_buffer_height(ix), a       ;; store height in player1
@@ -1292,6 +1292,25 @@ _LOOP_INDEX = . + 1                      ;; loop avoiding using the stack
     call cpct_waitHalts_asm
 
     ret
+
+;;-----------------------------------------------------------------
+;;
+;; sys_render_game_cancelled_screen
+;;
+;;  renders the no more moves screen
+;;  Input: 
+;;  Output: 
+;;  Modified: af, hl, bc
+;;
+sys_render_game_cancelled_screen::
+    ld e, #24                           ;; x
+    ld d, #78                           ;; y
+    ld b, #44                           ;; h
+    ld c, #34                           ;; w
+    ld hl, #_game_cancelled_string      ;; message
+    ld a, #1                            ;; wait for a key
+    jp sys_messages_show                 ;; call+ret = jp
+    ;;ret
 
 ;;-----------------------------------------------------------------
 ;;

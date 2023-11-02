@@ -36,4 +36,5 @@
 .globl sys_render_render_col
 .globl sys_render_draw_next_frame
 .globl sys_render_nomoremoves_screen
+.globl sys_render_game_cancelled_screen
 .globl sys_render_tribute_screen

@@ -41,8 +41,6 @@
 .area _DATA
 
 _game_loaded_string: .asciz "GAME LOADED - PRESS ANY KEY"      ;;27 chars, 54 bytes
-_no_more_moves_string:: .asciz "NO MORE MOVES"
-_game_cancelled_string: .asciz "GAME CANCELLED"
 _updating_hiscore_string: .asciz "UPDATING HIGH SCORE"
 _congratulations_string: .asciz "CONGRATS!! ITS A HIGH SCORE"
 _enteryourname_string: .asciz "ENTER YOUR NAME"
@@ -90,6 +88,9 @@ _persist_hiscore:
    call sys_system_activate_firmware
    call sys_files_save_file
    call sys_system_deactivate_firmware
+   
+   call sys_render_tribute_screen      ;; show tribute screen
+   
    ret
 
 
@@ -283,8 +284,6 @@ _main_init_keypress:
    
    call sys_input_init
 
-   call sys_render_tribute_screen
-
    call sys_render_hiscore_screen
 
    call _show_main_screen
@@ -321,7 +320,7 @@ loop:
    ;; check if are ther more moves
    ld a, (man_game_no_more_moves)
    or a
-   jr nz, end_of_game
+   jr nz, _end_of_game
 
    ;; check if the game has been cancelled
    ld a, (man_game_cancelled_game)
@@ -330,32 +329,21 @@ loop:
 
    jr    loop
 
-end_of_game:
-
+_end_of_game:
    ld a, #LOSE_SONG                 ;The Subsong to play (&gt;=0).
    call sys_audio_init_song
 
    call sys_render_nomoremoves_screen
 
-   call sys_audio_stop_music
-   call _persist_hiscore
-   call sys_render_init
-   call sys_audio_init
-   call sys_render_hiscore_screen
-   call _show_main_screen
-   jr start
+   jr _restart_game
 
 _game_cancelled:
    ld a, #LOSE_SONG                 ;The Subsong to play (&gt;=0).
    call sys_audio_init_song
 
-   ld e, #24                           ;; x
-   ld d, #78                           ;; y
-   ld b, #44                           ;; h
-   ld c, #34                           ;; w
-   ld hl, #_game_cancelled_string      ;; message
-   ld a, #1                            ;; wait for a key
-   call sys_messages_show
+   call sys_render_game_cancelled_screen
+
+_restart_game:
    call sys_audio_stop_music
    call _persist_hiscore
    call sys_render_init
