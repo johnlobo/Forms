@@ -86,7 +86,6 @@
 .globl cpct_drawSprite_asm
 .globl cpct_setVideoMode_asm
 .globl cpct_setPalette_asm
-.globl cpct_setPALColour_asm
 .globl cpct_memset_asm
 .globl cpct_getScreenToSprite_asm
 .globl cpct_scanKeyboard_asm

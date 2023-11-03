@@ -26,12 +26,17 @@
 ;; 
 .area _CODE
 
-
+;;-----------------------------------------------------------------
+;;
+;; sys_system_activate_firmware
+;;
+;;    Activates the firmware   
+;;    Input: 
+;;    Output:
+;;    Modified: af, hl, de, bc
+;;
 sys_system_activate_firmware::        
     DI   
-;;    LD SP,#0xC000     ; On remet la pile a sa valeur initiale
-;      IM 1             ; on restaure le mode d'interruption standard (pas utile
-                        ; la plupart du temps... ).    
     EXX                 ; On preserve les registre normaux
     LD BC,#0x7F88       ;connexion sur ROM inferieure
     OUT (C),C
@@ -55,9 +60,18 @@ sys_system_activate_firmware::
     CALL #0xBCCE
     ret
 
+;;-----------------------------------------------------------------
+;;
+;; sys_system_deactivate_firmware
+;;
+;;    Deactivates the firmware   
+;;    Input: 
+;;    Output:
+;;    Modified: af, hl, de, bc
+;;
 sys_system_deactivate_firmware::
    call cpct_disableFirmware_asm
-   ld hl, #int_handler1
+   ld hl, #sys_system_int_handler1
    call cpct_waitVSYNC_asm
    halt
    halt
@@ -66,81 +80,78 @@ sys_system_deactivate_firmware::
    ret
 
 
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;;DESCRIPTION
-;; Called every interruption
+;;-----------------------------------------------------------------
 ;;
-;;DESTROYS: AF, BC, DE
+;; sys_system_int_handler1
 ;;
-set_int_handler:
-	ld hl, #0x38
-	ld (hl), #0xc3
-	inc hl
-	ld (hl), #<int_handler1
-	inc hl
-	ld (hl), #>int_handler1
-	inc hl
-	ld (hl), #0xc9
-	ret
-
-
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;;DESCRIPTION
-;; Called on the first interruption
+;;       
+;;    Input: 
+;;    Output:
+;;    Modified: af, hl, de, bc
 ;;
-;;DESTROYS: AF, BC, DE
-;;
-int_handler1:
-	ld hl, #int_handler2
+sys_system_int_handler1:
+	ld hl, #sys_system_int_handler2
  	call cpct_setInterruptHandler_asm	
 	ret
 
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;;DESCRIPTION
-;; Called every interruption
+;;-----------------------------------------------------------------
 ;;
-;;DESTROYS: AF, BC, DE
+;; sys_system_int_handler2
 ;;
-int_handler2:
+;;       
+;;    Input: 
+;;    Output:
+;;    Modified: af, hl, de, bc
+;;
+sys_system_int_handler2:
 	call cpct_scanKeyboard_if_asm
 
 
-	ld hl, #int_handler3
+	ld hl, #sys_system_int_handler3
    call cpct_setInterruptHandler_asm
 	ret
 
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;;DESCRIPTION
-;; Called every interruption
+;;-----------------------------------------------------------------
 ;;
-;;DESTROYS: AF, BC, DE
+;; sys_system_int_handler3
 ;;
-int_handler3:
-	ld hl, #int_handler4
+;;       
+;;    Input: 
+;;    Output:
+;;    Modified: af, hl, de, bc
+;;
+sys_system_int_handler3:
+	ld hl, #sys_system_int_handler4
    call cpct_setInterruptHandler_asm
 	ret
 
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;;DESCRIPTION
-;; Called every interruption
+;;-----------------------------------------------------------------
 ;;
-;;DESTROYS: AF, BC, DE
+;; sys_system_int_handler4
 ;;
-int_handler4:
-	ld hl, #int_handler5
+;;       
+;;    Input: 
+;;    Output:
+;;    Modified: af, hl, de, bc
+;;
+sys_system_int_handler4:
+	ld hl, #sys_system_int_handler5
    call cpct_setInterruptHandler_asm
 	ret
 
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;;DESCRIPTION
-;; Called every interruption
+;;-----------------------------------------------------------------
 ;;
-;;DESTROYS: AF, BC, DE
+;; sys_system_int_handler5
 ;;
-int_handler5:
+;;       
+;;    Input: 
+;;    Output:
+;;    Modified: af, hl, de, bc
+;;
+sys_system_int_handler5:
    ld a, (music_switch)
    or a
-   jr z, int_handler5_exit
+   jr z, sys_system_int_handler5_exit
    exx
    ex af', af  
    push af
@@ -154,18 +165,21 @@ int_handler5:
    pop af
    ex af', af  
    exx
-int_handler5_exit:
-	ld hl, #int_handler6
+sys_system_int_handler5_exit:
+	ld hl, #sys_system_int_handler6
    call cpct_setInterruptHandler_asm
 	ret
 
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;;DESCRIPTION
-;; Called every interruption
+;;-----------------------------------------------------------------
 ;;
-;;DESTROYS: AF, BC, DE
+;; sys_system_int_handler6
 ;;
-int_handler6:
-	ld hl, #int_handler1
+;;       
+;;    Input: 
+;;    Output:
+;;    Modified: af, hl, de, bc
+;;
+sys_system_int_handler6:
+	ld hl, #sys_system_int_handler1
    call cpct_setInterruptHandler_asm
 	ret

@@ -324,11 +324,10 @@ loop:
    ld a, (man_game_cancelled_game)
    or a
    jr nz, _game_cancelled
-
    jr    loop
 
 _end_of_game:
-   ld a, #LOSE_SONG                 ;The Subsong to play (&gt;=0).
+   ld a, #LOSE_SONG                          ;The Subsong to play (&gt;=0).
    call sys_audio_init_song
 
    call sys_render_nomoremoves_screen
@@ -336,7 +335,7 @@ _end_of_game:
    jr _restart_game
 
 _game_cancelled:
-   ld a, #LOSE_SONG                 ;The Subsong to play (&gt;=0).
+   ld a, #LOSE_SONG                          ;The Subsong to play (&gt;=0).
    call sys_audio_init_song
 
    call sys_render_game_cancelled_screen

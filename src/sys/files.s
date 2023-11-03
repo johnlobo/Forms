@@ -67,6 +67,16 @@ sys_files_check_media::
     ld (hl), a
     ret
 
+
+;;-----------------------------------------------------------------
+;;
+;; _StoreDriveLetter
+;;       
+;;    Input: 
+;;    Output:
+;;    Modified: af, hl, de, bc
+;;
+;; Thanks to  Jean-Marie (https://www.cpcwiki.eu/forum/programming/how-to-check-if-program-was-launched-from-disk-or-tape/msg228058/#msg228058)
 _StoreDriveLetter:
   ;;------------------------------------------------------------------------
   ;; store the drive number the loader was run from to InitializeAmsdos
@@ -81,7 +91,15 @@ _StoreDriveLetter:
    
   ret
 
-
+;;-----------------------------------------------------------------
+;;
+;; _InitializeAmsdos
+;;       
+;;    Input: 
+;;    Output:
+;;    Modified: af, hl, de, bc
+;;
+;; Thanks to  Jean-Marie (https://www.cpcwiki.eu/forum/programming/how-to-check-if-program-was-launched-from-disk-or-tape/msg228058/#msg228058)
 _InitializeAmsdos:
   ;; ** INITIALISE ALTERNATE REGISTER SET FOR FIRMWARE **
   exx
@@ -94,7 +112,7 @@ _InitializeAmsdos:
 
   ;; ** INITIALISE FIRMWARE **
   call #0x0044      ;initialise lower jumpblock (&0000-&0040)
-                  ;and high kernal jumpblock (&b800-&bae4)
+                    ;and high kernal jumpblock (&b800-&bae4)
   _firmJump: call #0x08bd                ;initialise firmware jumpblock entries
                       ;call #0xBD37
                       ;(&bb00- ...)
@@ -128,6 +146,13 @@ _InitializeAmsdos:
 
   ret
 
+;;-----------------------------------------------------------------
+;;
+;; sys_files_load_file
+;;       
+;;    Input: 
+;;    Output:
+;;    Modified: af, hl, de, bc
 ;;
 ;; This example shows the firmware functions used to load
 ;; a file with a AMSDOS header (a non-ASCII file)
@@ -163,6 +188,14 @@ _load_file_exit:
     call cas_in_close                       ;; firmware function to close a file opened for reading
     ret
 
+
+;;-----------------------------------------------------------------
+;;
+;; sys_files_save_file
+;;       
+;;    Input: 
+;;    Output:
+;;    Modified: af, hl, de, bc
 ;;
 ;; This example shows the firmware functions used to save
 ;; a file.

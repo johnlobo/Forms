@@ -41,7 +41,6 @@ FONT_HEIGHT = 9
 ;; Destroys:
 ;;  a, b, hl
 ;;      
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 sys_text_str_length::
     ld b, #0
@@ -57,69 +56,6 @@ str_length_exit:
     ret
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;; str_copy
-;;      Copy one string into another
-;; Input:
-;;  hl : address of the origin string
-;;  de : address of the destination string
-;; Returns: 
-;;  Nothing
-;; Destroys:
-;;  a, b, hl
-;;      
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-
-sys_text_str_copy::
-    ld (str_copy_savehl), hl    ;; [3] | Save HL before modifying them
-    call sys_text_str_length
-str_copy_savehl = .+1           ;; Constant to retrive HL value
-    ld hl, #0000                ;; 0000 is a place holder for the original HL value
-    ld b, #0                    ;; Store string length in BC
-    ld c, a
-    ldir                        ;; Copy from HL to DE
-    ret
-
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;; str_cmp
-;;      Compare two strings
-;; Input:
-;;  hl : address of the string 1
-;;  de : address of the string 2
-;; Returns: 
-;;  a : 1 if strings are the same
-;;      0 in other case
-;; Destroys:
-;;  a, b, hl, de
-;;      
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-
-sys_text_str_cmp::
-    ld a, (hl)
-    or a
-    jr z, str_cmp_check_last_pair
-    push af
-    ld a, (de)
-    or a
-    jr z, str_cmp_exit_false
-    pop bc
-    cp b
-    jr nz, str_cmp_exit_false
-    inc hl
-    inc de
-    jr sys_text_str_cmp 
-str_cmp_check_last_pair:
-    ld a, (de)
-    or a
-    jr nz, str_cmp_exit_false
-str_cmp_exit_true:
-    ld a, #1
-    ret
-str_cmp_exit_false:
-    xor a
-    ret
-
-
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; draw_char
 ;;      Draws a char in a video memory address
 ;; Input:
@@ -133,7 +69,6 @@ str_cmp_exit_false:
 ;; Destroys:
 ;;  a, b, hl, de, ix
 ;;  
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 sys_text_draw_char::
     push de
@@ -213,7 +148,6 @@ _char_buffer:: .db 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0
 ;; Destroys:
 ;;  a, b, hl, de
 ;;      
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 sys_text_draw_string::
     push ix
