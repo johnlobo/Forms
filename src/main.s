@@ -281,8 +281,6 @@ _main_init_keypress:
    ld de, #0xac00
    pop af                                  ;; retrieve last a value to set the seed
    call cpct_setSeed_xsp40_u8_asm          ;; change seed
-   
-   call sys_input_init
 
    call sys_render_hiscore_screen
 

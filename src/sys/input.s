@@ -85,18 +85,6 @@ sys_input_clean_buffer::
 
 ;;-----------------------------------------------------------------
 ;;
-;; sys_input_init
-;;
-;;   Initializes input
-;;  Input: 
-;;  Output:
-;;  Modified: 
-;;
-sys_input_init::
-    ret 
-
-;;-----------------------------------------------------------------
-;;
 ;; _score_move_down
 ;;
 ;;  Process fire key press

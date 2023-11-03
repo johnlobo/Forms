@@ -31,6 +31,25 @@
 
 is_disk:: .db 0x00
 
+;; the filename to load
+;; disc filenames are a maximum of 12 characters, 8 for name, and 3 for extension
+filename:
+.ascii "HISCORE.BIN"
+end_filename:
+
+cas_in_open = 0xbc77    ;; firmware function to open a file for reading
+cas_in_direct = 0xbc83  ;; firmware function to read an entire file (must have a AMSDOS header been opened
+cas_in_close = 0xbc7a   ;; firmware function to close a file opened for reading
+cas_out_open = 0xbc8c   ;; firmware function to open a file for writing
+cas_out_direct = 0xbc98 ;; firmware function to write an entire filewith a AMSDOS header
+cas_out_close = 0xbc8f  ;; firmware function to close a file opened for writing
+disk_error_messages =  0xbe78       ;; firmware function to enable (0x00) of disable (0xff) the disk error messages
+
+;;
+;; Start of _CODE area
+;; 
+.area _CODE
+
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; sys_files_check_media
 ;;
@@ -47,17 +66,6 @@ sys_files_check_media::
     ld hl, #is_disk
     ld (hl), a
     ret
-
-
-cas_in_open = 0xbc77    ;; firmware function to open a file for reading
-cas_in_direct = 0xbc83  ;; firmware function to read an entire file (must have a AMSDOS header been opened
-cas_in_close = 0xbc7a   ;; firmware function to close a file opened for reading
-cas_out_open = 0xbc8c   ;; firmware function to open a file for writing
-cas_out_direct = 0xbc98 ;; firmware function to write an entire filewith a AMSDOS header
-cas_out_close = 0xbc8f  ;; firmware function to close a file opened for writing
-disk_error_messages =  0xbe78       ;; firmware function to enable (0x00) of disable (0xff) the disk error messages
-
-
 
 _StoreDriveLetter:
   ;;------------------------------------------------------------------------
@@ -119,17 +127,6 @@ _InitializeAmsdos:
   ld (hl),a 
 
   ret
-
-
-
-
-
-
-;; the filename to load
-;; disc filenames are a maximum of 12 characters, 8 for name, and 3 for extension
-filename:
-.ascii "HISCORE.BIN"
-end_filename:
 
 ;;
 ;; This example shows the firmware functions used to load

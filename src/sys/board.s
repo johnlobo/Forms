@@ -358,12 +358,12 @@ sys_board_check_partial_rows::
     call sys_board_check_row
     or a
     jr nz, partial_board_line_is_complete
-    pop bc                              ;; Retrieve bc from stack
-    inc b                               ;; inc row
-    ld a, b                             ;;
-    cp c                                ;; chec if row is last row
-    jr nz, sys_board_check_partial_rows ;; back to the beinging of the loop
-    ld a, #0xff                         ;; Return if checked boards are complete and no line found
+    pop bc                                      ;; Retrieve bc from stack
+    inc b                                       ;; inc row
+    ld a, b                                     ;;
+    cp c                                        ;; chec if row is last row
+    jr nz, sys_board_check_partial_rows         ;; back to the beinging of the loop
+    ld a, #0xff                                 ;; Return if checked boards are complete and no line found
     ret
 partial_board_line_is_complete:
     pop bc
@@ -385,12 +385,12 @@ sys_board_check_partial_cols::
     call sys_board_check_col
     or a
     jr nz, partial_board_col_is_complete
-    pop bc                              ;; Retrieve bc from stack
-    inc b                               ;; inc col
-    ld a, b                             ;;
-    cp c                                ;; chec if col is last col
-    jr nz, sys_board_check_partial_cols ;; back to the beinging of the loop
-    ld a, #0xff                         ;; Return if checked boards are complete and no line found
+    pop bc                                      ;; Retrieve bc from stack
+    inc b                                       ;; inc col
+    ld a, b                                     ;;
+    cp c                                        ;; chec if col is last col
+    jr nz, sys_board_check_partial_cols         ;; back to the beinging of the loop
+    ld a, #0xff                                 ;; Return if checked boards are complete and no line found
     ret
 partial_board_col_is_complete:
     pop bc
